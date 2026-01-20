@@ -5,6 +5,8 @@ import morgan from "morgan";
 import compression from "compression";
 import cookieParser from "cookie-parser";
 import dotenv from "dotenv";
+import { errorHandler } from "./middlewares/errorHandler";
+import { notFound } from "./middlewares/notFound";
 
 // Import Routes
 import authRoutes from "./routes/auth.routes";
@@ -14,12 +16,10 @@ import employeeRoutes from "./routes/employee.routes";
 import departmentRoutes from "./routes/department.routes";
 import designationRoutes from "./routes/designation.routes";
 import superAdminRoutes from "./routes/superAdmin.routes";
-import { notFound } from "./middlewares/notFound";
-import { errorHandler } from "./middlewares/errorHandler";
-import { createSuperAdmin } from "./config/masterAdmin";
+import superAdminAuthRoutes from "./routes/superAdminAuth.routes";
 
 dotenv.config();
-createSuperAdmin()
+
 const app: Application = express();
 const PORT = process.env.PORT || 5000;
 
@@ -29,7 +29,7 @@ const PORT = process.env.PORT || 5000;
 app.use(helmet()); // Security headers
 app.use(
   cors({
-    origin: process.env.FRONTEND_URL || "http://localhost:4000",
+    origin: process.env.FRONTEND_URL || "http://localhost:3000",
     credentials: true,
   }),
 );
@@ -42,7 +42,7 @@ app.use(cookieParser());
 // ============================================
 // ROUTES
 // ============================================
-app.get("/api/health", (_, res) => {
+app.get("/api/health", (req, res) => {
   res.json({ status: "OK", timestamp: new Date().toISOString() });
 });
 
@@ -53,6 +53,7 @@ app.use("/api/employees", employeeRoutes);
 app.use("/api/departments", departmentRoutes);
 app.use("/api/designations", designationRoutes);
 app.use("/api/super-admin", superAdminRoutes);
+app.use("/api/super-admin/auth", superAdminAuthRoutes);
 
 // ============================================
 // ERROR HANDLING

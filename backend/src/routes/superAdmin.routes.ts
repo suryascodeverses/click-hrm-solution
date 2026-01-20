@@ -1,30 +1,15 @@
 import { Router } from "express";
-import {
-  getDashboardStats,
-  getAllTenants,
-  updateTenantStatus,
-} from "../controllers/superAdmin.controller";
-import { authenticate, authorize } from "../middlewares/auth.middleware";
-import { UserRole } from "@prisma/client";
+
+import { authenticateSuperAdmin } from "../middlewares/superAdminAuth.middleware";
+import { getAllTenants, getDashboardStats, updateTenantStatus } from "../controllers/superAdmin.controller";
 
 const router = Router();
 
-router.get(
-  "/dashboard",
-  authenticate,
-  authorize(UserRole.SUPER_ADMIN),
-  getDashboardStats,
-);
-router.get(
-  "/tenants",
-  authenticate,
-  authorize(UserRole.SUPER_ADMIN),
-  getAllTenants,
-);
+router.get("/dashboard", authenticateSuperAdmin, getDashboardStats);
+router.get("/tenants", authenticateSuperAdmin, getAllTenants);
 router.put(
   "/tenants/:tenantId/status",
-  authenticate,
-  authorize(UserRole.SUPER_ADMIN),
+  authenticateSuperAdmin,
   updateTenantStatus,
 );
 
