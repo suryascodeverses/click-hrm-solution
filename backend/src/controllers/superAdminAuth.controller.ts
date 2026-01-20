@@ -25,10 +25,11 @@ export const superAdminLogin = async (
     });
 
     if (!superAdmin) {
-      return res.status(401).json({
+      res.status(401).json({
         success: false,
         message: "Invalid credentials",
       });
+      return;
     }
 
     // Check password
@@ -37,18 +38,20 @@ export const superAdminLogin = async (
       superAdmin.password,
     );
     if (!isValidPassword) {
-      return res.status(401).json({
+      res.status(401).json({
         success: false,
         message: "Invalid credentials",
       });
+      return;
     }
 
     // Check if active
     if (!superAdmin.isActive) {
-      return res.status(403).json({
+      res.status(403).json({
         success: false,
         message: "Account is inactive",
       });
+      return;
     }
 
     // Generate tokens
@@ -93,6 +96,7 @@ export const superAdminLogin = async (
         refreshToken,
       },
     });
+    return;
   } catch (error) {
     next(error);
   }
@@ -120,6 +124,7 @@ export const superAdminGetMe = async (
       success: true,
       data: superAdmin,
     });
+    return;
   } catch (error) {
     next(error);
   }
@@ -146,6 +151,7 @@ export const superAdminLogout = async (
       success: true,
       message: "Logout successful",
     });
+    return;
   } catch (error) {
     next(error);
   }
@@ -160,10 +166,11 @@ export const superAdminRefreshToken = async (
     const { refreshToken } = req.body;
 
     if (!refreshToken) {
-      return res.status(400).json({
+      res.status(400).json({
         success: false,
         message: "Refresh token required",
       });
+      return;
     }
 
     // Find refresh token
@@ -173,10 +180,11 @@ export const superAdminRefreshToken = async (
     });
 
     if (!tokenRecord) {
-      return res.status(401).json({
+      res.status(401).json({
         success: false,
         message: "Invalid refresh token",
       });
+      return;
     }
 
     // Check if expired
@@ -184,10 +192,11 @@ export const superAdminRefreshToken = async (
       await prisma.superAdminRefreshToken.delete({
         where: { id: tokenRecord.id },
       });
-      return res.status(401).json({
+      res.status(401).json({
         success: false,
         message: "Refresh token expired",
       });
+      return;
     }
 
     // Generate new access token
@@ -203,6 +212,7 @@ export const superAdminRefreshToken = async (
         accessToken: newAccessToken,
       },
     });
+    return;
   } catch (error) {
     next(error);
   }
@@ -218,10 +228,11 @@ export const createSuperAdmin = async (
 
     // Check master key (set this in .env)
     if (masterKey !== process.env.SUPER_ADMIN_MASTER_KEY) {
-      return res.status(403).json({
+      res.status(403).json({
         success: false,
         message: "Invalid master key",
       });
+      return;
     }
 
     // Check if super admin exists
@@ -230,10 +241,11 @@ export const createSuperAdmin = async (
     });
 
     if (existingSuperAdmin) {
-      return res.status(400).json({
+      res.status(400).json({
         success: false,
         message: "Super admin with this email already exists",
       });
+      return;
     }
 
     // Hash password
@@ -259,6 +271,7 @@ export const createSuperAdmin = async (
       message: "Super admin created successfully",
       data: superAdmin,
     });
+    return;
   } catch (error) {
     next(error);
   }

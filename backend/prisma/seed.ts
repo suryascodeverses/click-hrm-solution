@@ -11,8 +11,7 @@ async function main() {
 
   // Create Super Admin
   const superAdminEmail = process.env.SUPER_ADMIN_EMAIL || "admin@arm.com";
-  const superAdminPassword =
-    process.env.SUPER_ADMIN_PASSWORD || "SuAdmin@123";
+  const superAdminPassword = process.env.SUPER_ADMIN_PASSWORD || "SuAdmin@123";
 
   const existingSuperAdmin = await prisma.superAdmin.findUnique({
     where: { email: superAdminEmail },

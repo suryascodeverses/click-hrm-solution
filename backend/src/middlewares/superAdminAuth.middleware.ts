@@ -19,20 +19,22 @@ export const authenticateSuperAdmin = async (
     const token = req.headers.authorization?.replace("Bearer ", "");
 
     if (!token) {
-      return res.status(401).json({
+      res.status(401).json({
         success: false,
         message: "Authentication required",
       });
+      return;
     }
 
     const decoded = jwt.verify(token, process.env.JWT_ACCESS_SECRET!) as any;
 
     // Verify it's a super admin token
     if (decoded.role !== "SUPER_ADMIN") {
-      return res.status(403).json({
+      res.status(403).json({
         success: false,
         message: "Super admin access required",
       });
+      return;
     }
 
     const superAdmin = await prisma.superAdmin.findUnique({
@@ -46,10 +48,11 @@ export const authenticateSuperAdmin = async (
     });
 
     if (!superAdmin || !superAdmin.isActive) {
-      return res.status(401).json({
+      res.status(401).json({
         success: false,
         message: "Invalid or expired token",
       });
+      return;
     }
 
     req.superAdmin = {
@@ -57,12 +60,13 @@ export const authenticateSuperAdmin = async (
       email: superAdmin.email,
       name: superAdmin.name,
     };
-
+    return;
     next();
   } catch (error) {
-    return res.status(401).json({
+    res.status(401).json({
       success: false,
       message: "Invalid or expired token",
     });
+    return;
   }
 };
