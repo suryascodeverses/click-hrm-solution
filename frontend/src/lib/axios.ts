@@ -11,7 +11,13 @@ export const api = axios.create({
 // Request interceptor
 api.interceptors.request.use(
   (config) => {
-    const token = localStorage.getItem("accessToken");
+    // Check if super admin route
+    const isSuperAdminRoute = config.url?.includes("/super-admin");
+
+    const token = isSuperAdminRoute
+      ? localStorage.getItem("superAdminAccessToken")
+      : localStorage.getItem("accessToken");
+
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
     }
@@ -33,16 +39,40 @@ api.interceptors.response.use(
       originalRequest._retry = true;
 
       try {
-        const refreshToken = localStorage.getItem("refreshToken");
-        // TODO: Implement refresh token logic
+        const isSuperAdminRoute = originalRequest.url?.includes("/super-admin");
+
+        if (isSuperAdminRoute) {
+          // Super admin refresh
+          const refreshToken = localStorage.getItem("superAdminRefreshToken");
+          const response = await api.post("/super-admin/auth/refresh", {
+            refreshToken,
+          });
+          const { accessToken } = response.data.data;
+
+          localStorage.setItem("superAdminAccessToken", accessToken);
+          originalRequest.headers.Authorization = `Bearer ${accessToken}`;
+        } else {
+          // Regular user refresh
+          const refreshToken = localStorage.getItem("refreshToken");
+          // TODO: Implement refresh token logic for regular users
+        }
 
         return api(originalRequest);
       } catch (refreshError) {
-        // Redirect to login
+        // Redirect to appropriate login
         if (typeof window !== "undefined") {
-          localStorage.removeItem("accessToken");
-          localStorage.removeItem("refreshToken");
-          window.location.href = "/login";
+          const isSuperAdmin =
+            window.location.pathname.includes("/super-admin");
+
+          if (isSuperAdmin) {
+            localStorage.removeItem("superAdminAccessToken");
+            localStorage.removeItem("superAdminRefreshToken");
+            window.location.href = "/super-admin/login";
+          } else {
+            localStorage.removeItem("accessToken");
+            localStorage.removeItem("refreshToken");
+            window.location.href = "/login";
+          }
         }
         return Promise.reject(refreshError);
       }

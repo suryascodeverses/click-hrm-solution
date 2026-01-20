@@ -26,6 +26,8 @@ export default function SuperAdminSidebar() {
   const { user, logout } = useAuthStore();
 
   const handleLogout = () => {
+    localStorage.removeItem("superAdminAccessToken");
+    localStorage.removeItem("superAdminRefreshToken");
     logout();
     toast.success("Logged out successfully");
     router.push("/super-admin/login");

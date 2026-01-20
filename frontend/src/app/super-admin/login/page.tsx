@@ -22,18 +22,21 @@ export default function SuperAdminLoginPage() {
     setLoading(true);
 
     try {
-      const response = await api.post("/auth/login", formData);
-      const { user, tenant, accessToken, refreshToken } = response.data.data;
+      const response = await api.post("/super-admin/auth/login", formData);
+      const { superAdmin, accessToken, refreshToken } = response.data.data;
 
-      if (user.role !== "SUPER_ADMIN") {
-        toast.error("Access denied. Super admin privileges required.");
-        return;
-      }
+      localStorage.setItem("superAdminAccessToken", accessToken);
+      localStorage.setItem("superAdminRefreshToken", refreshToken);
 
-      localStorage.setItem("accessToken", accessToken);
-      localStorage.setItem("refreshToken", refreshToken);
+      // Store in auth store with role
+      const userObj = {
+        id: superAdmin.id,
+        email: superAdmin.email,
+        role: "SUPER_ADMIN" as any,
+        tenantId: undefined,
+      };
 
-      setAuth(user, tenant);
+      setAuth(userObj, null);
       toast.success("Welcome back, Super Admin!");
       router.push("/super-admin/dashboard");
     } catch (error: any) {
