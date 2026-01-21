@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { api } from "@/lib/axios";
 import Sidebar from "@/components/Sidebar";
+import AddEmployeeModal from "@/components/modals/AddEmployeeModal";
 import { Plus, Search, Filter, Edit, Trash2, Eye } from "lucide-react";
 import { toast } from "sonner";
 
