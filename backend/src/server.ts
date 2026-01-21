@@ -18,13 +18,13 @@ import designationRoutes from "./routes/designation.routes";
 import superAdminRoutes from "./routes/superAdmin.routes";
 import superAdminAuthRoutes from "./routes/superAdminAuth.routes";
 import attendanceRoutes from "./routes/attendance.routes";
-import { checkPrismaConnection } from "./config/database";
+import leaveRoutes from "./routes/leave.routes";
 
 dotenv.config();
 
 const app: Application = express();
 const PORT = process.env.PORT || 5000;
-checkPrismaConnection();
+
 // ============================================
 // MIDDLEWARES
 // ============================================
@@ -44,7 +44,7 @@ app.use(cookieParser());
 // ============================================
 // ROUTES
 // ============================================
-app.get("/api/health", (_, res) => {
+app.get("/api/health", (req, res) => {
   res.json({ status: "OK", timestamp: new Date().toISOString() });
 });
 
@@ -55,6 +55,7 @@ app.use("/api/employees", employeeRoutes);
 app.use("/api/departments", departmentRoutes);
 app.use("/api/designations", designationRoutes);
 app.use("/api/attendance", attendanceRoutes);
+app.use("/api/leaves", leaveRoutes);
 app.use("/api/super-admin", superAdminRoutes);
 app.use("/api/super-admin/auth", superAdminAuthRoutes);
 

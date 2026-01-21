@@ -245,6 +245,9 @@ model Employee {
   manager         Employee?    @relation("EmployeeReporting", fields: [reportingTo], references: [id])
   subordinates    Employee[]   @relation("EmployeeReporting")
   attendances     Attendance[]
+  leaves          Leave[]
+  leaveBalances   LeaveBalance[]
+  approvedLeaves  Leave[]      @relation("LeaveApprover")
 
   @@unique([organisationId, employeeCode])
   @@map("employees")
@@ -380,4 +383,80 @@ enum AttendanceStatus {
   ON_LEAVE
   HOLIDAY
   WEEKEND
+}
+
+// ============================================
+// LEAVE MANAGEMENT
+// ============================================
+model LeaveType {
+  id              String   @id @default(uuid())
+  tenantId        String
+  name            String   // Casual, Sick, Earned, etc.
+  code            String   // CL, SL, EL
+  defaultDays     Int      // Default annual allocation
+  carryForward    Boolean  @default(false)
+  maxCarryForward Int?
+  requiresApproval Boolean @default(true)
+  color           String?  // For UI display
+  description     String?
+  isActive        Boolean  @default(true)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  leaves          Leave[]
+  balances        LeaveBalance[]
+
+  @@unique([tenantId, code])
+  @@map("leave_types")
+}
+
+model LeaveBalance {
+  id           String   @id @default(uuid())
+  employeeId   String
+  leaveTypeId  String
+  year         Int
+  totalDays    Float
+  usedDays     Float    @default(0)
+  pendingDays  Float    @default(0)
+  availableDays Float   // Computed: totalDays - usedDays - pendingDays
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  employee     Employee  @relation(fields: [employeeId], references: [id], onDelete: Cascade)
+  leaveType    LeaveType @relation(fields: [leaveTypeId], references: [id])
+
+  @@unique([employeeId, leaveTypeId, year])
+  @@map("leave_balances")
+}
+
+model Leave {
+  id              String      @id @default(uuid())
+  employeeId      String
+  leaveTypeId     String
+  startDate       DateTime    @db.Date
+  endDate         DateTime    @db.Date
+  days            Float       // Can be 0.5 for half day
+  reason          String
+  status          LeaveStatus @default(PENDING)
+  appliedAt       DateTime    @default(now())
+  approvedBy      String?
+  approvedAt      DateTime?
+  rejectedReason  String?
+  createdAt       DateTime    @default(now())
+  updatedAt       DateTime    @updatedAt
+
+  employee        Employee    @relation(fields: [employeeId], references: [id], onDelete: Cascade)
+  leaveType       LeaveType   @relation(fields: [leaveTypeId], references: [id])
+  approver        Employee?   @relation("LeaveApprover", fields: [approvedBy], references: [id])
+
+  @@index([employeeId, status])
+  @@index([status, appliedAt])
+  @@map("leaves")
+}
+
+enum LeaveStatus {
+  PENDING
+  APPROVED
+  REJECTED
+  CANCELLED
 }
