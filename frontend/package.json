@@ -1,5 +1,5 @@
 {
-  "name": "@keka-clone/frontend",
+  "name": "@arm/frontend",
   "version": "0.1.0",
   "private": true,
   "scripts": {
@@ -9,7 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
-    "@keka-clone/shared": "workspace:*",
+    "@arm/shared": "workspace:*",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "next": "^14.0.4",
