@@ -1,4 +1,4 @@
-import { Request, Response, NextFunction } from "express";
+import { Response, NextFunction } from "express";
 import { prisma } from "../config/database";
 import { AuthRequest } from "../middlewares/auth.middleware";
 
@@ -24,10 +24,11 @@ export const applyLeave = async (
     });
 
     if (!balance || balance.availableDays < days) {
-      return res.status(400).json({
+      res.status(400).json({
         success: false,
         message: "Insufficient leave balance",
       });
+      return;
     }
 
     // Create leave application

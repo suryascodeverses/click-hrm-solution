@@ -44,7 +44,7 @@ app.use(cookieParser());
 // ============================================
 // ROUTES
 // ============================================
-app.get("/api/health", (req, res) => {
+app.get("/api/health", (_, res) => {
   res.json({ status: "OK", timestamp: new Date().toISOString() });
 });
 
