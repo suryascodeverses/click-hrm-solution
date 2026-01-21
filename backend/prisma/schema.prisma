@@ -37,7 +37,6 @@ model SuperAdminRefreshToken {
   @@map("super_admin_refresh_tokens")
 }
 
-
 // ============================================
 // MULTI-TENANCY CORE
 // ============================================
@@ -245,6 +244,7 @@ model Employee {
   department      Department?  @relation(fields: [departmentId], references: [id])
   manager         Employee?    @relation("EmployeeReporting", fields: [reportingTo], references: [id])
   subordinates    Employee[]   @relation("EmployeeReporting")
+  attendances     Attendance[]
 
   @@unique([organisationId, employeeCode])
   @@map("employees")
@@ -346,4 +346,38 @@ model AuditLog {
 
   @@index([tenantId, createdAt])
   @@map("audit_logs")
+}
+
+// ============================================
+// ATTENDANCE MODULE
+// ============================================
+model Attendance {
+  id           String    @id @default(uuid())
+  employeeId   String
+  date         DateTime  @db.Date
+  checkIn      DateTime?
+  checkOut     DateTime?
+  status       AttendanceStatus @default(ABSENT)
+  workHours    Float?    // Calculated in hours
+  lateBy       Int?      // Minutes late
+  earlyLeave   Int?      // Minutes early leave
+  remarks      String?
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+
+  employee     Employee  @relation(fields: [employeeId], references: [id], onDelete: Cascade)
+
+  @@unique([employeeId, date])
+  @@index([employeeId, date])
+  @@map("attendances")
+}
+
+enum AttendanceStatus {
+  PRESENT
+  ABSENT
+  HALF_DAY
+  LATE
+  ON_LEAVE
+  HOLIDAY
+  WEEKEND
 }

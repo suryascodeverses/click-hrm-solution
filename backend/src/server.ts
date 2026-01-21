@@ -17,12 +17,14 @@ import departmentRoutes from "./routes/department.routes";
 import designationRoutes from "./routes/designation.routes";
 import superAdminRoutes from "./routes/superAdmin.routes";
 import superAdminAuthRoutes from "./routes/superAdminAuth.routes";
+import attendanceRoutes from "./routes/attendance.routes";
+import { checkPrismaConnection } from "./config/database";
 
 dotenv.config();
 
 const app: Application = express();
 const PORT = process.env.PORT || 5000;
-
+checkPrismaConnection();
 // ============================================
 // MIDDLEWARES
 // ============================================
@@ -52,6 +54,7 @@ app.use("/api/organisations", organisationRoutes);
 app.use("/api/employees", employeeRoutes);
 app.use("/api/departments", departmentRoutes);
 app.use("/api/designations", designationRoutes);
+app.use("/api/attendance", attendanceRoutes);
 app.use("/api/super-admin", superAdminRoutes);
 app.use("/api/super-admin/auth", superAdminAuthRoutes);
 
