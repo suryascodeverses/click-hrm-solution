@@ -20,6 +20,7 @@ import superAdminAuthRoutes from "./routes/superAdminAuth.routes";
 import attendanceRoutes from "./routes/attendance.routes";
 import leaveRoutes from "./routes/leave.routes";
 import payrollRoutes from "./routes/payroll.routes";
+import reportsRoutes from "./routes/reports.routes";
 
 dotenv.config();
 
@@ -58,6 +59,7 @@ app.use("/api/designations", designationRoutes);
 app.use("/api/attendance", attendanceRoutes);
 app.use("/api/leaves", leaveRoutes);
 app.use("/api/payroll", payrollRoutes);
+app.use("/api/reports", reportsRoutes);
 app.use("/api/super-admin", superAdminRoutes);
 app.use("/api/super-admin/auth", superAdminAuthRoutes);
 
