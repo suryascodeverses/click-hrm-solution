@@ -11,7 +11,7 @@ import {
 import { authenticate, authorize } from "../middlewares/auth.middleware";
 import { UserRole } from "@prisma/client";
 
-const router = Router();
+const router: Router = Router();
 
 // Salary Structure
 router.post(

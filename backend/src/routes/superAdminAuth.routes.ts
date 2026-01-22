@@ -9,7 +9,7 @@ import {
   superAdminRefreshToken,
 } from "../controllers/superAdminAuth.controller";
 
-const router = Router();
+const router: Router = Router();
 
 // Public routes
 router.post("/login", superAdminLogin);

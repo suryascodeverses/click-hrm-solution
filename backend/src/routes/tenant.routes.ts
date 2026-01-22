@@ -3,7 +3,7 @@ import { getTenant, updateTenant } from "../controllers/tenant.controller";
 import { authenticate, authorize } from "../middlewares/auth.middleware";
 import { UserRole } from "@prisma/client";
 
-const router = Router();
+const router: Router = Router();
 
 router.get("/", authenticate, getTenant);
 router.put(

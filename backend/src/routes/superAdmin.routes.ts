@@ -11,7 +11,7 @@ import {
 } from "../controllers/superAdmin.controller";
 import { authenticateSuperAdmin } from "../middlewares/superAdminAuth.middleware";
 
-const router = Router();
+const router: Router = Router();
 
 // Dashboard
 router.get("/dashboard", authenticateSuperAdmin, getDashboardStats);
