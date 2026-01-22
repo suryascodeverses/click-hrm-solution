@@ -2,7 +2,7 @@ import { Request, Response, NextFunction } from "express";
 import { prisma } from "../config/database";
 
 export const getDashboardStats = async (
-  req: Request,
+  _req: Request,
   res: Response,
   next: NextFunction,
 ) => {
@@ -40,13 +40,14 @@ export const getDashboardStats = async (
         recentTenants,
       },
     });
+    return;
   } catch (error) {
     next(error);
   }
 };
 
 export const getAllTenants = async (
-  req: Request,
+  _req: Request,
   res: Response,
   next: NextFunction,
 ) => {
@@ -67,6 +68,7 @@ export const getAllTenants = async (
       success: true,
       data: tenants,
     });
+    return;
   } catch (error) {
     next(error);
   }
@@ -91,6 +93,7 @@ export const updateTenantStatus = async (
       message: "Tenant status updated",
       data: tenant,
     });
+    return;
   } catch (error) {
     next(error);
   }
@@ -123,6 +126,7 @@ export const updateTenant = async (
       message: "Tenant updated successfully",
       data: tenant,
     });
+    return;
   } catch (error) {
     next(error);
   }
@@ -145,13 +149,14 @@ export const deleteTenant = async (
       success: true,
       message: "Tenant deleted successfully",
     });
+    return;
   } catch (error) {
     next(error);
   }
 };
 
 export const getAllUsers = async (
-  req: Request,
+  _req: Request,
   res: Response,
   next: NextFunction,
 ) => {
@@ -180,6 +185,7 @@ export const getAllUsers = async (
       success: true,
       data: users,
     });
+    return;
   } catch (error) {
     next(error);
   }
@@ -207,6 +213,7 @@ export const updateUser = async (
       message: "User updated successfully",
       data: user,
     });
+    return;
   } catch (error) {
     next(error);
   }
@@ -228,6 +235,7 @@ export const deleteUser = async (
       success: true,
       message: "User deleted successfully",
     });
+    return;
   } catch (error) {
     next(error);
   }

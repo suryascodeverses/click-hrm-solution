@@ -1,4 +1,4 @@
-import { Request, Response, NextFunction } from "express";
+import { Response, NextFunction } from "express";
 import { prisma } from "../config/database";
 import { AuthRequest } from "../middlewares/auth.middleware";
 
@@ -74,6 +74,7 @@ export const getAttendanceReport = async (
       success: true,
       data: report,
     });
+    return;
   } catch (error) {
     next(error);
   }
@@ -114,6 +115,7 @@ export const getLeaveReport = async (
       success: true,
       data: employees,
     });
+    return;
   } catch (error) {
     next(error);
   }
@@ -174,6 +176,7 @@ export const getEmployeeHeadcount = async (
         byEmploymentType: employmentTypeCounts,
       },
     });
+    return;
   } catch (error) {
     next(error);
   }
@@ -248,6 +251,7 @@ export const getPayrollReport = async (
         byDepartment: Array.from(deptMap.values()),
       },
     });
+    return;
   } catch (error) {
     next(error);
   }
@@ -333,6 +337,7 @@ export const getDashboardAnalytics = async (
         attendanceTrend,
       },
     });
+    return;
   } catch (error) {
     next(error);
   }

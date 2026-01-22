@@ -282,16 +282,18 @@ export const getPayslip = async (
     });
 
     if (!payslip) {
-      return res.status(404).json({
+      res.status(404).json({
         success: false,
         message: "Payslip not found",
       });
+      return;
     }
 
     res.json({
       success: true,
       data: payslip,
     });
+    return;
   } catch (error) {
     next(error);
   }
@@ -335,6 +337,7 @@ export const getAllPayslips = async (
       success: true,
       data: payslips,
     });
+    return;
   } catch (error) {
     next(error);
   }
@@ -364,6 +367,7 @@ export const updatePayslipStatus = async (
       message: "Payslip status updated",
       data: payslip,
     });
+    return;
   } catch (error) {
     next(error);
   }
