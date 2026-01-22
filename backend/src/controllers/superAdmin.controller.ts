@@ -149,3 +149,86 @@ export const deleteTenant = async (
     next(error);
   }
 };
+
+export const getAllUsers = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
+  try {
+    const users = await prisma.user.findMany({
+      include: {
+        tenant: {
+          select: {
+            id: true,
+            name: true,
+            subdomain: true,
+          },
+        },
+        employee: {
+          select: {
+            firstName: true,
+            lastName: true,
+            employeeCode: true,
+          },
+        },
+      },
+      orderBy: { createdAt: "desc" },
+    });
+
+    res.json({
+      success: true,
+      data: users,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const updateUser = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
+  try {
+    const { userId } = req.params;
+    const { role, isActive } = req.body;
+
+    const user = await prisma.user.update({
+      where: { id: userId },
+      data: {
+        role,
+        isActive,
+      },
+    });
+
+    res.json({
+      success: true,
+      message: "User updated successfully",
+      data: user,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const deleteUser = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
+  try {
+    const { userId } = req.params;
+
+    await prisma.user.delete({
+      where: { id: userId },
+    });
+
+    res.json({
+      success: true,
+      message: "User deleted successfully",
+    });
+  } catch (error) {
+    next(error);
+  }
+};
