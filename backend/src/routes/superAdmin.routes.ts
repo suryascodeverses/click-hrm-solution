@@ -1,9 +1,14 @@
 import { Router } from "express";
-
+import {
+  getDashboardStats,
+  getAllTenants,
+  updateTenantStatus,
+  updateTenant,
+  deleteTenant,
+} from "../controllers/superAdmin.controller";
 import { authenticateSuperAdmin } from "../middlewares/superAdminAuth.middleware";
-import { getAllTenants, getDashboardStats, updateTenantStatus } from "../controllers/superAdmin.controller";
 
-const router = Router();
+const router: Router = Router();
 
 router.get("/dashboard", authenticateSuperAdmin, getDashboardStats);
 router.get("/tenants", authenticateSuperAdmin, getAllTenants);
@@ -12,5 +17,7 @@ router.put(
   authenticateSuperAdmin,
   updateTenantStatus,
 );
+router.put("/tenants/:tenantId", authenticateSuperAdmin, updateTenant);
+router.delete("/tenants/:tenantId", authenticateSuperAdmin, deleteTenant);
 
 export default router;

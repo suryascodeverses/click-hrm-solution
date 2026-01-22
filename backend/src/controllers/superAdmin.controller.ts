@@ -2,7 +2,7 @@ import { Request, Response, NextFunction } from "express";
 import { prisma } from "../config/database";
 
 export const getDashboardStats = async (
-  _: Request,
+  req: Request,
   res: Response,
   next: NextFunction,
 ) => {
@@ -40,14 +40,13 @@ export const getDashboardStats = async (
         recentTenants,
       },
     });
-    return;
   } catch (error) {
     next(error);
   }
 };
 
 export const getAllTenants = async (
-  _: Request,
+  req: Request,
   res: Response,
   next: NextFunction,
 ) => {
@@ -68,7 +67,6 @@ export const getAllTenants = async (
       success: true,
       data: tenants,
     });
-    return;
   } catch (error) {
     next(error);
   }
@@ -93,7 +91,60 @@ export const updateTenantStatus = async (
       message: "Tenant status updated",
       data: tenant,
     });
-    return;
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const updateTenant = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
+  try {
+    const { tenantId } = req.params;
+    const { name, email, phone, subscriptionTier, maxEmployees, status } =
+      req.body;
+
+    const tenant = await prisma.tenant.update({
+      where: { id: tenantId },
+      data: {
+        name,
+        email,
+        phone,
+        subscriptionTier,
+        maxEmployees,
+        status,
+      },
+    });
+
+    res.json({
+      success: true,
+      message: "Tenant updated successfully",
+      data: tenant,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const deleteTenant = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
+  try {
+    const { tenantId } = req.params;
+
+    // This will cascade delete all related data
+    await prisma.tenant.delete({
+      where: { id: tenantId },
+    });
+
+    res.json({
+      success: true,
+      message: "Tenant deleted successfully",
+    });
   } catch (error) {
     next(error);
   }
