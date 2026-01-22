@@ -248,6 +248,8 @@ model Employee {
   leaves          Leave[]
   leaveBalances   LeaveBalance[]
   approvedLeaves  Leave[]      @relation("LeaveApprover")
+  salaryStructure SalaryStructure?
+  payslips        Payslip[]
 
   @@unique([organisationId, employeeCode])
   @@map("employees")
@@ -459,4 +461,73 @@ enum LeaveStatus {
   APPROVED
   REJECTED
   CANCELLED
+}
+
+// ============================================
+// PAYROLL MANAGEMENT
+// ============================================
+model SalaryStructure {
+  id              String   @id @default(uuid())
+  employeeId      String   @unique
+  basicSalary     Decimal  @db.Decimal(10, 2)
+  hra             Decimal  @db.Decimal(10, 2) // House Rent Allowance
+  conveyance      Decimal  @db.Decimal(10, 2)
+  medical         Decimal  @db.Decimal(10, 2)
+  specialAllowance Decimal @db.Decimal(10, 2)
+  ctc             Decimal  @db.Decimal(10, 2) // Cost to Company
+  effectiveFrom   DateTime @db.Date
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  employee        Employee @relation(fields: [employeeId], references: [id], onDelete: Cascade)
+  payslips        Payslip[]
+
+  @@map("salary_structures")
+}
+
+model Payslip {
+  id                String   @id @default(uuid())
+  employeeId        String
+  salaryStructureId String
+  month             Int      // 1-12
+  year              Int
+  workingDays       Int
+  presentDays       Int
+  absentDays        Int
+  leaveDays         Int
+  
+  // Earnings
+  basicPay          Decimal  @db.Decimal(10, 2)
+  hra               Decimal  @db.Decimal(10, 2)
+  conveyance        Decimal  @db.Decimal(10, 2)
+  medical           Decimal  @db.Decimal(10, 2)
+  specialAllowance  Decimal  @db.Decimal(10, 2)
+  bonus             Decimal  @db.Decimal(10, 2) @default(0)
+  totalEarnings     Decimal  @db.Decimal(10, 2)
+  
+  // Deductions
+  providentFund     Decimal  @db.Decimal(10, 2) @default(0)
+  professionalTax   Decimal  @db.Decimal(10, 2) @default(0)
+  incomeTax         Decimal  @db.Decimal(10, 2) @default(0)
+  otherDeductions   Decimal  @db.Decimal(10, 2) @default(0)
+  totalDeductions   Decimal  @db.Decimal(10, 2)
+  
+  netPay            Decimal  @db.Decimal(10, 2)
+  status            PayslipStatus @default(DRAFT)
+  paidOn            DateTime?
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+
+  employee          Employee @relation(fields: [employeeId], references: [id], onDelete: Cascade)
+  salaryStructure   SalaryStructure @relation(fields: [salaryStructureId], references: [id])
+
+  @@unique([employeeId, month, year])
+  @@index([employeeId, year, month])
+  @@map("payslips")
+}
+
+enum PayslipStatus {
+  DRAFT
+  PROCESSED
+  PAID
 }
