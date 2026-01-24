@@ -14,7 +14,7 @@ interface SuperAdminAuthRequest extends Request {
 export const superAdminLogin = async (
   req: Request,
   res: Response,
-  next: NextFunction,
+  next: NextFunction
 ) => {
   try {
     const { email, password } = req.body;
@@ -35,7 +35,7 @@ export const superAdminLogin = async (
     // Check password
     const isValidPassword = await comparePassword(
       password,
-      superAdmin.password,
+      superAdmin.password
     );
     if (!isValidPassword) {
       res.status(401).json({
@@ -76,10 +76,13 @@ export const superAdminLogin = async (
       },
     });
 
-    // Update last login
-    await prisma.superAdmin.update({
-      where: { id: superAdmin.id },
-      data: { lastLogin: new Date() },
+    const isProd = process.env.NODE_ENV === "production";
+
+    res.cookie("superAdminRefreshToken", refreshToken, {
+      httpOnly: true,
+      secure: isProd, // false on localhost
+      sameSite: isProd ? "none" : "lax",
+      path: "/",
     });
 
     res.json({
@@ -93,7 +96,6 @@ export const superAdminLogin = async (
           role: "SUPER_ADMIN",
         },
         accessToken,
-        refreshToken,
       },
     });
     return;
@@ -105,7 +107,7 @@ export const superAdminLogin = async (
 export const superAdminGetMe = async (
   req: SuperAdminAuthRequest,
   res: Response,
-  next: NextFunction,
+  next: NextFunction
 ) => {
   try {
     const superAdmin = await prisma.superAdmin.findUnique({
@@ -133,10 +135,10 @@ export const superAdminGetMe = async (
 export const superAdminLogout = async (
   req: SuperAdminAuthRequest,
   res: Response,
-  next: NextFunction,
+  next: NextFunction
 ) => {
   try {
-    const { refreshToken } = req.body;
+    const refreshToken = req.cookies.superAdminRefreshToken;
 
     if (refreshToken) {
       await prisma.superAdminRefreshToken.deleteMany({
@@ -147,11 +149,14 @@ export const superAdminLogout = async (
       });
     }
 
+    res.clearCookie("superAdminRefreshToken", {
+      path: "/",
+    });
+
     res.json({
       success: true,
       message: "Logout successful",
     });
-    return;
   } catch (error) {
     next(error);
   }
@@ -160,20 +165,19 @@ export const superAdminLogout = async (
 export const superAdminRefreshToken = async (
   req: Request,
   res: Response,
-  next: NextFunction,
+  next: NextFunction
 ) => {
   try {
-    const { refreshToken } = req.body;
+    const refreshToken = req.cookies.superAdminRefreshToken;
 
     if (!refreshToken) {
-      res.status(400).json({
+      res.status(401).json({
         success: false,
-        message: "Refresh token required",
+        message: "Refresh token missing",
       });
       return;
     }
 
-    // Find refresh token
     const tokenRecord = await prisma.superAdminRefreshToken.findUnique({
       where: { token: refreshToken },
       include: { superAdmin: true },
@@ -187,11 +191,11 @@ export const superAdminRefreshToken = async (
       return;
     }
 
-    // Check if expired
     if (new Date() > tokenRecord.expiresAt) {
       await prisma.superAdminRefreshToken.delete({
         where: { id: tokenRecord.id },
       });
+
       res.status(401).json({
         success: false,
         message: "Refresh token expired",
@@ -199,11 +203,38 @@ export const superAdminRefreshToken = async (
       return;
     }
 
-    // Generate new access token
+    // OPTIONAL BUT RECOMMENDED: rotate refresh token
+    await prisma.superAdminRefreshToken.delete({
+      where: { id: tokenRecord.id },
+    });
+
+    const newRefreshToken = generateRefreshToken({
+      userId: tokenRecord.superAdmin.id,
+      email: tokenRecord.superAdmin.email,
+      role: "SUPER_ADMIN",
+    });
+
+    await prisma.superAdminRefreshToken.create({
+      data: {
+        superAdminId: tokenRecord.superAdmin.id,
+        token: newRefreshToken,
+        expiresAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
+      },
+    });
+
     const newAccessToken = generateAccessToken({
       userId: tokenRecord.superAdmin.id,
       email: tokenRecord.superAdmin.email,
       role: "SUPER_ADMIN",
+    });
+
+    const isProd = process.env.NODE_ENV === "production";
+
+    res.cookie("superAdminRefreshToken", newRefreshToken, {
+      httpOnly: true,
+      secure: isProd,
+      sameSite: isProd ? "none" : "lax",
+      path: "/",
     });
 
     res.json({
@@ -212,11 +243,11 @@ export const superAdminRefreshToken = async (
         accessToken: newAccessToken,
       },
     });
-    return;
   } catch (error) {
     next(error);
   }
 };
+
 
 export const createSuperAdmin = async (
   req: Request,

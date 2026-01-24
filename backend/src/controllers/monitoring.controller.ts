@@ -158,17 +158,21 @@ export const getDatabaseStats = async (
     ]);
 
     // Table sizes
-    const tableSizes = await prisma.$queryRaw<any[]>`
-      SELECT 
-        schemaname,
-        tablename,
-        pg_size_pretty(pg_total_relation_size(schemaname||'.'||tablename)) AS size,
-        pg_total_relation_size(schemaname||'.'||tablename) AS size_bytes
-      FROM pg_tables
-      WHERE schemaname = 'public'
-      ORDER BY pg_total_relation_size(schemaname||'.'||tablename) DESC
-      LIMIT 10
-    `;
+   const tableSizes = await prisma.$queryRaw<any[]>`
+    SELECT 
+      schemaname,
+      tablename,
+      pg_size_pretty(
+        pg_total_relation_size(schemaname||'.'||tablename)
+      ) AS size,
+      pg_total_relation_size(
+        schemaname||'.'||tablename
+      )::text AS size_bytes
+    FROM pg_tables
+    WHERE schemaname = 'public'
+    ORDER BY pg_total_relation_size(schemaname||'.'||tablename) DESC
+    LIMIT 10
+`;
 
     res.json({
       success: true,

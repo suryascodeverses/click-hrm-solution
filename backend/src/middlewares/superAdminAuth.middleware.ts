@@ -60,7 +60,7 @@ export const authenticateSuperAdmin = async (
       email: superAdmin.email,
       name: superAdmin.name,
     };
-    return;
+
     next();
   } catch (error) {
     res.status(401).json({
