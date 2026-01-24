@@ -8,6 +8,11 @@ export const api = axios.create({
   withCredentials: true,
 });
 
+const refreshApi = axios.create({
+  baseURL: process.env.NEXT_PUBLIC_API_URL,
+  withCredentials: true,
+});
+
 // Request interceptor
 api.interceptors.request.use(
   (config) => {
@@ -25,7 +30,7 @@ api.interceptors.request.use(
   },
   (error) => {
     return Promise.reject(error);
-  },
+  }
 );
 
 // Response interceptor
@@ -42,42 +47,22 @@ api.interceptors.response.use(
         const isSuperAdminRoute = originalRequest.url?.includes("/super-admin");
 
         if (isSuperAdminRoute) {
-          // Super admin refresh
-          const refreshToken = localStorage.getItem("superAdminRefreshToken");
-          const response = await api.post("/super-admin/auth/refresh", {
-            refreshToken,
-          });
+          const response = await refreshApi.post("/super-admin/auth/refresh");
+
           const { accessToken } = response.data.data;
 
           localStorage.setItem("superAdminAccessToken", accessToken);
           originalRequest.headers.Authorization = `Bearer ${accessToken}`;
-        } else {
-          // Regular user refresh
-          const refreshToken = localStorage.getItem("refreshToken");
-          // TODO: Implement refresh token logic for regular users
         }
 
         return api(originalRequest);
       } catch (refreshError) {
-        // Redirect to appropriate login
-        if (typeof window !== "undefined") {
-          const isSuperAdmin =
-            window.location.pathname.includes("/super-admin");
-
-          if (isSuperAdmin) {
-            localStorage.removeItem("superAdminAccessToken");
-            localStorage.removeItem("superAdminRefreshToken");
-            window.location.href = "/super-admin/login";
-          } else {
-            localStorage.removeItem("accessToken");
-            localStorage.removeItem("refreshToken");
-            window.location.href = "/login";
-          }
-        }
+        localStorage.removeItem("superAdminAccessToken");
+        window.location.href = "/super-admin/login";
         return Promise.reject(refreshError);
       }
     }
 
     return Promise.reject(error);
-  },
+  }
 );
