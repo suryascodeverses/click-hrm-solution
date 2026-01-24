@@ -56,6 +56,7 @@ model Tenant {
   // Relations
   organisations  Organisation[]
   users          User[]
+  subscription    Subscription?
 
   @@map("tenants")
 }
@@ -601,3 +602,255 @@ enum PayslipStatus {
   PROCESSED
   PAID
 }
+
+// ============================================
+// BILLING & SUBSCRIPTIONS
+// ============================================
+
+model SubscriptionPlan {
+  id              String   @id @default(uuid())
+  name            String   // FREE, BASIC, PREMIUM, ENTERPRISE
+  displayName     String   // "Free Plan", "Basic Plan", etc.
+  price           Decimal  @db.Decimal(10, 2) // Monthly price
+  yearlyPrice     Decimal? @db.Decimal(10, 2) // Yearly price (optional)
+  maxEmployees    Int
+  maxOrganisations Int
+  features        Json     // Array of features
+  isActive        Boolean  @default(true)
+  stripePriceId   String?  // For Stripe integration
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  subscriptions   Subscription[]
+
+  @@unique([name])
+  @@map("subscription_plans")
+}
+
+model Subscription {
+  id                String             @id @default(uuid())
+  tenantId          String             @unique
+  planId            String
+  status            SubscriptionStatus @default(TRIAL)
+  billingCycle      BillingCycle       @default(MONTHLY)
+  currentPeriodStart DateTime
+  currentPeriodEnd   DateTime
+  cancelAtPeriodEnd  Boolean           @default(false)
+  trialEndsAt       DateTime?
+  stripeCustomerId  String?
+  stripeSubscriptionId String?
+  createdAt         DateTime           @default(now())
+  updatedAt         DateTime           @updatedAt
+
+  tenant            Tenant             @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  plan              SubscriptionPlan   @relation(fields: [planId], references: [id])
+  invoices          Invoice[]
+  payments          Payment[]
+
+  @@map("subscriptions")
+}
+
+enum SubscriptionStatus {
+  TRIAL
+  ACTIVE
+  PAST_DUE
+  CANCELLED
+  EXPIRED
+}
+
+enum BillingCycle {
+  MONTHLY
+  YEARLY
+}
+
+model Invoice {
+  id              String        @id @default(uuid())
+  subscriptionId  String
+  tenantId        String
+  invoiceNumber   String        @unique // INV-2024-0001
+  amount          Decimal       @db.Decimal(10, 2)
+  tax             Decimal       @db.Decimal(10, 2) @default(0)
+  total           Decimal       @db.Decimal(10, 2)
+  status          InvoiceStatus @default(PENDING)
+  dueDate         DateTime
+  paidAt          DateTime?
+  stripeInvoiceId String?
+  downloadUrl     String?
+  notes           String?
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
+
+  subscription    Subscription  @relation(fields: [subscriptionId], references: [id], onDelete: Cascade)
+  payments        Payment[]
+
+  @@index([tenantId, createdAt])
+  @@map("invoices")
+}
+
+enum InvoiceStatus {
+  PENDING
+  PAID
+  OVERDUE
+  CANCELLED
+  REFUNDED
+}
+
+model Payment {
+  id              String        @id @default(uuid())
+  subscriptionId  String
+  invoiceId       String?
+  tenantId        String
+  amount          Decimal       @db.Decimal(10, 2)
+  currency        String        @default("USD")
+  paymentMethod   PaymentMethod
+  status          PaymentStatus
+  transactionId   String?       // External payment gateway transaction ID
+  stripePaymentId String?
+  metadata        Json?
+  paidAt          DateTime?
+  createdAt       DateTime      @default(now())
+
+  subscription    Subscription  @relation(fields: [subscriptionId], references: [id], onDelete: Cascade)
+  invoice         Invoice?      @relation(fields: [invoiceId], references: [id])
+
+  @@index([tenantId, createdAt])
+  @@map("payments")
+}
+
+enum PaymentMethod {
+  CREDIT_CARD
+  DEBIT_CARD
+  BANK_TRANSFER
+  PAYPAL
+  STRIPE
+  MANUAL
+}
+
+enum PaymentStatus {
+  PENDING
+  PROCESSING
+  SUCCEEDED
+  FAILED
+  REFUNDED
+}
+
+// ============================================
+// EMAIL TEMPLATES
+// ============================================
+
+model EmailTemplate {
+  id          String              @id @default(uuid())
+  name        String              @unique // welcome_email, invoice_email, etc.
+  displayName String
+  category    EmailCategory
+  subject     String
+  htmlContent String              @db.Text
+  textContent String?             @db.Text
+  variables   Json                // Available variables for template
+  isActive    Boolean             @default(true)
+  createdAt   DateTime            @default(now())
+  updatedAt   DateTime            @updatedAt
+
+  logs        EmailLog[]
+
+  @@map("email_templates")
+}
+
+enum EmailCategory {
+  AUTHENTICATION
+  BILLING
+  NOTIFICATIONS
+  SYSTEM
+  MARKETING
+}
+
+model EmailLog {
+  id           String      @id @default(uuid())
+  templateId   String?
+  tenantId     String?
+  recipient    String
+  subject      String
+  status       EmailStatus @default(PENDING)
+  sentAt       DateTime?
+  failedAt     DateTime?
+  errorMessage String?
+  metadata     Json?
+  createdAt    DateTime    @default(now())
+
+  template     EmailTemplate? @relation(fields: [templateId], references: [id])
+
+  @@index([tenantId, createdAt])
+  @@index([status, createdAt])
+  @@map("email_logs")
+}
+
+enum EmailStatus {
+  PENDING
+  SENT
+  FAILED
+  BOUNCED
+}
+
+// ============================================
+// SYSTEM MONITORING
+// ============================================
+
+model SystemMetric {
+  id          String     @id @default(uuid())
+  metricType  MetricType
+  value       Float
+  unit        String     // MB, %, ms, count, etc.
+  metadata    Json?
+  recordedAt  DateTime   @default(now())
+
+  @@index([metricType, recordedAt])
+  @@map("system_metrics")
+}
+
+enum MetricType {
+  CPU_USAGE
+  MEMORY_USAGE
+  DISK_USAGE
+  DATABASE_SIZE
+  RESPONSE_TIME
+  ERROR_RATE
+  ACTIVE_USERS
+  API_CALLS
+  QUEUE_SIZE
+}
+
+model SystemAlert {
+  id          String      @id @default(uuid())
+  alertType   AlertType
+  severity    AlertSeverity
+  title       String
+  message     String      @db.Text
+  isResolved  Boolean     @default(false)
+  resolvedAt  DateTime?
+  metadata    Json?
+  createdAt   DateTime    @default(now())
+
+  @@index([severity, isResolved, createdAt])
+  @@map("system_alerts")
+}
+
+enum AlertType {
+  PERFORMANCE
+  ERROR
+  SECURITY
+  CAPACITY
+  BILLING
+}
+
+enum AlertSeverity {
+  LOW
+  MEDIUM
+  HIGH
+  CRITICAL
+}
+
+// ============================================
+// UPDATE TENANT MODEL - Add subscription relation
+// ============================================
+// Add this field to your existing Tenant model:
+// subscription    Subscription?  
