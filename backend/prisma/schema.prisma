@@ -335,22 +335,92 @@ enum DesignationStatus {
 }
 
 // ============================================
-// AUDIT LOGS
+// AUDIT LOGS (ENHANCED)
 // ============================================
 model AuditLog {
   id         String   @id @default(uuid())
-  tenantId   String
+  tenantId   String?  // Null for super admin actions
   userId     String?
-  action     String   // LOGIN, CREATE_EMPLOYEE, UPDATE_SALARY, etc.
-  entity     String?  // Employee, Department, etc.
+  userEmail  String?  // Store email for reference
+  userName   String?  // Store name for reference
+  action     AuditAction
+  entity     String?  // Employee, Department, Tenant, User, etc.
   entityId   String?
+  description String? // Human-readable description
   changes    Json?    // Store before/after values
+  metadata   Json?    // Additional context (IP, user agent, etc.)
   ipAddress  String?
   userAgent  String?
   createdAt  DateTime @default(now())
 
   @@index([tenantId, createdAt])
+  @@index([userId, createdAt])
+  @@index([action, createdAt])
+  @@index([entity, createdAt])
   @@map("audit_logs")
+}
+
+enum AuditAction {
+  // Authentication
+  LOGIN
+  LOGOUT
+  LOGIN_FAILED
+  REFRESH_TOKEN
+  
+  // Super Admin
+  SUPER_ADMIN_LOGIN
+  TENANT_CREATED
+  TENANT_UPDATED
+  TENANT_DELETED
+  TENANT_SUSPENDED
+  TENANT_ACTIVATED
+  
+  // User Management
+  USER_CREATED
+  USER_UPDATED
+  USER_DELETED
+  USER_ACTIVATED
+  USER_DEACTIVATED
+  ROLE_CHANGED
+  
+  // Employee Management
+  EMPLOYEE_CREATED
+  EMPLOYEE_UPDATED
+  EMPLOYEE_DELETED
+  EMPLOYEE_STATUS_CHANGED
+  
+  // Organisation
+  ORGANISATION_CREATED
+  ORGANISATION_UPDATED
+  ORGANISATION_DELETED
+  
+  // Department
+  DEPARTMENT_CREATED
+  DEPARTMENT_UPDATED
+  DEPARTMENT_DELETED
+  
+  // Attendance
+  ATTENDANCE_MARKED
+  ATTENDANCE_UPDATED
+  
+  // Leave
+  LEAVE_APPLIED
+  LEAVE_APPROVED
+  LEAVE_REJECTED
+  LEAVE_CANCELLED
+  
+  // Payroll
+  SALARY_STRUCTURE_CREATED
+  SALARY_STRUCTURE_UPDATED
+  PAYSLIP_GENERATED
+  PAYSLIP_PROCESSED
+  
+  // Settings
+  SETTINGS_UPDATED
+  
+  // Other
+  DATA_EXPORTED
+  BULK_OPERATION
 }
 
 // ============================================

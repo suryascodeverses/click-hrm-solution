@@ -21,6 +21,7 @@ import attendanceRoutes from "./routes/attendance.routes";
 import leaveRoutes from "./routes/leave.routes";
 import payrollRoutes from "./routes/payroll.routes";
 import reportsRoutes from "./routes/reports.routes";
+import auditLogsRoutes from "./routes/auditLogs.routes";
 
 dotenv.config();
 
@@ -35,7 +36,7 @@ app.use(
   cors({
     origin: process.env.FRONTEND_URL || "http://localhost:3000",
     credentials: true,
-  }),
+  })
 );
 app.use(compression()); // Compress responses
 app.use(morgan("dev")); // Logging
@@ -62,6 +63,7 @@ app.use("/api/payroll", payrollRoutes);
 app.use("/api/reports", reportsRoutes);
 app.use("/api/super-admin", superAdminRoutes);
 app.use("/api/super-admin/auth", superAdminAuthRoutes);
+app.use("/api/super-admin/audit-logs", auditLogsRoutes);
 
 // ============================================
 // ERROR HANDLING
