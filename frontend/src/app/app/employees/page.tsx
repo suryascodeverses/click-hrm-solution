@@ -215,6 +215,13 @@ export default function EmployeesPage() {
           </div>
         </div>
       </div>
+
+      {/* Add Employee Modal - THIS WAS MISSING! */}
+      <AddEmployeeModal
+        isOpen={showAddModal}
+        onClose={() => setShowAddModal(false)}
+        onSuccess={fetchEmployees}
+      />
     </div>
   );
 }

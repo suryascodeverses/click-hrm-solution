@@ -1,4 +1,5 @@
 import { create } from "zustand";
+import { persist } from "zustand/middleware";
 
 interface User {
   id: string;
@@ -26,28 +27,41 @@ interface AuthState {
   logout: () => void;
 }
 
-export const useAuthStore = create<AuthState>((set) => ({
-  user: null,
-  employee: null,
-  tenant: null,
-  isAuthenticated: false,
-
-  setAuth: (user, tenant, employee) =>
-    set({
-      user,
-      tenant,
-      employee: employee || null,
-      isAuthenticated: true,
-    }),
-
-  logout: () => {
-    localStorage.removeItem("accessToken");
-    localStorage.removeItem("refreshToken");
-    set({
+export const useAuthStore = create<AuthState>()(
+  persist(
+    (set) => ({
       user: null,
-      tenant: null,
       employee: null,
+      tenant: null,
       isAuthenticated: false,
-    });
-  },
-}));
+
+      setAuth: (user, tenant, employee) =>
+        set({
+          user,
+          tenant,
+          employee: employee || null,
+          isAuthenticated: true,
+        }),
+
+      logout: () => {
+        localStorage.removeItem("accessToken");
+        localStorage.removeItem("refreshToken");
+        set({
+          user: null,
+          tenant: null,
+          employee: null,
+          isAuthenticated: false,
+        });
+      },
+    }),
+    {
+      name: "auth-storage", // localStorage key
+      partialize: (state) => ({
+        user: state.user,
+        employee: state.employee,
+        tenant: state.tenant,
+        isAuthenticated: state.isAuthenticated,
+      }),
+    },
+  ),
+);
