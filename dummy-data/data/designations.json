@@ -1,0 +1,62 @@
+[
+  {
+    "departmentCode": "ENG",
+    "name": "Engineering Manager",
+    "code": "ENG_MGR",
+    "level": 3
+  },
+  {
+    "departmentCode": "ENG",
+    "name": "Senior Developer",
+    "code": "SR_DEV",
+    "level": 2
+  },
+  {
+    "departmentCode": "ENG",
+    "name": "Junior Developer",
+    "code": "JR_DEV",
+    "level": 1
+  },
+  {
+    "departmentCode": "HR",
+    "name": "HR Manager",
+    "code": "HR_MGR",
+    "level": 3
+  },
+  {
+    "departmentCode": "HR",
+    "name": "HR Executive",
+    "code": "HR_EXEC",
+    "level": 1
+  },
+  {
+    "departmentCode": "OPS",
+    "name": "Operations Manager",
+    "code": "OPS_MGR",
+    "level": 3
+  },
+  {
+    "departmentCode": "DES",
+    "name": "Design Lead",
+    "code": "DES_LEAD",
+    "level": 3
+  },
+  {
+    "departmentCode": "DES",
+    "name": "UI/UX Designer",
+    "code": "UIUX_DES",
+    "level": 2
+  },
+  {
+    "departmentCode": "MKT",
+    "name": "Marketing Manager",
+    "code": "MKT_MGR",
+    "level": 3
+  },
+  {
+    "departmentCode": "MKT",
+    "name": "Marketing Executive",
+    "code": "MKT_EXEC",
+    "level": 1
+  }
+]

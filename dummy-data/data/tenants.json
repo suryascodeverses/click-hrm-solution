@@ -1,0 +1,30 @@
+[
+  {
+    "name": "TechCorp Solutions",
+    "subdomain": "techcorp",
+    "email": "admin@techcorp.com",
+    "phone": "+1-555-0101",
+    "subscriptionTier": "PREMIUM",
+    "maxEmployees": 100,
+    "adminUser": {
+      "email": "admin@techcorp.com",
+      "password": "Admin@123",
+      "firstName": "John",
+      "lastName": "Smith"
+    }
+  },
+  {
+    "name": "DesignHub Creative",
+    "subdomain": "designhub",
+    "email": "admin@designhub.com",
+    "phone": "+1-555-0202",
+    "subscriptionTier": "BASIC",
+    "maxEmployees": 50,
+    "adminUser": {
+      "email": "admin@designhub.com",
+      "password": "Admin@123",
+      "firstName": "Sarah",
+      "lastName": "Johnson"
+    }
+  }
+]

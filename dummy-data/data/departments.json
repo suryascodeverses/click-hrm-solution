@@ -1,0 +1,37 @@
+[
+  {
+    "tenantSubdomain": "techcorp",
+    "organisationCode": "HQ",
+    "name": "Engineering",
+    "code": "ENG",
+    "description": "Software development and engineering team"
+  },
+  {
+    "tenantSubdomain": "techcorp",
+    "organisationCode": "HQ",
+    "name": "Human Resources",
+    "code": "HR",
+    "description": "HR and people operations"
+  },
+  {
+    "tenantSubdomain": "techcorp",
+    "organisationCode": "HQ",
+    "name": "Operations",
+    "code": "OPS",
+    "description": "Business operations and administration"
+  },
+  {
+    "tenantSubdomain": "designhub",
+    "organisationCode": "STUDIO",
+    "name": "Design",
+    "code": "DES",
+    "description": "Creative design team"
+  },
+  {
+    "tenantSubdomain": "designhub",
+    "organisationCode": "STUDIO",
+    "name": "Marketing",
+    "code": "MKT",
+    "description": "Marketing and communications"
+  }
+]

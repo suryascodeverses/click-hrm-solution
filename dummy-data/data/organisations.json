@@ -1,0 +1,26 @@
+[
+  {
+    "tenantSubdomain": "techcorp",
+    "name": "TechCorp Headquarters",
+    "code": "HQ",
+    "address": "123 Tech Street",
+    "city": "San Francisco",
+    "state": "California",
+    "country": "USA",
+    "zipCode": "94102",
+    "phone": "+1-555-0101",
+    "email": "hq@techcorp.com"
+  },
+  {
+    "tenantSubdomain": "designhub",
+    "name": "DesignHub Studio",
+    "code": "STUDIO",
+    "address": "456 Creative Avenue",
+    "city": "Los Angeles",
+    "state": "California",
+    "country": "USA",
+    "zipCode": "90001",
+    "phone": "+1-555-0202",
+    "email": "studio@designhub.com"
+  }
+]
