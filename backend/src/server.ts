@@ -21,6 +21,10 @@ import attendanceRoutes from "./routes/attendance.routes";
 import leaveRoutes from "./routes/leave.routes";
 import payrollRoutes from "./routes/payroll.routes";
 import reportsRoutes from "./routes/reports.routes";
+import auditLogsRoutes from "./routes/auditLogs.routes";
+import billingRoutes from "./routes/billing.routes";
+import emailTemplatesRoutes from "./routes/emailTemplates.routes";
+import monitoringRoutes from "./routes/monitoring.routes";
 
 dotenv.config();
 
@@ -33,9 +37,9 @@ const PORT = process.env.PORT || 5000;
 app.use(helmet()); // Security headers
 app.use(
   cors({
-    origin: process.env.FRONTEND_URL || "http://localhost:3000",
+    origin: process.env.FRONTEND_URL || "http://localhost:4000",
     credentials: true,
-  }),
+  })
 );
 app.use(compression()); // Compress responses
 app.use(morgan("dev")); // Logging
@@ -62,6 +66,10 @@ app.use("/api/payroll", payrollRoutes);
 app.use("/api/reports", reportsRoutes);
 app.use("/api/super-admin", superAdminRoutes);
 app.use("/api/super-admin/auth", superAdminAuthRoutes);
+app.use("/api/super-admin/audit-logs", auditLogsRoutes);
+app.use("/api/super-admin/billing", billingRoutes);
+app.use("/api/super-admin/email-templates", emailTemplatesRoutes);
+app.use("/api/super-admin/monitoring", monitoringRoutes);
 
 // ============================================
 // ERROR HANDLING

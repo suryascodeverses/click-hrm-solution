@@ -9,6 +9,10 @@ import {
   Settings,
   LogOut,
   Shield,
+  FileText,
+  DollarSign,
+  Mail,
+  Activity,
 } from "lucide-react";
 import { useAuthStore } from "@/store/authStore";
 import { toast } from "sonner";
@@ -17,6 +21,10 @@ const navigation = [
   { name: "Dashboard", href: "/super-admin/dashboard", icon: LayoutDashboard },
   { name: "Tenants", href: "/super-admin/tenants", icon: Building2 },
   { name: "All Users", href: "/super-admin/users", icon: Users },
+  { name: "Audit Logs", href: "/super-admin/audit-logs", icon: FileText },
+  { name: "Billing", href: "/super-admin/billing", icon: DollarSign },
+  { name: "Email Templates", href: "/super-admin/email-templates", icon: Mail },
+  { name: "Monitoring", href: "/super-admin/monitoring", icon: Activity },
   { name: "Settings", href: "/super-admin/settings", icon: Settings },
 ];
 
