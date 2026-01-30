@@ -1,0 +1,79 @@
+{
+  "entryFile": "src/server.ts",
+  "noImplicitAdditionalProperties": "throw-on-extras",
+  "controllerPathGlobs": ["src/modules/**/*.controller.ts"],
+  "spec": {
+    "outputDirectory": "src/generated",
+    "specVersion": 3,
+    "securityDefinitions": {
+      "jwt": {
+        "type": "apiKey",
+        "name": "Authorization",
+        "in": "header",
+        "description": "JWT Authorization header using the Bearer scheme. Example: \"Authorization: Bearer {token}\""
+      }
+    },
+    "name": "Keka Clone HRMS API",
+    "description": "Multi-tenant HRMS API Documentation",
+    "version": "1.0.0",
+    "contact": {
+      "name": "API Support",
+      "email": "support@kekaclone.com"
+    },
+    "license": "MIT",
+    "tags": [
+      {
+        "name": "Authentication",
+        "description": "User authentication endpoints"
+      },
+      {
+        "name": "Tenants",
+        "description": "Tenant management"
+      },
+      {
+        "name": "Organisations",
+        "description": "Organisation management"
+      },
+      {
+        "name": "Employees",
+        "description": "Employee management"
+      },
+      {
+        "name": "Departments",
+        "description": "Department management"
+      },
+      {
+        "name": "Designations",
+        "description": "Designation management"
+      },
+      {
+        "name": "Attendance",
+        "description": "Attendance tracking"
+      },
+      {
+        "name": "Leaves",
+        "description": "Leave management"
+      },
+      {
+        "name": "Payroll",
+        "description": "Payroll processing"
+      },
+      {
+        "name": "Reports",
+        "description": "Reports & analytics"
+      },
+      {
+        "name": "Super Admin",
+        "description": "Super admin operations"
+      }
+    ]
+  },
+  "routes": {
+    "routesDir": "src/generated",
+    "authenticationModule": "./middlewares/auth.middleware.ts",
+    "iocModule": "./shared/ioc.ts",
+    "basePath": "/api",
+    "middleware": "express"
+  },
+  "ignore": ["**/node_modules/**"]
+}

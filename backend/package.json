@@ -6,12 +6,15 @@
   "main": "dist/server.js",
   "scripts": {
     "dev": "nodemon --exec ts-node src/server.ts",
-    "build": "tsc",
+    "build": "npm run tsoa:gen && tsc",
     "start": "node dist/server.js",
     "migrate": "prisma migrate dev",
     "prisma:generate": "prisma generate",
     "prisma:studio": "prisma studio",
-    "seed": "ts-node prisma/seed.ts"
+    "seed": "ts-node prisma/seed.ts",
+    "tsoa:gen": "tsoa spec-and-routes",
+    "tsoa:spec": "tsoa spec",
+    "tsoa:routes": "tsoa routes"
   },
   "dependencies": {
     "@arm/shared": "workspace:*",
@@ -22,10 +25,12 @@
     "cors": "^2.8.5",
     "dotenv": "^16.3.1",
     "express": "^4.18.2",
-    "express-validator": "^7.0.1",
     "helmet": "^7.1.0",
     "jsonwebtoken": "^9.0.2",
-    "morgan": "^1.10.0"
+    "morgan": "^1.10.0",
+    "tsoa": "^6.4.0",
+    "zod": "^3.22.4",
+    "swagger-ui-express": "^5.0.0"
   },
   "devDependencies": {
     "@types/bcryptjs": "^2.4.6",
@@ -36,6 +41,7 @@
     "@types/jsonwebtoken": "^9.0.5",
     "@types/morgan": "^1.9.9",
     "@types/node": "^20.10.5",
+    "@types/swagger-ui-express": "^4.1.6",
     "nodemon": "^3.0.2",
     "prisma": "^5.22.0",
     "ts-node": "^10.9.2",
