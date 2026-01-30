@@ -12,28 +12,33 @@ import {
 } from "tsoa";
 import { Request as ExpressRequest } from "express";
 import { AuthService } from "./auth.service";
+
+// Import validation schemas (backend-only)
 import {
-  RegisterSchema,
-  LoginSchema,
-  LogoutSchema,
-  type RegisterRequest,
-  type RegisterResponse,
-  type LoginRequest,
-  type LoginResponse,
-  type GetMeResponse,
-  type LogoutRequest,
+  RegisterValidationSchema,
+  LoginValidationSchema,
+  LogoutValidationSchema,
 } from "./auth.types";
-import { createSuccessResponse } from "../../shared/types/response.types";
+
+// Import DTOs from shared package (API contracts)
 import type {
+  RegisterRequestDto,
+  RegisterResponseDto,
+  LoginRequestDto,
+  LoginResponseDto,
+  GetMeResponseDto,
+  LogoutRequestDto,
   ApiResponse,
   ApiErrorResponse,
-} from "../../shared/types/response.types";
+} from "@arm/shared";
 
 /**
  * ========================================
  * AUTH CONTROLLER
  * ========================================
  * Handles authentication endpoints with tsoa routing
+ * Uses shared DTOs for API contracts
+ * Uses backend validation schemas for security
  */
 
 @Route("auth")
@@ -55,10 +60,10 @@ export class AuthController extends Controller {
   @TsoaResponse<ApiErrorResponse>(400, "Validation error")
   @TsoaResponse<ApiErrorResponse>(409, "Email already registered")
   public async register(
-    @Body() body: RegisterRequest,
-  ): Promise<ApiResponse<RegisterResponse>> {
-    // Validate with Zod
-    const validated = RegisterSchema.parse(body);
+    @Body() body: RegisterRequestDto,
+  ): Promise<ApiResponse<RegisterResponseDto>> {
+    // Validate with backend schema (strict validation)
+    const validated = RegisterValidationSchema.parse(body);
 
     // Call service
     const result = await this.authService.register(validated);
@@ -66,7 +71,11 @@ export class AuthController extends Controller {
     // Set status code
     this.setStatus(201);
 
-    return createSuccessResponse(result, "Registration successful");
+    return {
+      success: true,
+      message: "Registration successful",
+      data: result,
+    };
   }
 
   /**
@@ -78,15 +87,19 @@ export class AuthController extends Controller {
   @TsoaResponse<ApiErrorResponse>(401, "Invalid credentials")
   @TsoaResponse<ApiErrorResponse>(403, "Account inactive")
   public async login(
-    @Body() body: LoginRequest,
-  ): Promise<ApiResponse<LoginResponse>> {
-    // Validate with Zod
-    const validated = LoginSchema.parse(body);
+    @Body() body: LoginRequestDto,
+  ): Promise<ApiResponse<LoginResponseDto>> {
+    // Validate with backend schema
+    const validated = LoginValidationSchema.parse(body);
 
     // Call service
     const result = await this.authService.login(validated);
 
-    return createSuccessResponse(result, "Login successful");
+    return {
+      success: true,
+      message: "Login successful",
+      data: result,
+    };
   }
 
   /**
@@ -99,7 +112,7 @@ export class AuthController extends Controller {
   @TsoaResponse<ApiErrorResponse>(401, "Unauthorized")
   public async getMe(
     @Request() request: ExpressRequest & { user?: any },
-  ): Promise<ApiResponse<GetMeResponse>> {
+  ): Promise<ApiResponse<GetMeResponseDto>> {
     const userId = request.user?.id;
 
     if (!userId) {
@@ -109,7 +122,10 @@ export class AuthController extends Controller {
 
     const result = await this.authService.getMe(userId);
 
-    return createSuccessResponse(result);
+    return {
+      success: true,
+      data: result,
+    };
   }
 
   /**
@@ -122,7 +138,7 @@ export class AuthController extends Controller {
   @TsoaResponse<ApiErrorResponse>(401, "Unauthorized")
   public async logout(
     @Request() request: ExpressRequest & { user?: any },
-    @Body() body: LogoutRequest,
+    @Body() body: LogoutRequestDto,
   ): Promise<ApiResponse<{ message: string }>> {
     const userId = request.user?.id;
 
@@ -131,15 +147,16 @@ export class AuthController extends Controller {
       throw new Error("Unauthorized");
     }
 
-    // Validate with Zod
-    const validated = LogoutSchema.parse(body);
+    // Validate with backend schema
+    const validated = LogoutValidationSchema.parse(body);
 
     // Call service
-    await this.authService.logout(userId, validated);
+    await this.authService.logout(userId, validated.refreshToken);
 
-    return createSuccessResponse(
-      { message: "Logout successful" },
-      "Logout successful",
-    );
+    return {
+      success: true,
+      message: "Logout successful",
+      data: { message: "Logout successful" },
+    };
   }
 }

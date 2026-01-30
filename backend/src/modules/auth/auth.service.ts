@@ -10,27 +10,33 @@ import {
   ForbiddenError,
   NotFoundError,
 } from "../../shared/errors";
+
+// Import DTOs from shared package (API contracts)
 import type {
-  RegisterRequest,
-  RegisterResponse,
-  LoginRequest,
-  LoginResponse,
-  GetMeResponse,
-  LogoutRequest,
-} from "./auth.types";
+  RegisterRequestDto,
+  RegisterResponseDto,
+  LoginRequestDto,
+  LoginResponseDto,
+  GetMeResponseDto,
+} from "@arm/shared";
+
+// Import internal types and validation
+import type { JWTPayload } from "./auth.types";
 
 /**
  * ========================================
  * AUTH SERVICE
  * ========================================
  * Business logic for authentication operations
+ * Uses DTOs from shared package for API contracts
+ * Uses internal domain models for business logic
  */
 
 export class AuthService {
   /**
    * Register new tenant admin and create tenant
    */
-  async register(data: RegisterRequest): Promise<RegisterResponse> {
+  async register(data: RegisterRequestDto): Promise<RegisterResponseDto> {
     const { email, password, companyName } = data;
 
     // Check if user exists
@@ -66,19 +72,15 @@ export class AuthService {
     });
 
     // Generate tokens
-    const accessToken = generateAccessToken({
+    const jwtPayload: JWTPayload = {
       userId: user.id,
       email: user.email,
       role: user.role,
       tenantId: user.tenantId,
-    });
+    };
 
-    const refreshToken = generateRefreshToken({
-      userId: user.id,
-      email: user.email,
-      role: user.role,
-      tenantId: user.tenantId,
-    });
+    const accessToken = generateAccessToken(jwtPayload);
+    const refreshToken = generateRefreshToken(jwtPayload);
 
     // Save refresh token
     await prisma.refreshToken.create({
@@ -89,6 +91,7 @@ export class AuthService {
       },
     });
 
+    // Return DTO (API contract from shared)
     return {
       user: {
         id: user.id,
@@ -109,10 +112,10 @@ export class AuthService {
   /**
    * Login user
    */
-  async login(data: LoginRequest): Promise<LoginResponse> {
+  async login(data: LoginRequestDto): Promise<LoginResponseDto> {
     const { email, password } = data;
 
-    // Find user
+    // Find user with relations
     const user = await prisma.user.findFirst({
       where: { email },
       include: {
@@ -143,19 +146,15 @@ export class AuthService {
     }
 
     // Generate tokens
-    const accessToken = generateAccessToken({
+    const jwtPayload: JWTPayload = {
       userId: user.id,
       email: user.email,
       role: user.role,
       tenantId: user.tenantId,
-    });
+    };
 
-    const refreshToken = generateRefreshToken({
-      userId: user.id,
-      email: user.email,
-      role: user.role,
-      tenantId: user.tenantId,
-    });
+    const accessToken = generateAccessToken(jwtPayload);
+    const refreshToken = generateRefreshToken(jwtPayload);
 
     // Save refresh token
     await prisma.refreshToken.create({
@@ -172,6 +171,7 @@ export class AuthService {
       data: { lastLogin: new Date() },
     });
 
+    // Return DTO (API contract from shared)
     return {
       user: {
         id: user.id,
@@ -179,8 +179,26 @@ export class AuthService {
         role: user.role,
         tenantId: user.tenantId,
       },
-      tenant: user.tenant,
-      employee: user.employee,
+      tenant: user.tenant
+        ? {
+            id: user.tenant.id,
+            name: user.tenant.name,
+            subdomain: user.tenant.subdomain,
+          }
+        : null,
+      employee: user.employee
+        ? {
+            id: user.employee.id,
+            employeeCode: user.employee.employeeCode,
+            firstName: user.employee.firstName,
+            lastName: user.employee.lastName,
+            email: user.employee.email,
+            status: user.employee.status,
+            organisation: user.employee.organisation,
+            department: user.employee.department,
+            designation: user.employee.designation,
+          }
+        : null,
       accessToken,
       refreshToken,
     };
@@ -189,7 +207,7 @@ export class AuthService {
   /**
    * Get current user profile
    */
-  async getMe(userId: string): Promise<GetMeResponse> {
+  async getMe(userId: string): Promise<GetMeResponseDto> {
     const user = await prisma.user.findUnique({
       where: { id: userId },
       include: {
@@ -208,15 +226,42 @@ export class AuthService {
       throw new NotFoundError("User not found");
     }
 
-    return user as GetMeResponse;
+    // Return DTO (API contract from shared)
+    return {
+      id: user.id,
+      email: user.email,
+      role: user.role,
+      tenantId: user.tenantId,
+      isActive: user.isActive,
+      createdAt: user.createdAt,
+      lastLogin: user.lastLogin,
+      tenant: user.tenant
+        ? {
+            id: user.tenant.id,
+            name: user.tenant.name,
+            subdomain: user.tenant.subdomain,
+          }
+        : null,
+      employee: user.employee
+        ? {
+            id: user.employee.id,
+            employeeCode: user.employee.employeeCode,
+            firstName: user.employee.firstName,
+            lastName: user.employee.lastName,
+            email: user.employee.email,
+            status: user.employee.status,
+            organisation: user.employee.organisation,
+            department: user.employee.department,
+            designation: user.employee.designation,
+          }
+        : null,
+    };
   }
 
   /**
    * Logout user (invalidate refresh token)
    */
-  async logout(userId: string, data: LogoutRequest): Promise<void> {
-    const { refreshToken } = data;
-
+  async logout(userId: string, refreshToken?: string): Promise<void> {
     if (refreshToken) {
       await prisma.refreshToken.deleteMany({
         where: {
