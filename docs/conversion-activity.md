@@ -1,1 +1,5 @@
-before - BATCH 3: TENANT MODULE
+claude - devtime.suryansh
+
+BATCH 3: TENANT MODULE
+
+currently at -- BATCH 4-6: ORGANISATIONS, DEPARTMENTS, DESIGNATIONS
