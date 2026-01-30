@@ -1,5 +1,5 @@
 claude - devtime.suryansh
 
-BATCH 4-6: ORGANISATIONS, DEPARTMENTS, DESIGNATIONS
+BATCH 7-10: EMPLOYEES, LEAVES, PAYROLL, REPORTS, attendance
 
-currently at -- BATCH 7-10: EMPLOYEES, LEAVES, PAYROLL, REPORTS
+currently at -- remaining modules (Audit, Billing, Email, Monitoring) - DTOs only as they're super-admin specific
