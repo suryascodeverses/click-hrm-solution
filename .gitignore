@@ -14,6 +14,7 @@ backend/.env.production.local
 backend/.env
 backend/dist
 backend/node_modules
+backend/src/generated
 
 shared/node_modules
 
