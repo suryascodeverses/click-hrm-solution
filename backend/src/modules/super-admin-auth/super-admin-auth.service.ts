@@ -58,14 +58,14 @@ export class SuperAdminAuthService {
       userId: superAdmin.id,
       email: superAdmin.email,
       role: "SUPER_ADMIN",
-      tenantId: null,
+      tenantId: undefined,
     });
 
     const refreshToken = generateRefreshToken({
       userId: superAdmin.id,
       email: superAdmin.email,
       role: "SUPER_ADMIN",
-      tenantId: null,
+      tenantId: undefined,
     });
 
     await prisma.superAdminRefreshToken.create({
@@ -155,7 +155,7 @@ export class SuperAdminAuthService {
       userId: tokenRecord.superAdmin.id,
       email: tokenRecord.superAdmin.email,
       role: "SUPER_ADMIN",
-      tenantId: null,
+      tenantId: undefined,
     });
 
     await prisma.superAdminRefreshToken.create({
@@ -170,7 +170,7 @@ export class SuperAdminAuthService {
       userId: tokenRecord.superAdmin.id,
       email: tokenRecord.superAdmin.email,
       role: "SUPER_ADMIN",
-      tenantId: null,
+      tenantId: undefined,
     });
 
     return {

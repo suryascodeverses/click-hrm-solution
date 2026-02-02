@@ -70,8 +70,8 @@
   },
   "routes": {
     "routesDir": "src/generated",
-    "authenticationModule": "./middlewares/auth.middleware.ts",
-    "iocModule": "./shared/ioc.ts",
+    "authenticationModule": "src/authentication.ts",
+
     "basePath": "/api",
     "middleware": "express"
   },

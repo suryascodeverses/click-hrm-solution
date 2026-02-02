@@ -1,5 +1,5 @@
+import { TenantStatus, } from "@prisma/client";
 import { prisma } from "../../config/database";
-import { NotFoundError } from "../../shared/errors";
 
 import type {
   GetDashboardStatsResponseDto,
@@ -81,7 +81,7 @@ export class SuperAdminService {
   ): Promise<TenantDetailDto> {
     const tenant = await prisma.tenant.update({
       where: { id: tenantId },
-      data: { status: data.status },
+      data: { status: data.status as TenantStatus },
       include: {
         _count: {
           select: {

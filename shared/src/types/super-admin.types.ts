@@ -66,7 +66,7 @@ export interface TenantDetailDto {
   status: string;
   subscriptionTier: string | null;
   maxEmployees: number | null;
-  settings: any;
+  // settings?: any;
   createdAt: Date;
   updatedAt: Date;
   _count: {
