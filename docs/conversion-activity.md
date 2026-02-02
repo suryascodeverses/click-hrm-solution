@@ -1,4 +1,4 @@
 claude - devtime.suryansh
 
-phase -7 -- Audit, Billing, Email, Monitoring -- completed
-currently at -- starting middlewares/routes etc.
+phase -8 Auth middlewares, server etc setup.
+currently at -- fix errors and trying to run & add rbac

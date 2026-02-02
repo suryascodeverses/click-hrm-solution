@@ -14,3 +14,6 @@ router.get("/stats", authenticateSuperAdmin, getAuditLogStats);
 router.get("/filters", authenticateSuperAdmin, getUniqueFilters);
 
 export default router;
+
+
+auditLogs.routes.ts

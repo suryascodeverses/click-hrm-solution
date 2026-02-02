@@ -1,30 +1,17 @@
-import express, { Application } from "express";
+import "reflect-metadata";
+
+import express, { Application, Request, Response } from "express";
 import cors from "cors";
 import helmet from "helmet";
 import morgan from "morgan";
 import compression from "compression";
 import cookieParser from "cookie-parser";
 import dotenv from "dotenv";
+import swaggerUi from "swagger-ui-express";
 import { errorHandler } from "./middlewares/errorHandler";
 import { notFound } from "./middlewares/notFound";
-
-// Import Routes
-import authRoutes from "./routes/auth.routes";
-import tenantRoutes from "./routes/tenant.routes";
-import organisationRoutes from "./routes/organisation.routes";
-import employeeRoutes from "./routes/employee.routes";
-import departmentRoutes from "./routes/department.routes";
-import designationRoutes from "./routes/designation.routes";
-import superAdminRoutes from "./routes/superAdmin.routes";
-import superAdminAuthRoutes from "./routes/superAdminAuth.routes";
-import attendanceRoutes from "./routes/attendance.routes";
-import leaveRoutes from "./routes/leave.routes";
-import payrollRoutes from "./routes/payroll.routes";
-import reportsRoutes from "./routes/reports.routes";
-import auditLogsRoutes from "./routes/auditLogs.routes";
-import billingRoutes from "./routes/billing.routes";
-import emailTemplatesRoutes from "./routes/emailTemplates.routes";
-import monitoringRoutes from "./routes/monitoring.routes";
+import { RegisterRoutes } from "./generated/routes"; // tsoa auto-generated
+import { checkPrismaConnection } from "./config/database";
 
 dotenv.config();
 
@@ -39,7 +26,7 @@ app.use(
   cors({
     origin: process.env.FRONTEND_URL || "http://localhost:4000",
     credentials: true,
-  })
+  }),
 );
 app.use(compression()); // Compress responses
 app.use(morgan("dev")); // Logging
@@ -48,28 +35,79 @@ app.use(express.urlencoded({ extended: true, limit: "10mb" }));
 app.use(cookieParser());
 
 // ============================================
-// ROUTES
+// OPTIONAL: GLOBAL AUDIT LOGGING MIDDLEWARE
+// ============================================
+// Uncomment if you want audit logging on ALL routes
+/*
+import { createAuditLog } from "./middlewares/audit.middleware";
+
+app.use(async (req: any, res, next) => {
+  const originalJson = res.json.bind(res);
+  let responseData: any;
+
+  res.json = function (data: any) {
+    responseData = data;
+    return originalJson(data);
+  };
+
+  res.on("finish", async () => {
+    if (res.statusCode >= 200 && res.statusCode < 300) {
+      const user = req.user;
+      const superAdmin = req.superAdmin;
+      
+      if (user || superAdmin) {
+        await createAuditLog({
+          tenantId: user?.tenantId || null,
+          userId: user?.id || superAdmin?.id,
+          userEmail: user?.email || superAdmin?.email,
+          userName: superAdmin?.name,
+          action: `${req.method}_${req.path.split('/').filter(Boolean).join('_').toUpperCase()}`,
+          description: `${req.method} ${req.path}`,
+          metadata: {
+            method: req.method,
+            path: req.path,
+            query: req.query,
+          },
+          ipAddress: req.ip || req.headers["x-forwarded-for"]?.toString() || req.socket.remoteAddress,
+          userAgent: req.headers["user-agent"],
+        });
+      }
+    }
+  });
+
+  next();
+});
+*/
+
+// ============================================
+// HEALTH CHECK
 // ============================================
 app.get("/api/health", (_, res) => {
   res.json({ status: "OK", timestamp: new Date().toISOString() });
 });
 
-app.use("/api/auth", authRoutes);
-app.use("/api/tenants", tenantRoutes);
-app.use("/api/organisations", organisationRoutes);
-app.use("/api/employees", employeeRoutes);
-app.use("/api/departments", departmentRoutes);
-app.use("/api/designations", designationRoutes);
-app.use("/api/attendance", attendanceRoutes);
-app.use("/api/leaves", leaveRoutes);
-app.use("/api/payroll", payrollRoutes);
-app.use("/api/reports", reportsRoutes);
-app.use("/api/super-admin", superAdminRoutes);
-app.use("/api/super-admin/auth", superAdminAuthRoutes);
-app.use("/api/super-admin/audit-logs", auditLogsRoutes);
-app.use("/api/super-admin/billing", billingRoutes);
-app.use("/api/super-admin/email-templates", emailTemplatesRoutes);
-app.use("/api/super-admin/monitoring", monitoringRoutes);
+// ============================================
+// SWAGGER UI DOCUMENTATION
+// ============================================
+app.use(
+  "/api/docs",
+  swaggerUi.serve,
+  swaggerUi.setup(undefined, {
+    swaggerOptions: {
+      url: "/api/swagger.json",
+    },
+  }),
+);
+
+// Serve swagger.json
+app.get("/api/swagger.json", (_req: Request, res: Response) => {
+  res.sendFile(__dirname + "/swagger.json");
+});
+
+// ============================================
+// TSOA AUTO-GENERATED ROUTES
+// ============================================
+RegisterRoutes(app);
 
 // ============================================
 // ERROR HANDLING
@@ -80,8 +118,23 @@ app.use(errorHandler);
 // ============================================
 // START SERVER
 // ============================================
-app.listen(PORT, () => {
-  console.log(`🚀 Server running on port ${PORT}`);
-  console.log(`📊 Environment: ${process.env.NODE_ENV || "development"}`);
-  console.log(`🔗 API: http://localhost:${PORT}/api`);
-});
+const startServer = async () => {
+  try {
+    // Check database connection
+    await checkPrismaConnection();
+
+    app.listen(PORT, () => {
+      console.log(`🚀 Server running on port ${PORT}`);
+      console.log(`📊 Environment: ${process.env.NODE_ENV || "development"}`);
+      console.log(`🔗 API: http://localhost:${PORT}/api`);
+      console.log(`📖 Swagger Docs: http://localhost:${PORT}/api/docs`);
+    });
+  } catch (error) {
+    console.error("Failed to start server:", error);
+    process.exit(1);
+  }
+};
+
+startServer();
+
+export default app;

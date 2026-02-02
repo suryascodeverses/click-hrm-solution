@@ -47,7 +47,7 @@ export class TenantController extends Controller {
   @TsoaResponse<ApiErrorResponse>(404, "Tenant not found")
   public async getTenant(
     @Request() request: ExpressRequest & { user?: any },
-  ): Promise<ApiResponse<GetTenantResponseDto>> {
+  ): Promise<ApiResponse<Partial<GetTenantResponseDto>>> {
     const tenantId = request.user?.tenantId;
 
     if (!tenantId) {

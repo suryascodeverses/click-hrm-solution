@@ -27,3 +27,35 @@ export * from "./common.types";
 
 // Export auth DTOs
 export * from "./auth.types";
+
+export * from "./attendance.types";
+
+export * from "./audit-logs.types";
+
+export * from "./billing.types";
+
+export * from "./employee.types";
+
+export * from "./tenant.types";
+
+export * from "./employee.types";
+
+export * from "./email-templates.types";
+
+export * from "./organisation.types";
+
+export * from "./department.types";
+
+export * from "./designation.types";
+
+export * from "./leave.types";
+
+export * from "./reports.types";
+
+export * from "./monitoring.types";
+
+export * from "./payroll.types";
+
+export * from "./super-admin-auth.types";
+
+export * from "./super-admin.types";

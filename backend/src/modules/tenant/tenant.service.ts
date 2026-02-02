@@ -17,7 +17,7 @@ export class TenantService {
   /**
    * Get tenant by ID
    */
-  async getTenant(tenantId: string): Promise<GetTenantResponseDto> {
+  async getTenant(tenantId: string): Promise<Partial<GetTenantResponseDto>> {
     const tenant = await prisma.tenant.findUnique({
       where: { id: tenantId },
       include: {
