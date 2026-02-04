@@ -12,16 +12,15 @@ import {
 } from "../../shared/errors";
 
 // Import DTOs from shared package (API contracts)
-import type {
-  RegisterRequestDto,
-  RegisterResponseDto,
-  LoginRequestDto,
-  LoginResponseDto,
-  GetMeResponseDto,
-} from "@arm/shared";
 
 // Import internal types and validation
-import type { JWTPayload } from "../../shared/types/auth.types";
+import type {
+  JWTPayload,
+  LoginInput,
+  LoginResponseDto,
+  RegisterInput,
+  RegisterResponseDto,
+} from "../../shared/types/auth.types";
 
 /**
  * ========================================
@@ -36,7 +35,7 @@ export class AuthService {
   /**
    * Register new tenant admin and create tenant
    */
-  async register(data: RegisterRequestDto): Promise<RegisterResponseDto> {
+  async register(data: RegisterInput): Promise<RegisterResponseDto> {
     const { email, password, companyName } = data;
 
     // Check if user exists
@@ -95,14 +94,27 @@ export class AuthService {
     return {
       user: {
         id: user.id,
+        tenantId: user.tenantId,
         email: user.email,
         role: user.role,
-        tenantId: user.tenantId!,
+        isActive: user.isActive,
+        lastLogin: user.lastLogin,
+        createdAt: user.createdAt,
+        updatedAt: user.updatedAt,
       },
       tenant: {
         id: tenant.id,
         name: tenant.name,
         subdomain: tenant.subdomain,
+        email: tenant.email,
+        phone: tenant.phone,
+        logo: tenant.logo,
+        status: tenant.status,
+        subscriptionTier: tenant.subscriptionTier,
+        maxEmployees: tenant.maxEmployees,
+        settings: "",
+        createdAt: tenant.createdAt,
+        updatedAt: tenant.updatedAt,
       },
       accessToken,
       refreshToken,
@@ -112,7 +124,7 @@ export class AuthService {
   /**
    * Login user
    */
-  async login(data: LoginRequestDto): Promise<LoginResponseDto> {
+  async login(data: LoginInput): Promise<LoginResponseDto> {
     const { email, password } = data;
 
     // Find user with relations

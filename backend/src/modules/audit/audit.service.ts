@@ -1,3 +1,4 @@
+
 import { prisma } from "../../config/database";
 import type {
   GetAuditLogsQueryDto,
@@ -53,7 +54,7 @@ export class AuditLogsService {
     });
 
     return {
-      logs,
+      logs: logs,
       pagination: {
         total,
         page: pageNum,

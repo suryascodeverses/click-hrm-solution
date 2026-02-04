@@ -1,13 +1,13 @@
 import { prisma } from "../../config/database";
 import { BadRequestError } from "../../shared/errors";
 
-import type {
-  CheckInRequestDto,
-  CheckOutRequestDto,
+import {
   AttendanceDto,
-  AttendanceWithEmployeeDto,
-  MyAttendanceResponseDto,
-} from "@arm/shared";
+  AttendanceWithFullEmployeeDto,
+  CheckInInput,
+  CheckOutInput,
+  MyAttendanceDto,
+} from "../../shared/types/attendance.types";
 
 /**
  * ========================================
@@ -20,7 +20,7 @@ export class AttendanceService {
   /**
    * Check in
    */
-  async checkIn(data: CheckInRequestDto): Promise<AttendanceDto> {
+  async checkIn(data: CheckInInput): Promise<AttendanceDto> {
     const { employeeId } = data;
     const today = new Date();
     today.setHours(0, 0, 0, 0);
@@ -75,7 +75,7 @@ export class AttendanceService {
   /**
    * Check out
    */
-  async checkOut(data: CheckOutRequestDto): Promise<AttendanceDto> {
+  async checkOut(data: CheckOutInput): Promise<AttendanceDto> {
     const { employeeId } = data;
     const today = new Date();
     today.setHours(0, 0, 0, 0);
@@ -133,7 +133,7 @@ export class AttendanceService {
     employeeId: string,
     month?: number,
     year?: number,
-  ): Promise<MyAttendanceResponseDto> {
+  ): Promise<MyAttendanceDto> {
     const startDate =
       month && year
         ? new Date(year, month - 1, 1)
@@ -198,7 +198,7 @@ export class AttendanceService {
    */
   async getTeamAttendance(
     tenantId: string,
-  ): Promise<AttendanceWithEmployeeDto[]> {
+  ): Promise<AttendanceWithFullEmployeeDto[]> {
     const today = new Date();
     today.setHours(0, 0, 0, 0);
 
@@ -227,6 +227,6 @@ export class AttendanceService {
       },
     });
 
-    return attendances as AttendanceWithEmployeeDto[];
+    return attendances as AttendanceWithFullEmployeeDto[];
   }
 }

@@ -5,26 +5,12 @@
  * Location: shared/types/auth.types.ts
  */
 
+import { TenantStatus, UserRole } from "@prisma/client";
 import { z } from "zod";
 
 // ============================================
 // ENUMS
 // ============================================
-
-export enum UserRole {
-  SUPER_ADMIN = "SUPER_ADMIN",
-  TENANT_ADMIN = "TENANT_ADMIN",
-  ORG_ADMIN = "ORG_ADMIN",
-  HR_MANAGER = "HR_MANAGER",
-  MANAGER = "MANAGER",
-  EMPLOYEE = "EMPLOYEE",
-}
-
-export enum TenantStatus {
-  ACTIVE = "ACTIVE",
-  SUSPENDED = "SUSPENDED",
-  INACTIVE = "INACTIVE",
-}
 
 // ============================================
 // VALIDATION SCHEMAS
@@ -219,14 +205,15 @@ export interface AuthTokensDto {
 export interface LoginResponseDto {
   user: UserDto;
   tokens: AuthTokensDto;
-  message: string;
+  message?: string;
 }
 
 export interface RegisterResponseDto {
   user: UserDto;
   tenant: TenantDto;
-  tokens: AuthTokensDto;
-  message: string;
+  accessToken: string;
+  refreshToken: string;
+  message?: string;
 }
 
 export interface RefreshTokenResponseDto {

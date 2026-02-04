@@ -7,7 +7,7 @@ import {
   SuccessResponse,
   Controller,
 } from "tsoa";
-import { AuditLogsService } from "./audit-logs.service";
+
 import type {
   GetAuditLogsQueryDto,
   GetAuditLogsResponseDto,
@@ -15,6 +15,7 @@ import type {
   AuditLogFiltersDto,
   ApiResponse,
 } from "@arm/shared";
+import { AuditLogsService } from "./audit.service";
 
 @Route("super-admin/audit-logs")
 @Tags("Super Admin - Audit Logs")

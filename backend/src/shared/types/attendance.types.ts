@@ -5,21 +5,12 @@
  * Location: shared/types/attendance.types.ts
  */
 
+import { AttendanceStatus } from "@prisma/client";
 import { z } from "zod";
 
 // ============================================
 // ENUMS
 // ============================================
-
-export enum AttendanceStatus {
-  PRESENT = "PRESENT",
-  ABSENT = "ABSENT",
-  HALF_DAY = "HALF_DAY",
-  LATE = "LATE",
-  ON_LEAVE = "ON_LEAVE",
-  HOLIDAY = "HOLIDAY",
-  WEEKEND = "WEEKEND",
-}
 
 // ============================================
 // VALIDATION SCHEMAS
@@ -203,4 +194,15 @@ export interface AttendanceReportDto {
   };
   summary: AttendanceSummaryDto;
   details: AttendanceDto[];
+}
+
+export interface MyAttendanceDto {
+  attendances: AttendanceDto[];
+  stats: {
+    present: number;
+    absent: number;
+    late: number;
+    halfDay: number;
+    totalWorkHours: number;
+  };
 }

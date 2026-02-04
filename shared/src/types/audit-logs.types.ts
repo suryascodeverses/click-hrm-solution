@@ -29,15 +29,15 @@ export interface AuditLogDto {
   id: string;
   tenantId: string | null;
   userId: string | null;
-  userEmail: string | null;
-  userName: string | null;
+  userEmail?: string | null;
+  userName?: string | null;
   action: string;
   entity: string | null;
   entityId: string | null;
-  description: string;
+  description?: string;
   ipAddress: string | null;
   userAgent: string | null;
-  metadata: any;
+  metadata?: any;
   createdAt: Date;
 }
 
