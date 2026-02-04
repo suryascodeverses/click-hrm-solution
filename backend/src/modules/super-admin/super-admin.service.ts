@@ -1,4 +1,4 @@
-import { TenantStatus, } from "@prisma/client";
+import { TenantStatus } from "@prisma/client";
 import { prisma } from "../../config/database";
 
 import type {

@@ -18,7 +18,7 @@ import { OrganisationService } from "./organisation.service";
 import {
   CreateOrganisationValidationSchema,
   UpdateOrganisationValidationSchema,
-} from "./organisation.types";
+} from "../../shared/types/organisation.types";
 
 import type {
   CreateOrganisationRequestDto,

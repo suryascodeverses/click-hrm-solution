@@ -17,7 +17,7 @@ import { DesignationService } from "./designation.service";
 import {
   CreateDesignationValidationSchema,
   UpdateDesignationValidationSchema,
-} from "./designation.types";
+} from "../../shared/types/designation.types";
 
 import type {
   CreateDesignationRequestDto,

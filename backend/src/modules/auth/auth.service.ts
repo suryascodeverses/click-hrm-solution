@@ -21,7 +21,7 @@ import type {
 } from "@arm/shared";
 
 // Import internal types and validation
-import type { JWTPayload } from "./auth.types";
+import type { JWTPayload } from "../../shared/types/auth.types";
 
 /**
  * ========================================

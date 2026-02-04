@@ -12,7 +12,7 @@ import {
 } from "tsoa";
 import { Request as ExpressRequest } from "express";
 import { TenantService } from "./tenant.service";
-import { UpdateTenantProfileValidationSchema } from "./tenant.types";
+import { UpdateTenantProfileValidationSchema } from "../../shared/types/tenant.types";
 
 import type {
   GetTenantResponseDto,

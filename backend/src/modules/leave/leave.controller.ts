@@ -18,7 +18,7 @@ import {
   ApplyLeaveValidationSchema,
   RejectLeaveValidationSchema,
   CreateLeaveTypeValidationSchema,
-} from "./leave.types";
+} from "../../shared/types/leave.types";
 
 import type {
   ApplyLeaveRequestDto,

@@ -17,7 +17,7 @@ import { DepartmentService } from "./department.service";
 import {
   CreateDepartmentValidationSchema,
   UpdateDepartmentValidationSchema,
-} from "./department.types";
+} from "../../shared/types/department.types";
 
 import type {
   CreateDepartmentRequestDto,

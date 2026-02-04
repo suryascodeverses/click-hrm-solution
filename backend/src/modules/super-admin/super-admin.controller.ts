@@ -16,7 +16,7 @@ import {
   UpdateTenantStatusValidationSchema,
   UpdateTenantValidationSchema,
   UpdateUserValidationSchema,
-} from "./super-admin.types";
+} from "../../shared/types/super-admin.types";
 
 import type {
   GetDashboardStatsResponseDto,

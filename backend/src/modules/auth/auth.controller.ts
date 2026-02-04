@@ -18,7 +18,7 @@ import {
   RegisterValidationSchema,
   LoginValidationSchema,
   LogoutValidationSchema,
-} from "./auth.types";
+} from "../../shared/types/auth.types";
 
 // Import DTOs from shared package (API contracts)
 import type {

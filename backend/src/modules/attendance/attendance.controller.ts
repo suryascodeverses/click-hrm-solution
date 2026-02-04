@@ -17,7 +17,7 @@ import { AttendanceService } from "./attendance.service";
 import {
   CheckInValidationSchema,
   CheckOutValidationSchema,
-} from "./attendance.types";
+} from "../../shared/types/attendance.types";
 
 import type {
   CheckInRequestDto,

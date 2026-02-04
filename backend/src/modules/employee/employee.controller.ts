@@ -19,7 +19,7 @@ import { EmployeeService } from "./employee.service";
 import {
   CreateEmployeeValidationSchema,
   UpdateEmployeeValidationSchema,
-} from "./employee.types";
+} from "../../shared/types/employee.types";
 
 import type {
   CreateEmployeeRequestDto,

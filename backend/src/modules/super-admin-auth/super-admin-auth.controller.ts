@@ -18,7 +18,7 @@ import { SuperAdminAuthService } from "./super-admin-auth.service";
 import {
   SuperAdminLoginValidationSchema,
   CreateSuperAdminValidationSchema,
-} from "./super-admin-auth.types";
+} from "../../shared/types/super-admin-auth.types";
 
 import type {
   SuperAdminLoginRequestDto,

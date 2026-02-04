@@ -18,7 +18,7 @@ import { PayrollService } from "./payroll.service";
 import {
   CreateSalaryStructureValidationSchema,
   UpdatePayslipStatusValidationSchema,
-} from "./payroll.types";
+} from "../../shared/types/payroll.types";
 
 import type {
   CreateSalaryStructureRequestDto,
