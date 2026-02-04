@@ -49,11 +49,25 @@ export const CreateEmployeeValidationSchema = z.object({
   employeeCode: z.string().min(1).max(50),
   firstName: z.string().min(2).max(100).trim(),
   lastName: z.string().min(2).max(100).trim(),
+  middleName: z.string().max(100).trim().optional(),
   email: z.string().email(),
   phone: z.string().max(20).optional(),
+  dateOfBirth: z.string().optional(),
+  gender: z.nativeEnum(Gender).optional(),
+  maritalStatus: z.nativeEnum(MaritalStatus).optional(),
+  bloodGroup: z.string().max(10).optional(),
   dateOfJoining: z.string(),
   departmentId: z.string().uuid().optional(),
   designationId: z.string().uuid().optional(),
+  reportingTo: z.string().uuid().optional(),
+  employmentType: z.nativeEnum(EmploymentType).optional(),
+  currentAddress: z.string().optional(),
+  permanentAddress: z.string().optional(),
+  city: z.string().max(100).optional(),
+  state: z.string().max(100).optional(),
+  country: z.string().max(100).optional(),
+  zipCode: z.string().max(20).optional(),
+  profilePicture: z.string().url().optional(),
   password: z.string().min(8).optional(),
 });
 
@@ -85,14 +99,22 @@ export interface CreateEmployeeInput {
   middleName?: string;
   email: string;
   phone?: string;
-  dateOfJoining: Date | string;
   dateOfBirth?: Date | string;
   gender?: Gender;
   maritalStatus?: MaritalStatus;
+  bloodGroup?: string;
+  dateOfJoining: Date | string;
   departmentId?: string;
   designationId?: string;
   reportingTo?: string;
   employmentType?: EmploymentType;
+  currentAddress?: string;
+  permanentAddress?: string;
+  city?: string;
+  state?: string;
+  country?: string;
+  zipCode?: string;
+  profilePicture?: string;
   password?: string;
 }
 

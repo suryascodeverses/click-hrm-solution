@@ -44,6 +44,7 @@ export const CreateLeaveTypeValidationSchema = z.object({
   defaultDays: z.number().int().min(1),
   carryForward: z.boolean(),
   maxCarryForward: z.number().int().min(0).optional(),
+  requiresApproval: z.boolean().optional(),
   color: z.string().optional(),
   description: z.string().max(500).optional(),
 });

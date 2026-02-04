@@ -144,6 +144,7 @@ export interface TenantDto {
   status: TenantStatus;
   subscriptionTier: string;
   maxEmployees: number;
+  settings: any; // Json field from Prisma
   createdAt: Date;
   updatedAt: Date;
 }

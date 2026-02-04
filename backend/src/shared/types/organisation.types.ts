@@ -30,6 +30,7 @@ export const CreateOrganisationValidationSchema = z.object({
   zipCode: z.string().max(20).optional(),
   phone: z.string().max(20).optional(),
   email: z.string().email().optional(),
+  logo: z.string().url().optional(),
 });
 
 export const UpdateOrganisationValidationSchema = z.object({
