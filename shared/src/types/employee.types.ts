@@ -1,112 +1,152 @@
 /**
  * ========================================
- * EMPLOYEE - REQUEST/RESPONSE DTOs
+ * EMPLOYEE - ZOD SCHEMAS & TYPES
  * ========================================
  * Location: shared/src/types/employee.types.ts
  */
 
-// ============================================
-// REQUEST DTOs
-// ============================================
-
-export interface CreateEmployeeRequestDto {
-  organisationId: string;
-  employeeCode: string;
-  firstName: string;
-  lastName: string;
-  email: string;
-  phone?: string;
-  dateOfJoining: string;
-  departmentId?: string;
-  designationId?: string;
-  password?: string;
-}
-
-export interface UpdateEmployeeRequestDto {
-  firstName?: string;
-  lastName?: string;
-  phone?: string;
-  departmentId?: string;
-  designationId?: string;
-  managerId?: string;
-  status?: string;
-  employmentType?: string;
-  dateOfBirth?: string;
-  address?: string;
-  city?: string;
-  state?: string;
-  country?: string;
-}
-
-export interface GetEmployeesQueryDto {
-  organisationId?: string;
-  departmentId?: string;
-  status?: string;
-}
+import { z } from "zod";
 
 // ============================================
-// RESPONSE DTOs
+// BASE SCHEMAS (Building Blocks)
 // ============================================
 
-export interface EmployeeListItemDto {
-  id: string;
-  employeeCode: string;
-  firstName: string;
-  lastName: string;
-  email: string;
-  phone: string | null;
-  status: string;
-  dateOfJoining: Date;
-  createdAt: Date;
-  user: {
-    email: string;
-    role: string;
-    isActive: boolean;
-  };
-  department: any;
-  designation: any;
-  organisation: any;
-}
+/**
+ * Base employee fields - minimal common fields
+ */
+const EmployeeBaseSchema = z.object({
+  employeeCode: z.string(),
+  firstName: z.string(),
+  lastName: z.string(),
+  email: z.string().email(),
+});
 
-export interface EmployeeDetailDto extends EmployeeListItemDto {
-  dateOfBirth: Date | null;
-  address: string | null;
-  city: string | null;
-  state: string | null;
-  country: string | null;
-  employmentType: string | null;
-  user: {
-    email: string;
-    role: string;
-    isActive: boolean;
-    lastLogin: Date | null;
-  };
-  manager: {
-    id: string;
-    firstName: string;
-    lastName: string;
-    employeeCode: string;
-  } | null;
-  subordinates: Array<{
-    id: string;
-    firstName: string;
-    lastName: string;
-    employeeCode: string;
-  }>;
-}
+/**
+ * Base user nested object
+ */
+const UserNestedBaseSchema = z.object({
+  email: z.string(),
+  role: z.string(),
+  isActive: z.boolean(),
+});
 
-export interface CreateEmployeeResponseDto {
-  id: string;
-  employeeCode: string;
-  firstName: string;
-  lastName: string;
-  email: string;
-  status: string;
-  user: {
-    id: string;
-    email: string;
-    role: string;
-  };
-  department: any;
-  designation: any;
-}
+/**
+ * Base manager/subordinate nested object
+ */
+const EmployeeReferenceSchema = z.object({
+  id: z.string(),
+  firstName: z.string(),
+  lastName: z.string(),
+  employeeCode: z.string(),
+});
+
+// ============================================
+// REQUEST SCHEMAS & TYPES
+// ============================================
+
+/**
+ * Create employee request schema
+ */
+export const CreateEmployeeRequestSchema = EmployeeBaseSchema.extend({
+  organisationId: z.string(),
+  phone: z.string().optional(),
+  dateOfJoining: z.string(),
+  departmentId: z.string().optional(),
+  designationId: z.string().optional(),
+  password: z.string().optional(),
+});
+export type CreateEmployeeRequestDto = z.infer<
+  typeof CreateEmployeeRequestSchema
+>;
+
+/**
+ * Update employee request schema - all fields optional
+ */
+export const UpdateEmployeeRequestSchema = z.object({
+  firstName: z.string().optional(),
+  lastName: z.string().optional(),
+  phone: z.string().optional(),
+  departmentId: z.string().optional(),
+  designationId: z.string().optional(),
+  managerId: z.string().optional(),
+  status: z.string().optional(),
+  employmentType: z.string().optional(),
+  dateOfBirth: z.string().optional(),
+  address: z.string().optional(),
+  city: z.string().optional(),
+  state: z.string().optional(),
+  country: z.string().optional(),
+});
+export type UpdateEmployeeRequestDto = z.infer<
+  typeof UpdateEmployeeRequestSchema
+>;
+
+/**
+ * Get employees query schema
+ */
+export const GetEmployeesQuerySchema = z.object({
+  organisationId: z.string().optional(),
+  departmentId: z.string().optional(),
+  status: z.string().optional(),
+});
+export type GetEmployeesQueryDto = z.infer<typeof GetEmployeesQuerySchema>;
+
+// ============================================
+// RESPONSE SCHEMAS & TYPES
+// ============================================
+
+/**
+ * Employee list item DTO - extends base with response fields
+ */
+export const EmployeeListItemDtoSchema = EmployeeBaseSchema.extend({
+  id: z.string(),
+  phone: z.string().nullable(),
+  status: z.string(),
+  dateOfJoining: z.date(),
+  createdAt: z.date(),
+  user: UserNestedBaseSchema,
+  department: z.any(),
+  designation: z.any(),
+  organisation: z.any(),
+});
+export type EmployeeListItemDto = z.infer<typeof EmployeeListItemDtoSchema>;
+
+/**
+ * Employee detail DTO - extends list item with additional fields
+ */
+export const EmployeeDetailDtoSchema = EmployeeListItemDtoSchema.extend({
+  dateOfBirth: z.date().nullable(),
+  address: z.string().nullable(),
+  city: z.string().nullable(),
+  state: z.string().nullable(),
+  country: z.string().nullable(),
+  employmentType: z.string().nullable(),
+  user: UserNestedBaseSchema.extend({
+    lastLogin: z.date().nullable(),
+  }),
+  manager: EmployeeReferenceSchema.nullable(),
+  subordinates: z.array(EmployeeReferenceSchema),
+});
+export type EmployeeDetailDto = z.infer<typeof EmployeeDetailDtoSchema>;
+
+/**
+ * Create employee response DTO
+ */
+export const CreateEmployeeResponseDtoSchema = z.object({
+  id: z.string(),
+  employeeCode: z.string(),
+  firstName: z.string(),
+  lastName: z.string(),
+  email: z.string(),
+  status: z.string(),
+  user: z.object({
+    id: z.string(),
+    email: z.string(),
+    role: z.string(),
+  }),
+  department: z.any(),
+  designation: z.any(),
+});
+export type CreateEmployeeResponseDto = z.infer<
+  typeof CreateEmployeeResponseDtoSchema
+>;

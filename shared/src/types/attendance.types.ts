@@ -1,62 +1,107 @@
 /**
  * ========================================
- * ATTENDANCE - REQUEST/RESPONSE DTOs
+ * ATTENDANCE - ZOD SCHEMAS & TYPES
  * ========================================
  * Location: shared/src/types/attendance.types.ts
  */
 
-// ============================================
-// REQUEST DTOs
-// ============================================
-
-export interface CheckInRequestDto {
-  employeeId: string;
-}
-
-export interface CheckOutRequestDto {
-  employeeId: string;
-}
-
-export interface GetAttendanceQueryDto {
-  month?: number;
-  year?: number;
-}
+import { z } from "zod";
 
 // ============================================
-// RESPONSE DTOs
+// BASE SCHEMAS (Building Blocks)
 // ============================================
 
-export interface AttendanceDto {
-  id: string;
-  employeeId: string;
-  date: Date;
-  checkIn: Date | null;
-  checkOut: Date | null;
-  workHours: number | null;
-  status: string;
-  lateBy: number | null;
-  earlyLeave: number | null;
-  createdAt: Date;
-  updatedAt: Date;
-}
+/**
+ * Base attendance fields - minimal common fields
+ */
+const AttendanceBaseSchema = z.object({
+  employeeId: z.string(),
+  date: z.date(),
+  checkIn: z.date().nullable(),
+  checkOut: z.date().nullable(),
+  workHours: z.number().nullable(),
+  status: z.string(),
+});
 
-export interface AttendanceWithEmployeeDto extends AttendanceDto {
-  employee: {
-    id: string;
-    firstName: string;
-    lastName: string;
-    employeeCode: string;
-    department: any;
-  };
-}
+/**
+ * Employee reference nested object
+ */
+const EmployeeReferenceSchema = z.object({
+  id: z.string(),
+  firstName: z.string(),
+  lastName: z.string(),
+  employeeCode: z.string(),
+  department: z.any(),
+});
 
-export interface MyAttendanceResponseDto {
-  attendances: AttendanceDto[];
-  stats: {
-    present: number;
-    absent: number;
-    late: number;
-    halfDay: number;
-    totalWorkHours: number;
-  };
-}
+// ============================================
+// REQUEST SCHEMAS & TYPES
+// ============================================
+
+/**
+ * Check in request schema
+ */
+export const CheckInRequestSchema = z.object({
+  employeeId: z.string(),
+});
+export type CheckInRequestDto = z.infer<typeof CheckInRequestSchema>;
+
+/**
+ * Check out request schema
+ */
+export const CheckOutRequestSchema = z.object({
+  employeeId: z.string(),
+});
+export type CheckOutRequestDto = z.infer<typeof CheckOutRequestSchema>;
+
+/**
+ * Get attendance query schema
+ */
+export const GetAttendanceQuerySchema = z.object({
+  month: z.number().optional(),
+  year: z.number().optional(),
+});
+export type GetAttendanceQueryDto = z.infer<typeof GetAttendanceQuerySchema>;
+
+// ============================================
+// RESPONSE SCHEMAS & TYPES
+// ============================================
+
+/**
+ * Attendance DTO - extends base with response fields
+ */
+export const AttendanceDtoSchema = AttendanceBaseSchema.extend({
+  id: z.string(),
+  lateBy: z.number().nullable(),
+  earlyLeave: z.number().nullable(),
+  createdAt: z.date(),
+  updatedAt: z.date(),
+});
+export type AttendanceDto = z.infer<typeof AttendanceDtoSchema>;
+
+/**
+ * Attendance with employee DTO - extends attendance with employee details
+ */
+export const AttendanceWithEmployeeDtoSchema = AttendanceDtoSchema.extend({
+  employee: EmployeeReferenceSchema,
+});
+export type AttendanceWithEmployeeDto = z.infer<
+  typeof AttendanceWithEmployeeDtoSchema
+>;
+
+/**
+ * My attendance response DTO
+ */
+export const MyAttendanceResponseDtoSchema = z.object({
+  attendances: z.array(AttendanceDtoSchema),
+  stats: z.object({
+    present: z.number(),
+    absent: z.number(),
+    late: z.number(),
+    halfDay: z.number(),
+    totalWorkHours: z.number(),
+  }),
+});
+export type MyAttendanceResponseDto = z.infer<
+  typeof MyAttendanceResponseDtoSchema
+>;

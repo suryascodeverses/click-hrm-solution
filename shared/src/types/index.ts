@@ -1,4 +1,14 @@
-// Export existing types (keep your original enums)
+/**
+ * ========================================
+ * SHARED TYPES - INDEX
+ * ========================================
+ * Central export file for all shared types
+ */
+
+// ============================================
+// ENUMS
+// ============================================
+
 export enum UserRole {
   SUPER_ADMIN = "SUPER_ADMIN",
   TENANT_ADMIN = "TENANT_ADMIN",
@@ -22,40 +32,57 @@ export enum TenantStatus {
   INACTIVE = "INACTIVE",
 }
 
-// Export new common types
+// ============================================
+// TYPE EXPORTS
+// ============================================
+
+// Common types
 export * from "./common.types";
 
-// Export auth DTOs
+// Auth
 export * from "./auth.types";
 
-export * from "./attendance.types";
-
-export * from "./audit-logs.types";
-
-export * from "./billing.types";
-
-export * from "./employee.types";
-
-export * from "./tenant.types";
-
-export * from "./employee.types";
-
-export * from "./email-templates.types";
-
-export * from "./organisation.types";
-
-export * from "./department.types";
-
-export * from "./designation.types";
-
-export * from "./leave.types";
-
-export * from "./reports.types";
-
-export * from "./monitoring.types";
-
-export * from "./payroll.types";
-
+// Super admin auth
 export * from "./super-admin-auth.types";
 
+// Super admin
 export * from "./super-admin.types";
+
+// Attendance
+export * from "./attendance.types";
+
+// Audit logs
+export * from "./audit-logs.types";
+
+// Billing
+export * from "./billing.types";
+
+// Department
+export * from "./department.types";
+
+// Designation
+export * from "./designation.types";
+
+// Email templates
+export * from "./email-templates.types";
+
+// Employee
+export * from "./employee.types";
+
+// Leave
+export * from "./leave.types";
+
+// Monitoring
+export * from "./monitoring.types";
+
+// Organisation
+export * from "./organisation.types";
+
+// Payroll
+export * from "./payroll.types";
+
+// Reports
+export * from "./reports.types";
+
+// Tenant
+export * from "./tenant.types";

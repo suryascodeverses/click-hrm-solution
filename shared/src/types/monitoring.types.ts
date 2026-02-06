@@ -1,77 +1,154 @@
 /**
  * ========================================
- * MONITORING - REQUEST/RESPONSE DTOs
+ * MONITORING - ZOD SCHEMAS & TYPES
  * ========================================
  * Location: shared/src/types/monitoring.types.ts
  */
 
-export interface CreateSystemAlertRequestDto {
-  alertType: string;
-  severity: string;
-  title: string;
-  message: string;
-  metadata?: any;
-}
+import { z } from "zod";
 
-export interface SystemHealthDto {
-  cpu: { usage: string; cores: number };
-  memory: { total: string; used: string; free: string; usagePercent: string };
-  database: { size: string; connections: number };
-  uptime: number;
-  platform: string;
-  nodeVersion: string;
-}
+// ============================================
+// BASE SCHEMAS (Building Blocks)
+// ============================================
 
-export interface MetricsHistoryDto {
-  [metricType: string]: Array<{ value: number; unit: string; timestamp: Date }>;
-}
+/**
+ * Base system alert fields - minimal common fields
+ */
+const SystemAlertBaseSchema = z.object({
+  alertType: z.string(),
+  severity: z.string(),
+  title: z.string(),
+  message: z.string(),
+});
 
-export interface DatabaseStatsDto {
-  recordCounts: {
-    tenants: number;
-    users: number;
-    employees: number;
-    auditLogs: number;
-    emailLogs: number;
-  };
-  tableSizes: Array<{
-    schemaname: string;
-    tablename: string;
-    size: string;
-    size_bytes: string;
-  }>;
-}
+// ============================================
+// REQUEST SCHEMAS & TYPES
+// ============================================
 
-export interface ApiUsageStatsDto {
-  topEndpoints: any[];
-  callsPerHour: Array<{ hour: Date; count: number }>;
-  total24h: number;
-}
+/**
+ * Create system alert request schema
+ */
+export const CreateSystemAlertRequestSchema = SystemAlertBaseSchema.extend({
+  metadata: z.any().optional(),
+});
+export type CreateSystemAlertRequestDto = z.infer<
+  typeof CreateSystemAlertRequestSchema
+>;
 
-export interface SystemAlertDto {
-  id: string;
-  alertType: string;
-  severity: string;
-  title: string;
-  message: string;
-  metadata: any;
-  isResolved: boolean;
-  resolvedAt: Date | null;
-  createdAt: Date;
-}
+// ============================================
+// RESPONSE SCHEMAS & TYPES
+// ============================================
 
-export interface SystemAlertsResponseDto {
-  alerts: SystemAlertDto[];
-  stats: {
-    total: number;
-    critical: number;
-    high: number;
-    unresolved: number;
-  };
-}
+/**
+ * System health DTO
+ */
+export const SystemHealthDtoSchema = z.object({
+  cpu: z.object({
+    usage: z.string(),
+    cores: z.number(),
+  }),
+  memory: z.object({
+    total: z.string(),
+    used: z.string(),
+    free: z.string(),
+    usagePercent: z.string(),
+  }),
+  database: z.object({
+    size: z.string(),
+    connections: z.number(),
+  }),
+  uptime: z.number(),
+  platform: z.string(),
+  nodeVersion: z.string(),
+});
+export type SystemHealthDto = z.infer<typeof SystemHealthDtoSchema>;
 
-export interface ErrorRateDto {
-  errorRate: string;
-  errors24h: number;
-  total24h: number;
-}
+/**
+ * Metrics history DTO
+ */
+export const MetricsHistoryDtoSchema = z.record(
+  z.string(),
+  z.array(
+    z.object({
+      value: z.number(),
+      unit: z.string(),
+      timestamp: z.date(),
+    }),
+  ),
+);
+export type MetricsHistoryDto = z.infer<typeof MetricsHistoryDtoSchema>;
+
+/**
+ * Database stats DTO
+ */
+export const DatabaseStatsDtoSchema = z.object({
+  recordCounts: z.object({
+    tenants: z.number(),
+    users: z.number(),
+    employees: z.number(),
+    auditLogs: z.number(),
+    emailLogs: z.number(),
+  }),
+  tableSizes: z.array(
+    z.object({
+      schemaname: z.string(),
+      tablename: z.string(),
+      size: z.string(),
+      size_bytes: z.string(),
+    }),
+  ),
+});
+export type DatabaseStatsDto = z.infer<typeof DatabaseStatsDtoSchema>;
+
+/**
+ * API usage stats DTO
+ */
+export const ApiUsageStatsDtoSchema = z.object({
+  topEndpoints: z.array(z.any()),
+  callsPerHour: z.array(
+    z.object({
+      hour: z.date(),
+      count: z.number(),
+    }),
+  ),
+  total24h: z.number(),
+});
+export type ApiUsageStatsDto = z.infer<typeof ApiUsageStatsDtoSchema>;
+
+/**
+ * System alert DTO - extends base with response fields
+ */
+export const SystemAlertDtoSchema = SystemAlertBaseSchema.extend({
+  id: z.string(),
+  metadata: z.any(),
+  isResolved: z.boolean(),
+  resolvedAt: z.date().nullable(),
+  createdAt: z.date(),
+});
+export type SystemAlertDto = z.infer<typeof SystemAlertDtoSchema>;
+
+/**
+ * System alerts response DTO
+ */
+export const SystemAlertsResponseDtoSchema = z.object({
+  alerts: z.array(SystemAlertDtoSchema),
+  stats: z.object({
+    total: z.number(),
+    critical: z.number(),
+    high: z.number(),
+    unresolved: z.number(),
+  }),
+});
+export type SystemAlertsResponseDto = z.infer<
+  typeof SystemAlertsResponseDtoSchema
+>;
+
+/**
+ * Error rate DTO
+ */
+export const ErrorRateDtoSchema = z.object({
+  errorRate: z.string(),
+  errors24h: z.number(),
+  total24h: z.number(),
+});
+export type ErrorRateDto = z.infer<typeof ErrorRateDtoSchema>;

@@ -1,62 +1,114 @@
 /**
  * ========================================
- * SUPER ADMIN AUTH - REQUEST/RESPONSE DTOs
+ * SUPER ADMIN AUTH - ZOD SCHEMAS & TYPES
  * ========================================
  * Location: shared/src/types/super-admin-auth.types.ts
  */
 
-// ============================================
-// REQUEST DTOs
-// ============================================
-
-export interface SuperAdminLoginRequestDto {
-  email: string;
-  password: string;
-}
-
-export interface CreateSuperAdminRequestDto {
-  email: string;
-  password: string;
-  name: string;
-  masterKey: string;
-}
-
-export interface SuperAdminRefreshTokenRequestDto {
-  refreshToken?: string; // From cookie
-}
+import { z } from "zod";
 
 // ============================================
-// RESPONSE DTOs
+// BASE SCHEMAS (Building Blocks)
 // ============================================
 
-export interface SuperAdminDto {
-  id: string;
-  email: string;
-  name: string;
-  role: "SUPER_ADMIN";
-}
+/**
+ * Base super admin fields - minimal common fields
+ */
+const SuperAdminBaseSchema = z.object({
+  email: z.string().email(),
+  name: z.string(),
+});
 
-export interface SuperAdminLoginResponseDto {
-  superAdmin: SuperAdminDto;
-  accessToken: string;
-}
+// ============================================
+// REQUEST SCHEMAS & TYPES
+// ============================================
 
-export interface SuperAdminGetMeResponseDto {
-  id: string;
-  email: string;
-  name: string;
-  isActive: boolean;
-  lastLogin: Date | null;
-  createdAt: Date;
-}
+/**
+ * Super admin login request schema
+ */
+export const SuperAdminLoginRequestSchema = z.object({
+  email: z.string().email(),
+  password: z.string().min(1),
+});
+export type SuperAdminLoginRequestDto = z.infer<
+  typeof SuperAdminLoginRequestSchema
+>;
 
-export interface SuperAdminRefreshTokenResponseDto {
-  accessToken: string;
-}
+/**
+ * Create super admin request schema
+ */
+export const CreateSuperAdminRequestSchema = SuperAdminBaseSchema.extend({
+  password: z.string().min(8),
+  masterKey: z.string(),
+});
+export type CreateSuperAdminRequestDto = z.infer<
+  typeof CreateSuperAdminRequestSchema
+>;
 
-export interface CreateSuperAdminResponseDto {
-  id: string;
-  email: string;
-  name: string;
-  createdAt: Date;
-}
+/**
+ * Super admin refresh token request schema
+ */
+export const SuperAdminRefreshTokenRequestSchema = z.object({
+  refreshToken: z.string().optional(), // From cookie
+});
+export type SuperAdminRefreshTokenRequestDto = z.infer<
+  typeof SuperAdminRefreshTokenRequestSchema
+>;
+
+// ============================================
+// RESPONSE SCHEMAS & TYPES
+// ============================================
+
+/**
+ * Super admin DTO
+ */
+export const SuperAdminDtoSchema = SuperAdminBaseSchema.extend({
+  id: z.string(),
+  role: z.literal("SUPER_ADMIN"),
+});
+export type SuperAdminDto = z.infer<typeof SuperAdminDtoSchema>;
+
+/**
+ * Super admin login response DTO
+ */
+export const SuperAdminLoginResponseDtoSchema = z.object({
+  superAdmin: SuperAdminDtoSchema,
+  accessToken: z.string(),
+});
+export type SuperAdminLoginResponseDto = z.infer<
+  typeof SuperAdminLoginResponseDtoSchema
+>;
+
+/**
+ * Super admin get me response DTO
+ */
+export const SuperAdminGetMeResponseDtoSchema = SuperAdminBaseSchema.extend({
+  id: z.string(),
+  isActive: z.boolean(),
+  lastLogin: z.date().nullable(),
+  createdAt: z.date(),
+});
+export type SuperAdminGetMeResponseDto = z.infer<
+  typeof SuperAdminGetMeResponseDtoSchema
+>;
+
+/**
+ * Super admin refresh token response DTO
+ */
+export const SuperAdminRefreshTokenResponseDtoSchema = z.object({
+  accessToken: z.string(),
+});
+export type SuperAdminRefreshTokenResponseDto = z.infer<
+  typeof SuperAdminRefreshTokenResponseDtoSchema
+>;
+
+/**
+ * Create super admin response DTO
+ */
+export const CreateSuperAdminResponseDtoSchema = SuperAdminBaseSchema.extend({
+  id: z.string(),
+  createdAt: z.date(),
+});
+export type CreateSuperAdminResponseDto = z.infer<
+  typeof CreateSuperAdminResponseDtoSchema
+>;

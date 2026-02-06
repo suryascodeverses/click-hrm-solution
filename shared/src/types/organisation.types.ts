@@ -1,72 +1,108 @@
 /**
  * ========================================
- * ORGANISATION - REQUEST/RESPONSE DTOs
+ * ORGANISATION - ZOD SCHEMAS & TYPES
  * ========================================
  * Location: shared/src/types/organisation.types.ts
  */
 
-// ============================================
-// REQUEST DTOs
-// ============================================
-
-export interface CreateOrganisationRequestDto {
-  name: string;
-  code: string;
-  address?: string;
-  city?: string;
-  state?: string;
-  country?: string;
-  zipCode?: string;
-  phone?: string;
-  email?: string;
-}
-
-export interface UpdateOrganisationRequestDto {
-  name?: string;
-  code?: string;
-  address?: string;
-  city?: string;
-  state?: string;
-  country?: string;
-  zipCode?: string;
-  phone?: string;
-  email?: string;
-  status?: string;
-}
+import { z } from "zod";
 
 // ============================================
-// RESPONSE DTOs
+// BASE SCHEMAS (Building Blocks)
 // ============================================
 
-export interface OrganisationDto {
-  id: string;
-  tenantId: string;
-  name: string;
-  code: string;
-  address: string | null;
-  city: string | null;
-  state: string | null;
-  country: string | null;
-  zipCode: string | null;
-  phone: string | null;
-  email: string | null;
-  status: string;
-  createdAt: Date;
-  updatedAt: Date;
-}
+/**
+ * Base organisation fields - minimal common fields
+ */
+const OrganisationBaseSchema = z.object({
+  name: z.string(),
+  code: z.string(),
+});
 
-export interface OrganisationListItemDto extends OrganisationDto {
-  _count: {
-    employees: number;
-    departments: number;
-  };
-}
+// ============================================
+// REQUEST SCHEMAS & TYPES
+// ============================================
 
-export interface OrganisationDetailDto extends OrganisationDto {
-  departments: any[];
-  employees: any[];
-  _count: {
-    employees: number;
-    departments: number;
-  };
-}
+/**
+ * Create organisation request schema
+ */
+export const CreateOrganisationRequestSchema = OrganisationBaseSchema.extend({
+  address: z.string().optional(),
+  city: z.string().optional(),
+  state: z.string().optional(),
+  country: z.string().optional(),
+  zipCode: z.string().optional(),
+  phone: z.string().optional(),
+  email: z.string().optional(),
+});
+export type CreateOrganisationRequestDto = z.infer<
+  typeof CreateOrganisationRequestSchema
+>;
+
+/**
+ * Update organisation request schema - all fields optional
+ */
+export const UpdateOrganisationRequestSchema = z.object({
+  name: z.string().optional(),
+  code: z.string().optional(),
+  address: z.string().optional(),
+  city: z.string().optional(),
+  state: z.string().optional(),
+  country: z.string().optional(),
+  zipCode: z.string().optional(),
+  phone: z.string().optional(),
+  email: z.string().optional(),
+  status: z.string().optional(),
+});
+export type UpdateOrganisationRequestDto = z.infer<
+  typeof UpdateOrganisationRequestSchema
+>;
+
+// ============================================
+// RESPONSE SCHEMAS & TYPES
+// ============================================
+
+/**
+ * Organisation DTO - extends base with response fields
+ */
+export const OrganisationDtoSchema = OrganisationBaseSchema.extend({
+  id: z.string(),
+  tenantId: z.string(),
+  address: z.string().nullable(),
+  city: z.string().nullable(),
+  state: z.string().nullable(),
+  country: z.string().nullable(),
+  zipCode: z.string().nullable(),
+  phone: z.string().nullable(),
+  email: z.string().nullable(),
+  status: z.string(),
+  createdAt: z.date(),
+  updatedAt: z.date(),
+});
+export type OrganisationDto = z.infer<typeof OrganisationDtoSchema>;
+
+/**
+ * Organisation list item DTO - extends organisation with count
+ */
+export const OrganisationListItemDtoSchema = OrganisationDtoSchema.extend({
+  _count: z.object({
+    employees: z.number(),
+    departments: z.number(),
+  }),
+});
+export type OrganisationListItemDto = z.infer<
+  typeof OrganisationListItemDtoSchema
+>;
+
+/**
+ * Organisation detail DTO - extends organisation with nested arrays
+ */
+export const OrganisationDetailDtoSchema = OrganisationDtoSchema.extend({
+  departments: z.array(z.any()),
+  employees: z.array(z.any()),
+  _count: z.object({
+    employees: z.number(),
+    departments: z.number(),
+  }),
+});
+export type OrganisationDetailDto = z.infer<typeof OrganisationDetailDtoSchema>;
