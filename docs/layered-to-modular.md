@@ -1,34 +1,38 @@
-
 ## 📋 **DECISION MATRIX**
 
-| Item | Shared? | Reason |
-|------|---------|--------|
-| **Request/Response Types** | ✅ YES | API contract, both need to agree |
-| **Enums (UserRole, Status)** | ✅ YES | Both need same values |
-| **API Routes** | ✅ YES | Frontend needs to know endpoints |
-| **Format Utils** | ✅ YES | Consistent formatting both sides |
-| **Basic Request Schemas** | 🟡 MAYBE | Only if you want shared validation |
-| **Strict Validation Schemas** | ❌ NO | Backend-specific security rules |
-| **UI Validation Schemas** | ❌ NO | Frontend-specific UX rules |
-| **Business Logic** | ❌ NO | Backend-only |
-| **Database Models** | ❌ NO | Backend-only |
-| **UI Components/State** | ❌ NO | Frontend-only |
+| Item                          | Shared?  | Reason                             |
+| ----------------------------- | -------- | ---------------------------------- |
+| **Request/Response Types**    | ✅ YES   | API contract, both need to agree   |
+| **Enums (UserRole, Status)**  | ✅ YES   | Both need same values              |
+| **API Routes**                | ✅ YES   | Frontend needs to know endpoints   |
+| **Format Utils**              | ✅ YES   | Consistent formatting both sides   |
+| **Basic Request Schemas**     | 🟡 MAYBE | Only if you want shared validation |
+| **Strict Validation Schemas** | ❌ NO    | Backend-specific security rules    |
+| **UI Validation Schemas**     | ❌ NO    | Frontend-specific UX rules         |
+| **Business Logic**            | ❌ NO    | Backend-only                       |
+| **Database Models**           | ❌ NO    | Backend-only                       |
+| **UI Components/State**       | ❌ NO    | Frontend-only                      |
 
 ---
 
 ## 🎯 **YOUR SPECIFIC QUESTIONS ANSWERED**
 
 ### **Q1: "Is this possible?"**
+
 **A: YES!** ✅ This is a valid, production-ready pattern.
 
 ### **Q2: "Won't create any overhead?"**
-**A: NO overhead!** ✅ 
+
+**A: NO overhead!** ✅
+
 - Small shared package = fast builds
 - Each side bundles only what it uses
 - No runtime dependency
 
 ### **Q3: "Just scope-wise?"**
+
 **A: Perfect scope!** ✅
+
 - Shared = API contract + common utilities
 - Backend = Backend concerns
 - Frontend = Frontend concerns
@@ -37,6 +41,7 @@
 ---
 
 ## 🏗️ **RECOMMENDED STRUCTURE FOR YOUR PROJECT**
+
 ```
 shared/
 ├── src/
@@ -320,7 +325,7 @@ ROUND 4: Simple Module First (TEST PATTERN)
 8. auth.controller.ts → Give me this
 9. I return: auth.types.ts, auth.service.ts, auth.controller.ts
 ROUND 5: Repeat for Each Module
-Tenants → Organisations → Departments → Designations → 
+Tenants → Organisations → Departments → Designations →
 Employees → Attendance → Leaves → Payroll → Reports → SuperAdmin
 ROUND 6: Server Setup
 Last: server.ts, middleware updates
@@ -361,7 +366,7 @@ typescript
 @Route("auth")
 @Tags("Authentication")
 export class AuthController extends Controller {
-  
+
   @Post("login")
   @SuccessResponse(200, "Login successful")
   @Response<ErrorResponse>(401, "Invalid credentials")
@@ -398,6 +403,7 @@ export class AuthController extends Controller {
 3. **`backend/src/controllers/auth.controller.ts`** - We'll use this as the FIRST module to migrate (it's simple and critical)
 
 Once I see these, I'll:
+
 1. Return updated `package.json` with all deps
 2. Create `tsoa.json` config
 3. Convert `auth.controller.ts` → 3 new files (types, service, controller)
@@ -409,7 +415,8 @@ This will establish the **pattern** we'll repeat for all other modules.
 ## 📤 **How to Send Files:**
 
 Just paste them one by one in your next message:
-```
+
+````
 Here's package.json:
 [paste content]
 
@@ -787,25 +794,25 @@ D) Show you the updated error handler middleware
 Let me know! 🎯
 
 Package
-Code · JSON 
+Code · JSON
 Tsoa
-Code · JSON 
+Code · JSON
 Shared package
-Code · JSON 
+Code · JSON
 Errors
-TS 
+TS
 Response types
-TS 
+TS
 Auth.types
-TS 
+TS
 Auth.service
-TS 
+TS
 Auth.controller
-TS 
+TS
 Auth index
-TS 
+TS
 Shared index
-TS 
+TS
 just tell me, our shared project has only non-runtime things? right? we have to use zod in backend only? and i don't know why i put zod in shared. just make me clear of these things then we'll move further
 
 Jan 29
@@ -884,11 +891,12 @@ typescript
 // Frontend: Validates form, shows errors immediately
 // Backend: Validates again (security), same schema
 // User: Great UX, sees errors before submit
-```
+````
 
 ---
 
 ## 📁 **CORRECT SHARED PACKAGE STRUCTURE**
+
 ```
 shared/
 ├── src/
@@ -1053,6 +1061,7 @@ bash
 ## ✅ **PRODUCTION DEPLOYMENT**
 
 ### **What You Deploy:**
+
 ```
 Server 1 (Backend):
 /var/www/backend/
@@ -1079,6 +1088,7 @@ Server 2 (Frontend - Static):
 ## 🔍 **YOUR SPECIFIC CONCERNS:**
 
 ### **Q1: "Will I have to run shared project in production?"**
+
 **A: NO!** ❌
 
 - Shared is a **build-time dependency** only
@@ -1086,6 +1096,7 @@ Server 2 (Frontend - Static):
 - Production only runs the final built artifacts
 
 ### **Q2: "Won't I rely on shared at runtime?"**
+
 **A: NO!** ❌
 
 - Runtime = Backend runs `node dist/server.js`
@@ -1093,6 +1104,7 @@ Server 2 (Frontend - Static):
 - Frontend = Static files, all code bundled in `.next/`
 
 ### **Q3: "Is Zod included in static export?"**
+
 **A: YES!** ✅
 
 - Next.js bundles Zod into your JavaScript chunks
@@ -1102,6 +1114,7 @@ Server 2 (Frontend - Static):
 ---
 
 ## 📊 **SIZE COMPARISON (Production Bundles)**
+
 ```
 Frontend Static Export:
 ├── _next/static/chunks/
@@ -1176,6 +1189,7 @@ json
   "installCommand": "pnpm install"
 }
 ```
+
 - Vercel builds shared, then frontend
 - Deploys only `.next/` folder
 - No shared/ in production
@@ -1184,13 +1198,13 @@ json
 
 ## ✅ **ANSWERS TO YOUR CONCERNS**
 
-| Concern | Answer |
-|---------|--------|
+| Concern                            | Answer                                               |
+| ---------------------------------- | ---------------------------------------------------- |
 | Do I deploy shared/ to production? | **NO** - Only build it, then deploy backend/frontend |
-| Does shared need to "run"? | **NO** - It's compiled into backend/frontend builds |
-| Will Zod bloat my frontend? | **NO** - ~13KB gzipped, negligible |
-| Can I export frontend as static? | **YES** - Zod bundles into static JS files |
-| Is backend standalone after build? | **YES** - All shared code is bundled in dist/ |
+| Does shared need to "run"?         | **NO** - It's compiled into backend/frontend builds  |
+| Will Zod bloat my frontend?        | **NO** - ~13KB gzipped, negligible                   |
+| Can I export frontend as static?   | **YES** - Zod bundles into static JS files           |
+| Is backend standalone after build? | **YES** - All shared code is bundled in dist/        |
 
 ---
 
@@ -1215,6 +1229,7 @@ json
 ---
 
 ## 🎯 **WHAT YOU ACTUALLY DEPLOY**
+
 ```
 Production Servers:
 
@@ -1328,6 +1343,7 @@ export const RegisterSchema = z.object({ ... });
 ```
 
 ### **Problem:**
+
 - ❌ **DUPLICATED** schemas (yours in shared, mine in backend)
 - ❌ **Different names** (yours: `loginSchema`, mine: `LoginSchema`)
 - ❌ **Not using your existing shared schemas**
@@ -1335,6 +1351,7 @@ export const RegisterSchema = z.object({ ... });
 ---
 
 ## 🎯 **ACTUAL CURRENT STRUCTURE**
+
 ```
 Project Root/
 ├── shared/
@@ -1343,7 +1360,7 @@ Project Root/
 │   └── src/
 │       ├── index.ts              ← ✅ Unchanged
 │       ├── types/index.ts        ← ✅ Unchanged (your UserRole, etc.)
-│       ├── schemas/index.ts      ← ✅ Unchanged (your loginSchema, etc.) 
+│       ├── schemas/index.ts      ← ✅ Unchanged (your loginSchema, etc.)
 │       ├── constants/index.ts    ← ✅ Unchanged
 │       └── utils/index.ts        ← ✅ Unchanged
 │
@@ -1480,7 +1497,7 @@ export const LoginValidationSchema = z.object({
   password: z.string().min(8).regex(/[A-Z]/)  // ← Stricter!
 });
 
-// frontend/src/schemas/login.ts  
+// frontend/src/schemas/login.ts
 export const LoginFormSchema = z.object({
   email: z.string().email(),
   password: z.string().min(1),  // ← Less strict for UX
@@ -1571,7 +1588,7 @@ const StrictPasswordSchema = z.string().min(12).regex(...)
 interface FormState { ... }
 interface UIConfig { ... }
 
-// ❌ Frontend-only validation  
+// ❌ Frontend-only validation
 const LoginFormSchema = z.object({
   email: z.string().email(),
   rememberMe: z.boolean(),  // UI-only field
@@ -1588,34 +1605,39 @@ interface UserModel extends User {
 
 ## 📋 **DECISION MATRIX**
 
-| Item | Shared? | Reason |
-|------|---------|--------|
-| **Request/Response Types** | ✅ YES | API contract, both need to agree |
-| **Enums (UserRole, Status)** | ✅ YES | Both need same values |
-| **API Routes** | ✅ YES | Frontend needs to know endpoints |
-| **Format Utils** | ✅ YES | Consistent formatting both sides |
-| **Basic Request Schemas** | 🟡 MAYBE | Only if you want shared validation |
-| **Strict Validation Schemas** | ❌ NO | Backend-specific security rules |
-| **UI Validation Schemas** | ❌ NO | Frontend-specific UX rules |
-| **Business Logic** | ❌ NO | Backend-only |
-| **Database Models** | ❌ NO | Backend-only |
-| **UI Components/State** | ❌ NO | Frontend-only |
+| Item                          | Shared?  | Reason                             |
+| ----------------------------- | -------- | ---------------------------------- |
+| **Request/Response Types**    | ✅ YES   | API contract, both need to agree   |
+| **Enums (UserRole, Status)**  | ✅ YES   | Both need same values              |
+| **API Routes**                | ✅ YES   | Frontend needs to know endpoints   |
+| **Format Utils**              | ✅ YES   | Consistent formatting both sides   |
+| **Basic Request Schemas**     | 🟡 MAYBE | Only if you want shared validation |
+| **Strict Validation Schemas** | ❌ NO    | Backend-specific security rules    |
+| **UI Validation Schemas**     | ❌ NO    | Frontend-specific UX rules         |
+| **Business Logic**            | ❌ NO    | Backend-only                       |
+| **Database Models**           | ❌ NO    | Backend-only                       |
+| **UI Components/State**       | ❌ NO    | Frontend-only                      |
 
 ---
 
 ## 🎯 **YOUR SPECIFIC QUESTIONS ANSWERED**
 
 ### **Q1: "Is this possible?"**
+
 **A: YES!** ✅ This is a valid, production-ready pattern.
 
 ### **Q2: "Won't create any overhead?"**
-**A: NO overhead!** ✅ 
+
+**A: NO overhead!** ✅
+
 - Small shared package = fast builds
 - Each side bundles only what it uses
 - No runtime dependency
 
 ### **Q3: "Just scope-wise?"**
+
 **A: Perfect scope!** ✅
+
 - Shared = API contract + common utilities
 - Backend = Backend concerns
 - Frontend = Frontend concerns
@@ -1624,6 +1646,7 @@ interface UserModel extends User {
 ---
 
 ## 🏗️ **RECOMMENDED STRUCTURE FOR YOUR PROJECT**
+
 ```
 shared/
 ├── src/
@@ -1797,23 +1820,24 @@ export const LoginFormSchema = z.object({
 
 ## 📊 **CLEAR SEPARATION OF CONCERNS**
 
-| Layer | Contains | Example |
-|-------|----------|---------|
-| **Shared** | API DTOs (Request/Response) | `LoginRequestDto`, `LoginResponseDto` |
-| **Shared** | Enums | `UserRole`, `EmployeeStatus` |
-| **Shared** | Constants | `API_ROUTES`, `ROLE_PERMISSIONS` |
-| **Shared** | Utils | `formatCurrency()`, `formatDate()` |
-| **Backend** | Domain Models | `UserDto` (full model) |
-| **Backend** | Validation Schemas | `LoginValidationSchema` (strict Zod) |
-| **Backend** | Business Logic | `AuthService`, `EmployeeService` |
-| **Frontend** | Form Schemas | `LoginFormSchema` (UX-focused Zod) |
-| **Frontend** | UI Types | `FormState`, `UIConfig` |
+| Layer        | Contains                    | Example                               |
+| ------------ | --------------------------- | ------------------------------------- |
+| **Shared**   | API DTOs (Request/Response) | `LoginRequestDto`, `LoginResponseDto` |
+| **Shared**   | Enums                       | `UserRole`, `EmployeeStatus`          |
+| **Shared**   | Constants                   | `API_ROUTES`, `ROLE_PERMISSIONS`      |
+| **Shared**   | Utils                       | `formatCurrency()`, `formatDate()`    |
+| **Backend**  | Domain Models               | `UserDto` (full model)                |
+| **Backend**  | Validation Schemas          | `LoginValidationSchema` (strict Zod)  |
+| **Backend**  | Business Logic              | `AuthService`, `EmployeeService`      |
+| **Frontend** | Form Schemas                | `LoginFormSchema` (UX-focused Zod)    |
+| **Frontend** | UI Types                    | `FormState`, `UIConfig`               |
 
 ---
 
 ## 🎯 **NAMING CONVENTION (Confirmed)**
 
 ### **Pattern:**
+
 ```
 [Entity][Purpose]Dto
 
@@ -1829,6 +1853,7 @@ Examples:
 ```
 
 ### **Where They Live:**
+
 ```
 shared/src/types/
 ├── auth.types.ts
@@ -1845,7 +1870,7 @@ shared/src/types/
     ├── ApiResponse<T>
     └── PaginatedResponse<T>
 
-    
+
 
 🚀 KEKA CLONE - PROJECT CONTEXT SUMMARY 📌 WHAT WE'RE BUILDING Multi-tenant SaaS HRMS (like Keka) with: * Backend: Node.js + Express + TypeScript + Prisma + PostgreSQL * Frontend: Next.js 14 + TypeScript + Tailwind CSS * Monorepo: PNPM workspaces * Architecture: Multi-tenant (shared schema wit
 
@@ -2068,7 +2093,7 @@ ROUND 4: Simple Module First (TEST PATTERN)
 8. auth.controller.ts → Give me this
 9. I return: auth.types.ts, auth.service.ts, auth.controller.ts
 ROUND 5: Repeat for Each Module
-Tenants → Organisations → Departments → Designations → 
+Tenants → Organisations → Departments → Designations →
 Employees → Attendance → Leaves → Payroll → Reports → SuperAdmin
 ROUND 6: Server Setup
 Last: server.ts, middleware updates
@@ -2109,7 +2134,7 @@ typescript
 @Route("auth")
 @Tags("Authentication")
 export class AuthController extends Controller {
-  
+
   @Post("login")
   @SuccessResponse(200, "Login successful")
   @Response<ErrorResponse>(401, "Invalid credentials")
@@ -2146,6 +2171,7 @@ export class AuthController extends Controller {
 3. **`backend/src/controllers/auth.controller.ts`** - We'll use this as the FIRST module to migrate (it's simple and critical)
 
 Once I see these, I'll:
+
 1. Return updated `package.json` with all deps
 2. Create `tsoa.json` config
 3. Convert `auth.controller.ts` → 3 new files (types, service, controller)
@@ -2157,7 +2183,8 @@ This will establish the **pattern** we'll repeat for all other modules.
 ## 📤 **How to Send Files:**
 
 Just paste them one by one in your next message:
-```
+
+````
 Here's package.json:
 [paste content]
 
@@ -2535,25 +2562,25 @@ D) Show you the updated error handler middleware
 Let me know! 🎯
 
 Package
-Code · JSON 
+Code · JSON
 Tsoa
-Code · JSON 
+Code · JSON
 Shared package
-Code · JSON 
+Code · JSON
 Errors
-TS 
+TS
 Response types
-TS 
+TS
 Auth.types
-TS 
+TS
 Auth.service
-TS 
+TS
 Auth.controller
-TS 
+TS
 Auth index
-TS 
+TS
 Shared index
-TS 
+TS
 just tell me, our shared project has only non-runtime things? right? we have to use zod in backend only? and i don't know why i put zod in shared. just make me clear of these things then we'll move further
 
 Jan 29
@@ -2632,11 +2659,12 @@ typescript
 // Frontend: Validates form, shows errors immediately
 // Backend: Validates again (security), same schema
 // User: Great UX, sees errors before submit
-```
+````
 
 ---
 
 ## 📁 **CORRECT SHARED PACKAGE STRUCTURE**
+
 ```
 shared/
 ├── src/
@@ -2801,6 +2829,7 @@ bash
 ## ✅ **PRODUCTION DEPLOYMENT**
 
 ### **What You Deploy:**
+
 ```
 Server 1 (Backend):
 /var/www/backend/
@@ -2827,6 +2856,7 @@ Server 2 (Frontend - Static):
 ## 🔍 **YOUR SPECIFIC CONCERNS:**
 
 ### **Q1: "Will I have to run shared project in production?"**
+
 **A: NO!** ❌
 
 - Shared is a **build-time dependency** only
@@ -2834,6 +2864,7 @@ Server 2 (Frontend - Static):
 - Production only runs the final built artifacts
 
 ### **Q2: "Won't I rely on shared at runtime?"**
+
 **A: NO!** ❌
 
 - Runtime = Backend runs `node dist/server.js`
@@ -2841,6 +2872,7 @@ Server 2 (Frontend - Static):
 - Frontend = Static files, all code bundled in `.next/`
 
 ### **Q3: "Is Zod included in static export?"**
+
 **A: YES!** ✅
 
 - Next.js bundles Zod into your JavaScript chunks
@@ -2850,6 +2882,7 @@ Server 2 (Frontend - Static):
 ---
 
 ## 📊 **SIZE COMPARISON (Production Bundles)**
+
 ```
 Frontend Static Export:
 ├── _next/static/chunks/
@@ -2924,6 +2957,7 @@ json
   "installCommand": "pnpm install"
 }
 ```
+
 - Vercel builds shared, then frontend
 - Deploys only `.next/` folder
 - No shared/ in production
@@ -2932,13 +2966,13 @@ json
 
 ## ✅ **ANSWERS TO YOUR CONCERNS**
 
-| Concern | Answer |
-|---------|--------|
+| Concern                            | Answer                                               |
+| ---------------------------------- | ---------------------------------------------------- |
 | Do I deploy shared/ to production? | **NO** - Only build it, then deploy backend/frontend |
-| Does shared need to "run"? | **NO** - It's compiled into backend/frontend builds |
-| Will Zod bloat my frontend? | **NO** - ~13KB gzipped, negligible |
-| Can I export frontend as static? | **YES** - Zod bundles into static JS files |
-| Is backend standalone after build? | **YES** - All shared code is bundled in dist/ |
+| Does shared need to "run"?         | **NO** - It's compiled into backend/frontend builds  |
+| Will Zod bloat my frontend?        | **NO** - ~13KB gzipped, negligible                   |
+| Can I export frontend as static?   | **YES** - Zod bundles into static JS files           |
+| Is backend standalone after build? | **YES** - All shared code is bundled in dist/        |
 
 ---
 
@@ -2963,6 +2997,7 @@ json
 ---
 
 ## 🎯 **WHAT YOU ACTUALLY DEPLOY**
+
 ```
 Production Servers:
 
@@ -3076,6 +3111,7 @@ export const RegisterSchema = z.object({ ... });
 ```
 
 ### **Problem:**
+
 - ❌ **DUPLICATED** schemas (yours in shared, mine in backend)
 - ❌ **Different names** (yours: `loginSchema`, mine: `LoginSchema`)
 - ❌ **Not using your existing shared schemas**
@@ -3083,6 +3119,7 @@ export const RegisterSchema = z.object({ ... });
 ---
 
 ## 🎯 **ACTUAL CURRENT STRUCTURE**
+
 ```
 Project Root/
 ├── shared/
@@ -3091,7 +3128,7 @@ Project Root/
 │   └── src/
 │       ├── index.ts              ← ✅ Unchanged
 │       ├── types/index.ts        ← ✅ Unchanged (your UserRole, etc.)
-│       ├── schemas/index.ts      ← ✅ Unchanged (your loginSchema, etc.) 
+│       ├── schemas/index.ts      ← ✅ Unchanged (your loginSchema, etc.)
 │       ├── constants/index.ts    ← ✅ Unchanged
 │       └── utils/index.ts        ← ✅ Unchanged
 │
@@ -3228,7 +3265,7 @@ export const LoginValidationSchema = z.object({
   password: z.string().min(8).regex(/[A-Z]/)  // ← Stricter!
 });
 
-// frontend/src/schemas/login.ts  
+// frontend/src/schemas/login.ts
 export const LoginFormSchema = z.object({
   email: z.string().email(),
   password: z.string().min(1),  // ← Less strict for UX
@@ -3319,7 +3356,7 @@ const StrictPasswordSchema = z.string().min(12).regex(...)
 interface FormState { ... }
 interface UIConfig { ... }
 
-// ❌ Frontend-only validation  
+// ❌ Frontend-only validation
 const LoginFormSchema = z.object({
   email: z.string().email(),
   rememberMe: z.boolean(),  // UI-only field
@@ -3336,34 +3373,39 @@ interface UserModel extends User {
 
 ## 📋 **DECISION MATRIX**
 
-| Item | Shared? | Reason |
-|------|---------|--------|
-| **Request/Response Types** | ✅ YES | API contract, both need to agree |
-| **Enums (UserRole, Status)** | ✅ YES | Both need same values |
-| **API Routes** | ✅ YES | Frontend needs to know endpoints |
-| **Format Utils** | ✅ YES | Consistent formatting both sides |
-| **Basic Request Schemas** | 🟡 MAYBE | Only if you want shared validation |
-| **Strict Validation Schemas** | ❌ NO | Backend-specific security rules |
-| **UI Validation Schemas** | ❌ NO | Frontend-specific UX rules |
-| **Business Logic** | ❌ NO | Backend-only |
-| **Database Models** | ❌ NO | Backend-only |
-| **UI Components/State** | ❌ NO | Frontend-only |
+| Item                          | Shared?  | Reason                             |
+| ----------------------------- | -------- | ---------------------------------- |
+| **Request/Response Types**    | ✅ YES   | API contract, both need to agree   |
+| **Enums (UserRole, Status)**  | ✅ YES   | Both need same values              |
+| **API Routes**                | ✅ YES   | Frontend needs to know endpoints   |
+| **Format Utils**              | ✅ YES   | Consistent formatting both sides   |
+| **Basic Request Schemas**     | 🟡 MAYBE | Only if you want shared validation |
+| **Strict Validation Schemas** | ❌ NO    | Backend-specific security rules    |
+| **UI Validation Schemas**     | ❌ NO    | Frontend-specific UX rules         |
+| **Business Logic**            | ❌ NO    | Backend-only                       |
+| **Database Models**           | ❌ NO    | Backend-only                       |
+| **UI Components/State**       | ❌ NO    | Frontend-only                      |
 
 ---
 
 ## 🎯 **YOUR SPECIFIC QUESTIONS ANSWERED**
 
 ### **Q1: "Is this possible?"**
+
 **A: YES!** ✅ This is a valid, production-ready pattern.
 
 ### **Q2: "Won't create any overhead?"**
-**A: NO overhead!** ✅ 
+
+**A: NO overhead!** ✅
+
 - Small shared package = fast builds
 - Each side bundles only what it uses
 - No runtime dependency
 
 ### **Q3: "Just scope-wise?"**
+
 **A: Perfect scope!** ✅
+
 - Shared = API contract + common utilities
 - Backend = Backend concerns
 - Frontend = Frontend concerns
@@ -3372,6 +3414,7 @@ interface UserModel extends User {
 ---
 
 ## 🏗️ **RECOMMENDED STRUCTURE FOR YOUR PROJECT**
+
 ```
 shared/
 ├── src/
@@ -3545,23 +3588,24 @@ export const LoginFormSchema = z.object({
 
 ## 📊 **CLEAR SEPARATION OF CONCERNS**
 
-| Layer | Contains | Example |
-|-------|----------|---------|
-| **Shared** | API DTOs (Request/Response) | `LoginRequestDto`, `LoginResponseDto` |
-| **Shared** | Enums | `UserRole`, `EmployeeStatus` |
-| **Shared** | Constants | `API_ROUTES`, `ROLE_PERMISSIONS` |
-| **Shared** | Utils | `formatCurrency()`, `formatDate()` |
-| **Backend** | Domain Models | `UserDto` (full model) |
-| **Backend** | Validation Schemas | `LoginValidationSchema` (strict Zod) |
-| **Backend** | Business Logic | `AuthService`, `EmployeeService` |
-| **Frontend** | Form Schemas | `LoginFormSchema` (UX-focused Zod) |
-| **Frontend** | UI Types | `FormState`, `UIConfig` |
+| Layer        | Contains                    | Example                               |
+| ------------ | --------------------------- | ------------------------------------- |
+| **Shared**   | API DTOs (Request/Response) | `LoginRequestDto`, `LoginResponseDto` |
+| **Shared**   | Enums                       | `UserRole`, `EmployeeStatus`          |
+| **Shared**   | Constants                   | `API_ROUTES`, `ROLE_PERMISSIONS`      |
+| **Shared**   | Utils                       | `formatCurrency()`, `formatDate()`    |
+| **Backend**  | Domain Models               | `UserDto` (full model)                |
+| **Backend**  | Validation Schemas          | `LoginValidationSchema` (strict Zod)  |
+| **Backend**  | Business Logic              | `AuthService`, `EmployeeService`      |
+| **Frontend** | Form Schemas                | `LoginFormSchema` (UX-focused Zod)    |
+| **Frontend** | UI Types                    | `FormState`, `UIConfig`               |
 
 ---
 
 ## 🎯 **NAMING CONVENTION (Confirmed)**
 
 ### **Pattern:**
+
 ```
 [Entity][Purpose]Dto
 
@@ -3577,6 +3621,7 @@ Examples:
 ```
 
 ### **Where They Live:**
+
 ```
 shared/src/types/
 ├── auth.types.ts
@@ -3663,6 +3708,7 @@ export const CreateEmployeeFormSchema = z.object({
 ---
 
 ## 🔄 **DATA FLOW**
+
 ```
 Frontend Form
     ↓
@@ -3712,3 +3758,6 @@ etc.
 
 
 🚀 READY TO PROCEED!
+
+dtos section + swagger implementation completed with tsoa + zod
+```
