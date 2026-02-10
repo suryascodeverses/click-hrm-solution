@@ -5,8 +5,6 @@
  * Location: shared/types/department.types.ts
  */
 
-import { z } from "zod";
-
 // ============================================
 // ENUMS
 // ============================================
@@ -17,30 +15,10 @@ export enum DeptStatus {
 }
 
 // ============================================
-// VALIDATION SCHEMAS
-// ============================================
-
-export const CreateDepartmentValidationSchema = z.object({
-  organisationId: z.string().uuid("Invalid organisation ID"),
-  name: z.string().min(2, "Name must be at least 2 characters").max(100).trim(),
-  code: z.string().min(1, "Code is required").max(20).trim(),
-  description: z.string().max(500).optional(),
-  headOfDepartment: z.string().uuid().optional(),
-});
-
-export const UpdateDepartmentValidationSchema = z.object({
-  name: z.string().min(2).max(100).trim().optional(),
-  code: z.string().min(1).max(20).trim().optional(),
-  description: z.string().max(500).optional(),
-  headOfDepartment: z.string().uuid().optional(),
-  status: z.nativeEnum(DeptStatus).optional(),
-});
-
-// ============================================
 // INPUT DTOs
 // ============================================
 
-export interface CreateDepartmentInput {
+export interface CreateDepartmentRequestDto {
   organisationId: string;
   name: string;
   code: string;
@@ -48,7 +26,7 @@ export interface CreateDepartmentInput {
   headOfDepartment?: string;
 }
 
-export interface UpdateDepartmentInput {
+export interface UpdateDepartmentRequestDto {
   name?: string;
   code?: string;
   description?: string;
@@ -174,14 +152,22 @@ export interface DepartmentQueryParams {
 // RESPONSE DTOs
 // ============================================
 
-export interface DepartmentListResponseDto {
-  departments: DepartmentWithFullDetailsDto[];
-  pagination: {
-    total: number;
-    page: number;
-    limit: number;
-    totalPages: number;
+export interface DepartmentListItemDto extends DepartmentDto {
+  organisation: {
+    id: string;
+    name: string;
+    code: string;
   };
+  _count: {
+    employees: number;
+    designations: number;
+  };
+}
+
+export interface DepartmentDetailDto extends DepartmentDto {
+  organisation: any;
+  employees: any[];
+  designations: any[];
 }
 
 export interface DepartmentStatsDto {

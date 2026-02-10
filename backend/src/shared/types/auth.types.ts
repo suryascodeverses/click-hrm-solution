@@ -6,101 +6,41 @@
  */
 
 import { TenantStatus, UserRole } from "@prisma/client";
-import { z } from "zod";
 
-// ============================================
-// ENUMS
-// ============================================
-
-// ============================================
-// VALIDATION SCHEMAS
-// ============================================
-
-export const RegisterValidationSchema = z.object({
-  email: z.string().email("Invalid email address"),
-  password: z
-    .string()
-    .min(8, "Password must be at least 8 characters")
-    .regex(/[A-Z]/, "Password must contain at least one uppercase letter")
-    .regex(/[a-z]/, "Password must contain at least one lowercase letter")
-    .regex(/[0-9]/, "Password must contain at least one number"),
-  companyName: z
-    .string()
-    .min(2, "Company name must be at least 2 characters")
-    .max(100, "Company name must not exceed 100 characters")
-    .trim(),
-});
-
-export const LoginValidationSchema = z.object({
-  email: z.string().email("Invalid email address"),
-  password: z.string().min(1, "Password is required"),
-});
-
-export const LogoutValidationSchema = z.object({
-  refreshToken: z.string().optional(),
-});
-
-export const RefreshTokenValidationSchema = z.object({
-  refreshToken: z.string().min(1, "Refresh token is required"),
-});
-
-export const ChangePasswordValidationSchema = z.object({
-  currentPassword: z.string().min(1, "Current password is required"),
-  newPassword: z
-    .string()
-    .min(8, "Password must be at least 8 characters")
-    .regex(/[A-Z]/, "Password must contain at least one uppercase letter")
-    .regex(/[a-z]/, "Password must contain at least one lowercase letter")
-    .regex(/[0-9]/, "Password must contain at least one number"),
-});
-
-export const ForgotPasswordValidationSchema = z.object({
-  email: z.string().email("Invalid email address"),
-});
-
-export const ResetPasswordValidationSchema = z.object({
-  token: z.string().min(1, "Reset token is required"),
-  newPassword: z
-    .string()
-    .min(8, "Password must be at least 8 characters")
-    .regex(/[A-Z]/, "Password must contain at least one uppercase letter")
-    .regex(/[a-z]/, "Password must contain at least one lowercase letter")
-    .regex(/[0-9]/, "Password must contain at least one number"),
-});
 
 // ============================================
 // INPUT DTOs
 // ============================================
 
-export interface RegisterInput {
+export interface RegisterRequestDto {
   email: string;
   password: string;
   companyName: string;
 }
 
-export interface LoginInput {
+export interface LoginRequestDto {
   email: string;
   password: string;
 }
 
-export interface LogoutInput {
+export interface LogoutRequestDto {
   refreshToken?: string;
 }
 
-export interface RefreshTokenInput {
+export interface RefreshTokenRequestDto {
   refreshToken: string;
 }
 
-export interface ChangePasswordInput {
+export interface ChangePasswordRequestDto {
   currentPassword: string;
   newPassword: string;
 }
 
-export interface ForgotPasswordInput {
+export interface ForgotPasswordRequestDto {
   email: string;
 }
 
-export interface ResetPasswordInput {
+export interface ResetPasswordRequestDto {
   token: string;
   newPassword: string;
 }

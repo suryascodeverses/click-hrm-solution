@@ -5,77 +5,38 @@
  * Location: shared/types/super-admin-auth.types.ts
  */
 
-import { z } from "zod";
-
-// ============================================
-// VALIDATION SCHEMAS
-// ============================================
-
-export const SuperAdminLoginValidationSchema = z.object({
-  email: z.string().email("Invalid email address"),
-  password: z.string().min(1, "Password is required"),
-});
-
-export const CreateSuperAdminValidationSchema = z.object({
-  email: z.string().email("Invalid email address"),
-  password: z
-    .string()
-    .min(8, "Password must be at least 8 characters")
-    .regex(/[A-Z]/, "Password must contain at least one uppercase letter")
-    .regex(/[a-z]/, "Password must contain at least one lowercase letter")
-    .regex(/[0-9]/, "Password must contain at least one number"),
-  name: z.string().min(2, "Name must be at least 2 characters").trim(),
-  masterKey: z.string().min(1, "Master key is required"),
-});
-
-export const UpdateSuperAdminValidationSchema = z.object({
-  name: z.string().min(2).trim().optional(),
-  email: z.string().email().optional(),
-  isActive: z.boolean().optional(),
-});
-
-export const ChangeSuperAdminPasswordValidationSchema = z.object({
-  currentPassword: z.string().min(1, "Current password is required"),
-  newPassword: z
-    .string()
-    .min(8, "Password must be at least 8 characters")
-    .regex(/[A-Z]/, "Password must contain at least one uppercase letter")
-    .regex(/[a-z]/, "Password must contain at least one lowercase letter")
-    .regex(/[0-9]/, "Password must contain at least one number"),
-});
-
 // ============================================
 // INPUT DTOs
 // ============================================
 
-export interface SuperAdminLoginInput {
+export interface SuperAdminLoginRequestDto {
   email: string;
   password: string;
 }
 
-export interface CreateSuperAdminInput {
+export interface CreateSuperAdminRequestDto {
   email: string;
   password: string;
   name: string;
   masterKey: string;
 }
 
-export interface UpdateSuperAdminInput {
+export interface UpdateSuperAdminRequestDto {
   name?: string;
   email?: string;
   isActive?: boolean;
 }
 
-export interface ChangeSuperAdminPasswordInput {
+export interface ChangeSuperAdminPasswordRequestDto {
   currentPassword: string;
   newPassword: string;
 }
 
-export interface SuperAdminLogoutInput {
+export interface SuperAdminLogoutRequestDto {
   refreshToken?: string;
 }
 
-export interface SuperAdminRefreshTokenInput {
+export interface SuperAdminRefreshTokenRequestDto {
   refreshToken: string;
 }
 

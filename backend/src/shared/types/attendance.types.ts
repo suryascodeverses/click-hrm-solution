@@ -6,53 +6,20 @@
  */
 
 import { AttendanceStatus } from "@prisma/client";
-import { z } from "zod";
-
-// ============================================
-// ENUMS
-// ============================================
-
-// ============================================
-// VALIDATION SCHEMAS
-// ============================================
-
-export const CheckInValidationSchema = z.object({
-  employeeId: z.string().uuid(),
-});
-
-export const CheckOutValidationSchema = z.object({
-  employeeId: z.string().uuid(),
-});
-
-export const CreateAttendanceValidationSchema = z.object({
-  employeeId: z.string().uuid(),
-  date: z.string().datetime(),
-  checkIn: z.string().datetime().optional(),
-  checkOut: z.string().datetime().optional(),
-  status: z.nativeEnum(AttendanceStatus),
-  remarks: z.string().max(500).optional(),
-});
-
-export const UpdateAttendanceValidationSchema = z.object({
-  checkIn: z.string().datetime().optional(),
-  checkOut: z.string().datetime().optional(),
-  status: z.nativeEnum(AttendanceStatus).optional(),
-  remarks: z.string().max(500).optional(),
-});
 
 // ============================================
 // INPUT DTOs (without id, timestamps)
 // ============================================
 
-export interface CheckInInput {
+export interface CheckInRequestDto {
   employeeId: string;
 }
 
-export interface CheckOutInput {
+export interface CheckOutRequestDto {
   employeeId: string;
 }
 
-export interface CreateAttendanceInput {
+export interface CreateAttendanceRequestDto {
   employeeId: string;
   date: Date | string;
   checkIn?: Date | string;
@@ -61,7 +28,7 @@ export interface CreateAttendanceInput {
   remarks?: string;
 }
 
-export interface UpdateAttendanceInput {
+export interface UpdateAttendanceRequestDto {
   checkIn?: Date | string;
   checkOut?: Date | string;
   status?: AttendanceStatus;

@@ -5,7 +5,6 @@
  * Location: shared/types/employee.types.ts
  */
 
-import { z } from "zod";
 
 // ============================================
 // ENUMS
@@ -41,57 +40,10 @@ export enum EmployeeStatus {
 }
 
 // ============================================
-// VALIDATION SCHEMAS
-// ============================================
-
-export const CreateEmployeeValidationSchema = z.object({
-  organisationId: z.string().uuid(),
-  employeeCode: z.string().min(1).max(50),
-  firstName: z.string().min(2).max(100).trim(),
-  lastName: z.string().min(2).max(100).trim(),
-  middleName: z.string().max(100).trim().optional(),
-  email: z.string().email(),
-  phone: z.string().max(20).optional(),
-  dateOfBirth: z.string().optional(),
-  gender: z.nativeEnum(Gender).optional(),
-  maritalStatus: z.nativeEnum(MaritalStatus).optional(),
-  bloodGroup: z.string().max(10).optional(),
-  dateOfJoining: z.string(),
-  departmentId: z.string().uuid().optional(),
-  designationId: z.string().uuid().optional(),
-  reportingTo: z.string().uuid().optional(),
-  employmentType: z.nativeEnum(EmploymentType).optional(),
-  currentAddress: z.string().optional(),
-  permanentAddress: z.string().optional(),
-  city: z.string().max(100).optional(),
-  state: z.string().max(100).optional(),
-  country: z.string().max(100).optional(),
-  zipCode: z.string().max(20).optional(),
-  profilePicture: z.string().url().optional(),
-  password: z.string().min(8).optional(),
-});
-
-export const UpdateEmployeeValidationSchema = z.object({
-  firstName: z.string().min(2).max(100).trim().optional(),
-  lastName: z.string().min(2).max(100).trim().optional(),
-  phone: z.string().max(20).optional(),
-  departmentId: z.string().uuid().optional(),
-  designationId: z.string().uuid().optional(),
-  managerId: z.string().uuid().optional(),
-  status: z.nativeEnum(EmployeeStatus).optional(),
-  employmentType: z.nativeEnum(EmploymentType).optional(),
-  dateOfBirth: z.string().optional(),
-  address: z.string().optional(),
-  city: z.string().optional(),
-  state: z.string().optional(),
-  country: z.string().optional(),
-});
-
-// ============================================
 // INPUT DTOs
 // ============================================
 
-export interface CreateEmployeeInput {
+export interface CreateEmployeeRequestDto {
   organisationId: string;
   employeeCode: string;
   firstName: string;
@@ -118,7 +70,7 @@ export interface CreateEmployeeInput {
   password?: string;
 }
 
-export interface UpdateEmployeeInput {
+export interface UpdateEmployeeRequestDto {
   firstName?: string;
   lastName?: string;
   middleName?: string;
@@ -374,4 +326,20 @@ export interface EmployeeHierarchyDto {
     level: number;
   } | null;
   subordinates?: EmployeeHierarchyDto[];
+}
+
+export interface CreateEmployeeResponseDto {
+  id: string;
+  employeeCode: string;
+  firstName: string;
+  lastName: string;
+  email: string;
+  status: string;
+  user: {
+    id: string;
+    email: string;
+    role: string;
+  };
+  department: any;
+  designation: any;
 }

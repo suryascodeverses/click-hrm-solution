@@ -5,40 +5,20 @@
  * Location: shared/types/tenant.types.ts
  */
 
-import { z } from "zod";
-import { TenantStatus } from "./auth.types";
-
-// ============================================
-// VALIDATION SCHEMAS
-// ============================================
-
-export const UpdateTenantProfileValidationSchema = z.object({
-  name: z.string().min(2).max(100).trim().optional(),
-  phone: z.string().optional(),
-  logo: z.string().url().optional(),
-});
-
-export const UpdateTenantSettingsValidationSchema = z.object({
-  workingHoursStart: z.string().optional(),
-  workingHoursEnd: z.string().optional(),
-  weekendDays: z.array(z.number().int().min(0).max(6)).optional(),
-  timezone: z.string().optional(),
-  dateFormat: z.string().optional(),
-  currency: z.string().optional(),
-});
+import { TenantStatus } from "@prisma/client";
 
 // ============================================
 // INPUT DTOs
 // ============================================
 
-export interface UpdateTenantProfileInput {
+export interface UpdateTenantProfileRequestDto {
   name?: string;
   phone?: string;
   logo?: string;
   email?: string;
 }
 
-export interface UpdateTenantSettingsInput {
+export interface UpdateTenantSettingsRequestDto {
   workingHoursStart?: string;
   workingHoursEnd?: string;
   weekendDays?: number[];

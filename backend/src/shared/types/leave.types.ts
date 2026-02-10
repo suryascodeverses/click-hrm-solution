@@ -5,7 +5,6 @@
  * Location: shared/types/leave.types.ts
  */
 
-import { z } from "zod";
 
 // ============================================
 // ENUMS
@@ -19,53 +18,10 @@ export enum LeaveStatus {
 }
 
 // ============================================
-// VALIDATION SCHEMAS
-// ============================================
-
-export const ApplyLeaveValidationSchema = z.object({
-  employeeId: z.string().uuid(),
-  leaveTypeId: z.string().uuid(),
-  startDate: z.string(),
-  endDate: z.string(),
-  days: z.number().min(0.5),
-  reason: z.string().min(10, "Reason must be at least 10 characters").max(500),
-});
-
-export const RejectLeaveValidationSchema = z.object({
-  rejectedReason: z
-    .string()
-    .min(10, "Reason must be at least 10 characters")
-    .max(500),
-});
-
-export const CreateLeaveTypeValidationSchema = z.object({
-  name: z.string().min(2).max(100),
-  code: z.string().min(1).max(20),
-  defaultDays: z.number().int().min(1),
-  carryForward: z.boolean(),
-  maxCarryForward: z.number().int().min(0).optional(),
-  requiresApproval: z.boolean().optional(),
-  color: z.string().optional(),
-  description: z.string().max(500).optional(),
-});
-
-export const UpdateLeaveTypeValidationSchema = z.object({
-  name: z.string().min(2).max(100).optional(),
-  code: z.string().min(1).max(20).optional(),
-  defaultDays: z.number().int().min(1).optional(),
-  carryForward: z.boolean().optional(),
-  maxCarryForward: z.number().int().min(0).optional(),
-  requiresApproval: z.boolean().optional(),
-  color: z.string().optional(),
-  description: z.string().max(500).optional(),
-  isActive: z.boolean().optional(),
-});
-
-// ============================================
 // INPUT DTOs
 // ============================================
 
-export interface ApplyLeaveInput {
+export interface ApplyLeaveRequestDto {
   employeeId: string;
   leaveTypeId: string;
   startDate: Date | string;
@@ -74,20 +30,20 @@ export interface ApplyLeaveInput {
   reason: string;
 }
 
-export interface ApproveLeaveInput {
+export interface ApproveLeaveRequestDto {
   approvedBy: string;
 }
 
-export interface RejectLeaveInput {
+export interface RejectLeaveRequestDto {
   approvedBy: string;
   rejectedReason: string;
 }
 
-export interface CancelLeaveInput {
+export interface CancelLeaveRequestDto {
   cancellationReason?: string;
 }
 
-export interface CreateLeaveTypeInput {
+export interface CreateLeaveTypeRequestDto {
   name: string;
   code: string;
   defaultDays: number;
@@ -98,7 +54,7 @@ export interface CreateLeaveTypeInput {
   description?: string;
 }
 
-export interface UpdateLeaveTypeInput {
+export interface UpdateLeaveTypeRequestDto {
   name?: string;
   code?: string;
   defaultDays?: number;
@@ -110,7 +66,7 @@ export interface UpdateLeaveTypeInput {
   isActive?: boolean;
 }
 
-export interface AllocateLeaveBalanceInput {
+export interface AllocateLeaveBalanceRequestDto {
   employeeId: string;
   leaveTypeId: string;
   year: number;

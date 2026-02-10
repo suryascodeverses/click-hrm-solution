@@ -30,6 +30,16 @@ export interface PaginatedResponseDto<T> {
   pagination: PaginationMeta;
 }
 
+/**
+ * Paginated API response wrapper
+ */
+export interface PaginatedResponse<T = any> {
+  success: true;
+  message?: string;
+  data: T[];
+  pagination: PaginationMeta;
+}
+
 // ============================================
 // API RESPONSES
 // ============================================
@@ -38,6 +48,27 @@ export interface SuccessResponseDto<T = any> {
   success: true;
   message: string;
   data: T;
+}
+
+/**
+ * Standard API response wrapper
+ */
+export interface ApiResponse<T = any> {
+  success: true;
+  message?: string;
+  data: T;
+}
+
+/**
+ * Standard API error response
+ */
+export interface ApiErrorResponse {
+  success: false;
+  message: string;
+  errors?: Array<{
+    field?: string;
+    message: string;
+  }>;
 }
 
 export interface ErrorResponseDto {
@@ -122,7 +153,7 @@ export interface MultipleFileUploadDto {
 // BULK OPERATIONS
 // ============================================
 
-export interface BulkOperationInput<T> {
+export interface BulkOperationRequestDto<T> {
   items: T[];
   options?: {
     skipValidation?: boolean;
@@ -217,7 +248,7 @@ export interface NotificationDto {
   createdAt: Date;
 }
 
-export interface SendNotificationInput {
+export interface SendNotificationRequestDto {
   userId: string | string[];
   type: NotificationType;
   title: string;
@@ -239,7 +270,7 @@ export interface SettingDto {
   isEditable: boolean;
 }
 
-export interface UpdateSettingInput {
+export interface UpdateSettingRequestDto {
   value: any;
 }
 
@@ -318,7 +349,7 @@ export interface RolePermissionDto {
   createdAt: Date;
 }
 
-export interface CheckPermissionInput {
+export interface CheckPermissionRequestDto {
   module: Module;
   action: Action;
 }
@@ -407,7 +438,7 @@ export interface AuditLogDto {
   createdAt: Date;
 }
 
-export interface CreateAuditLogInput {
+export interface CreateAuditLogRequestDto {
   tenantId?: string;
   userId?: string;
   userEmail?: string;

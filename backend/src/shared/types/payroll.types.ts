@@ -5,8 +5,6 @@
  * Location: shared/types/payroll.types.ts
  */
 
-import { z } from "zod";
-
 // ============================================
 // ENUMS
 // ============================================
@@ -18,55 +16,10 @@ export enum PayslipStatus {
 }
 
 // ============================================
-// VALIDATION SCHEMAS
-// ============================================
-
-export const CreateSalaryStructureValidationSchema = z.object({
-  employeeId: z.string().uuid(),
-  basicSalary: z.number().min(0),
-  hra: z.number().min(0),
-  conveyance: z.number().min(0),
-  medical: z.number().min(0),
-  specialAllowance: z.number().min(0),
-  effectiveFrom: z.string().optional(),
-});
-
-export const UpdateSalaryStructureValidationSchema = z.object({
-  basicSalary: z.number().min(0).optional(),
-  hra: z.number().min(0).optional(),
-  conveyance: z.number().min(0).optional(),
-  medical: z.number().min(0).optional(),
-  specialAllowance: z.number().min(0).optional(),
-  effectiveFrom: z.string().optional(),
-});
-
-export const CreatePayslipValidationSchema = z.object({
-  employeeId: z.string().uuid(),
-  month: z.number().int().min(1).max(12),
-  year: z.number().int().min(2000),
-  workingDays: z.number().int().min(0),
-  presentDays: z.number().int().min(0),
-  bonus: z.number().min(0).optional(),
-  providentFund: z.number().min(0).optional(),
-  professionalTax: z.number().min(0).optional(),
-  incomeTax: z.number().min(0).optional(),
-  otherDeductions: z.number().min(0).optional(),
-});
-
-export const UpdatePayslipStatusValidationSchema = z.object({
-  status: z.nativeEnum(PayslipStatus),
-});
-
-export const ProcessPayslipValidationSchema = z.object({
-  payslipIds: z.array(z.string().uuid()),
-  processDate: z.string().optional(),
-});
-
-// ============================================
 // INPUT DTOs
 // ============================================
 
-export interface CreateSalaryStructureInput {
+export interface CreateSalaryStructureRequestDto {
   employeeId: string;
   basicSalary: number;
   hra: number;
@@ -76,7 +29,7 @@ export interface CreateSalaryStructureInput {
   effectiveFrom?: Date | string;
 }
 
-export interface UpdateSalaryStructureInput {
+export interface UpdatePayslipStatusRequestDto {
   basicSalary?: number;
   hra?: number;
   conveyance?: number;
@@ -85,7 +38,7 @@ export interface UpdateSalaryStructureInput {
   effectiveFrom?: Date | string;
 }
 
-export interface CreatePayslipInput {
+export interface CreatePayslipRequestDto {
   employeeId: string;
   salaryStructureId: string;
   month: number;
@@ -101,7 +54,7 @@ export interface CreatePayslipInput {
   otherDeductions?: number;
 }
 
-export interface GeneratePayslipInput {
+export interface GetPayslipsQueryDto {
   employeeIds?: string[];
   departmentId?: string;
   organisationId?: string;
@@ -109,12 +62,12 @@ export interface GeneratePayslipInput {
   year: number;
 }
 
-export interface UpdatePayslipStatusInput {
+export interface UpdatePayslipStatusRequestDto {
   status: PayslipStatus;
   paidOn?: Date | string;
 }
 
-export interface ProcessPayslipInput {
+export interface ProcessPayslipRequestDto {
   payslipIds: string[];
   processDate?: Date | string;
 }
@@ -135,6 +88,11 @@ export interface SalaryStructureDto {
   effectiveFrom: Date;
   createdAt: Date;
   updatedAt: Date;
+  employee?: {
+    firstName: string;
+    lastName: string;
+    employeeCode: string;
+  };
 }
 
 export interface PayslipDto {

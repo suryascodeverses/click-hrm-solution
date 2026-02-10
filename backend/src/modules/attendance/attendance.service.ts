@@ -4,8 +4,8 @@ import { BadRequestError } from "../../shared/errors";
 import {
   AttendanceDto,
   AttendanceWithFullEmployeeDto,
-  CheckInInput,
-  CheckOutInput,
+  CheckInRequestDto,
+  CheckOutRequestDto,
   MyAttendanceDto,
 } from "../../shared/types/attendance.types";
 
@@ -20,7 +20,7 @@ export class AttendanceService {
   /**
    * Check in
    */
-  async checkIn(data: CheckInInput): Promise<AttendanceDto> {
+  async checkIn(data: CheckInRequestDto): Promise<AttendanceDto> {
     const { employeeId } = data;
     const today = new Date();
     today.setHours(0, 0, 0, 0);
@@ -75,7 +75,7 @@ export class AttendanceService {
   /**
    * Check out
    */
-  async checkOut(data: CheckOutInput): Promise<AttendanceDto> {
+  async checkOut(data: CheckOutRequestDto): Promise<AttendanceDto> {
     const { employeeId } = data;
     const today = new Date();
     today.setHours(0, 0, 0, 0);

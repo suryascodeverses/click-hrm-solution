@@ -5,49 +5,17 @@
  * Location: shared/types/super-admin.types.ts
  */
 
-import { z } from "zod";
-import { TenantStatus } from "./auth.types";
-
-// ============================================
-// VALIDATION SCHEMAS
-// ============================================
-
-export const UpdateTenantStatusValidationSchema = z.object({
-  status: z.nativeEnum(TenantStatus),
-});
-
-export const UpdateTenantValidationSchema = z.object({
-  name: z.string().min(2).max(100).trim().optional(),
-  email: z.string().email().optional(),
-  phone: z.string().optional(),
-  subscriptionTier: z.string().optional(),
-  maxEmployees: z.number().int().positive().optional(),
-  status: z.nativeEnum(TenantStatus).optional(),
-});
-
-export const UpdateUserValidationSchema = z.object({
-  role: z
-    .enum([
-      "SUPER_ADMIN",
-      "TENANT_ADMIN",
-      "ORG_ADMIN",
-      "HR_MANAGER",
-      "MANAGER",
-      "EMPLOYEE",
-    ])
-    .optional(),
-  isActive: z.boolean().optional(),
-});
+import { TenantStatus } from "@prisma/client";
 
 // ============================================
 // INPUT DTOs
 // ============================================
 
-export interface UpdateTenantStatusInput {
+export interface UpdateTenantStatusRequestDto {
   status: TenantStatus;
 }
 
-export interface UpdateTenantInput {
+export interface UpdateTenantRequestDto {
   name?: string;
   email?: string;
   phone?: string;
@@ -57,7 +25,7 @@ export interface UpdateTenantInput {
   status?: TenantStatus;
 }
 
-export interface UpdateUserInput {
+export interface UpdateUserRequestDto {
   role?: string;
   isActive?: boolean;
 }

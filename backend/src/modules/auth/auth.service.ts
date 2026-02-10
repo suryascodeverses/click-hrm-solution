@@ -16,9 +16,9 @@ import {
 // Import internal types and validation
 import type {
   JWTPayload,
-  LoginInput,
+  LoginRequestDto,
   LoginResponseDto,
-  RegisterInput,
+  RegisterRequestDto,
   RegisterResponseDto,
 } from "../../shared/types/auth.types";
 
@@ -35,7 +35,7 @@ export class AuthService {
   /**
    * Register new tenant admin and create tenant
    */
-  async register(data: RegisterInput): Promise<RegisterResponseDto> {
+  async register(data: RegisterRequestDto): Promise<RegisterResponseDto> {
     const { email, password, companyName } = data;
 
     // Check if user exists
@@ -124,7 +124,7 @@ export class AuthService {
   /**
    * Login user
    */
-  async login(data: LoginInput): Promise<LoginResponseDto> {
+  async login(data: LoginRequestDto): Promise<LoginResponseDto> {
     const { email, password } = data;
 
     // Find user with relations

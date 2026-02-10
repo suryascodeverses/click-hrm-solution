@@ -15,7 +15,7 @@ import {
 import { Request as ExpressRequest } from "express";
 import { AttendanceService } from "./attendance.service";
 import {
-  CheckInInput,
+  CheckInRequestDto,
   CheckInValidationSchema,
   CheckOutValidationSchema,
 } from "../../shared/types/attendance.types";
@@ -57,7 +57,7 @@ export class AttendanceController extends Controller {
   public async checkIn(
     @Body() body: CheckInRequestDto,
   ): Promise<ApiResponse<AttendanceDto>> {
-    const validated: CheckInInput = CheckInValidationSchema.parse(body);
+    const validated: CheckInRequestDto = CheckInValidationSchema.parse(body);
     const result = await this.service.checkIn(validated);
 
     return {
