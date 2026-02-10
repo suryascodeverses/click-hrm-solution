@@ -21,10 +21,13 @@ import {
   LeaveBalanceDto,
   LeaveDetailDto,
   LeaveTypeDto,
-  LeaveWithFullDetailsDto,
   RejectLeaveRequestDto,
 } from "../../shared/types/leave.types";
-import { ApplyLeaveRequestSchema, CreateLeaveTypeRequestSchema, RejectLeaveRequestSchema } from "@arm/shared";
+import {
+  ApplyLeaveRequestSchema,
+  CreateLeaveTypeRequestSchema,
+  RejectLeaveRequestSchema,
+} from "@arm/shared";
 
 /**
  * ========================================

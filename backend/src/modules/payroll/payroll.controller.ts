@@ -15,7 +15,7 @@ import {
 } from "tsoa";
 import { Request as ExpressRequest } from "express";
 import { PayrollService } from "./payroll.service";
-import { CreateSalaryStructureRequestDto, GeneratePayslipsResponseDto, PayslipDetailDto, PayslipDto, PayslipListItemDto, PayslipWithFullDetailsDto, SalaryStructureDto, UpdatePayslipStatusRequestDto } from "../../shared/types/payroll.types";
+import { CreateSalaryStructureRequestDto, GeneratePayslipsResponseDto, PayslipDetailDto, PayslipDto, PayslipListItemDto, SalaryStructureDto, UpdatePayslipStatusRequestDto } from "../../shared/types/payroll.types";
 import { ApiErrorResponse, ApiResponse } from "../../shared/types/common.types";
 import { CreateSalaryStructureRequestSchema, UpdatePayslipStatusRequestSchema } from "@arm/shared";
 

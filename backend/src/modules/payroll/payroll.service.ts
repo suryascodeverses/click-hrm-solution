@@ -7,7 +7,6 @@ import {
   PayslipDetailDto,
   PayslipDto,
   PayslipListItemDto,
-  PayslipWithFullDetailsDto,
   SalaryStructureDto,
   UpdatePayslipStatusRequestDto,
 } from "../../shared/types/payroll.types";

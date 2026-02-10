@@ -1,6 +1,10 @@
 import { prisma } from "../../config/database";
 import { NotFoundError } from "../../shared/errors";
-import { GetTenantResponseDto, TenantProfileDto, UpdateTenantProfileRequestDto, UpdateTenantProfileResponseDto } from "../../shared/types/tenant.types";
+import {
+  GetTenantResponseDto,
+  TenantProfileDto,
+  UpdateTenantProfileRequestDto,
+} from "../../shared/types/tenant.types";
 
 /**
  * ========================================

@@ -17,7 +17,7 @@ import {
   GetTenantResponseDto,
   TenantProfileDto,
   UpdateTenantProfileRequestDto,
-  UpdateTenantProfileResponseDto,
+  
 } from "../../shared/types/tenant.types";
 import { UpdateTenantProfileRequestSchema } from "@arm/shared";
 
