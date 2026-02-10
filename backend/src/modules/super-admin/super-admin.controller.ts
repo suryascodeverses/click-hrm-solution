@@ -12,22 +12,21 @@ import {
   Controller,
 } from "tsoa";
 import { SuperAdminService } from "./super-admin.service";
+import { ApiErrorResponse, ApiResponse } from "../../shared/types/common.types";
 import {
-  UpdateTenantStatusValidationSchema,
-  UpdateTenantValidationSchema,
-  UpdateUserValidationSchema,
-} from "../../shared/types/super-admin.types";
-
-import type {
   GetDashboardStatsResponseDto,
   TenantDetailDto,
-  UpdateTenantStatusRequestDto,
   UpdateTenantRequestDto,
-  UserDetailDto,
+  UpdateTenantStatusRequestDto,
   UpdateUserRequestDto,
-  ApiResponse,
-  ApiErrorResponse,
+  UserDetailDto,
+} from "../../shared/types/super-admin.types";
+import {
+  UpdateTenantRequestSchema,
+  UpdateTenantStatusRequestSchema,
+  UpdateUserRequestSchema,
 } from "@arm/shared";
+import { UserRole } from "@prisma/client";
 
 /**
  * ========================================
@@ -86,7 +85,7 @@ export class SuperAdminController extends Controller {
     @Path() tenantId: string,
     @Body() body: UpdateTenantStatusRequestDto,
   ): Promise<ApiResponse<TenantDetailDto>> {
-    const validated = UpdateTenantStatusValidationSchema.parse(body);
+    const validated = UpdateTenantStatusRequestSchema.parse(body);
     const result = await this.service.updateTenantStatus(tenantId, validated);
 
     return {
@@ -106,7 +105,7 @@ export class SuperAdminController extends Controller {
     @Path() tenantId: string,
     @Body() body: UpdateTenantRequestDto,
   ): Promise<ApiResponse<TenantDetailDto>> {
-    const validated = UpdateTenantValidationSchema.parse(body);
+    const validated = UpdateTenantRequestSchema.parse(body);
     const result = await this.service.updateTenant(tenantId, validated);
 
     return {
@@ -158,8 +157,11 @@ export class SuperAdminController extends Controller {
     @Path() userId: string,
     @Body() body: UpdateUserRequestDto,
   ): Promise<ApiResponse<UserDetailDto>> {
-    const validated = UpdateUserValidationSchema.parse(body);
-    const result = await this.service.updateUser(userId, validated);
+    const validated = UpdateUserRequestSchema.parse(body);
+    const result = await this.service.updateUser(userId, {
+      ...validated,
+      role: validated.role as UserRole,
+    });
 
     return {
       success: true,

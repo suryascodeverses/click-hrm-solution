@@ -14,18 +14,16 @@ import {
   Controller,
 } from "tsoa";
 import { DesignationService } from "./designation.service";
+import { ApiErrorResponse, ApiResponse } from "../../shared/types/common.types";
 import {
-  CreateDesignationValidationSchema,
-  UpdateDesignationValidationSchema,
-} from "../../shared/types/designation.types";
-
-import type {
   CreateDesignationRequestDto,
-  UpdateDesignationRequestDto,
   DesignationDto,
   DesignationListItemDto,
-  ApiResponse,
-  ApiErrorResponse,
+  UpdateDesignationRequestDto,
+} from "../../shared/types/designation.types";
+import {
+  CreateDesignationRequestSchema,
+  UpdateDesignationRequestSchema,
 } from "@arm/shared";
 
 /**
@@ -55,7 +53,7 @@ export class DesignationController extends Controller {
   public async createDesignation(
     @Body() body: CreateDesignationRequestDto,
   ): Promise<ApiResponse<DesignationDto>> {
-    const validated = CreateDesignationValidationSchema.parse(body);
+    const validated = CreateDesignationRequestSchema.parse(body);
     const result = await this.service.createDesignation(validated);
 
     this.setStatus(201);
@@ -110,7 +108,7 @@ export class DesignationController extends Controller {
     @Path() id: string,
     @Body() body: UpdateDesignationRequestDto,
   ): Promise<ApiResponse<DesignationDto>> {
-    const validated = UpdateDesignationValidationSchema.parse(body);
+    const validated = UpdateDesignationRequestSchema.parse(body);
     const result = await this.service.updateDesignation(id, validated);
 
     return {

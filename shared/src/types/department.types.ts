@@ -11,6 +11,8 @@ import { z } from "zod";
 // BASE SCHEMAS (Building Blocks)
 // ============================================
 
+const DEPT_STATUS_VALUES = ["ACTIVE", "INACTIVE"] as const;
+
 /**
  * Base department fields - minimal common fields
  */
@@ -52,7 +54,7 @@ export const UpdateDepartmentRequestSchema = z.object({
   code: z.string().optional(),
   description: z.string().optional(),
   headOfDepartment: z.string().optional(),
-  status: z.string().optional(),
+  status: z.enum(DEPT_STATUS_VALUES).optional(),
 });
 export type UpdateDepartmentRequestDto = z.infer<
   typeof UpdateDepartmentRequestSchema

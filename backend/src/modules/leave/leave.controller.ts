@@ -14,22 +14,17 @@ import {
 } from "tsoa";
 import { Request as ExpressRequest } from "express";
 import { LeaveService } from "./leave.service";
+import { ApiErrorResponse, ApiResponse } from "../../shared/types/common.types";
 import {
-  ApplyLeaveValidationSchema,
-  RejectLeaveValidationSchema,
-  CreateLeaveTypeValidationSchema,
-} from "../../shared/types/leave.types";
-
-import type {
   ApplyLeaveRequestDto,
-  RejectLeaveRequestDto,
   CreateLeaveTypeRequestDto,
-  LeaveDetailDto,
   LeaveBalanceDto,
+  LeaveDetailDto,
   LeaveTypeDto,
-  ApiResponse,
-  ApiErrorResponse,
-} from "@arm/shared";
+  LeaveWithFullDetailsDto,
+  RejectLeaveRequestDto,
+} from "../../shared/types/leave.types";
+import { ApplyLeaveRequestSchema, CreateLeaveTypeRequestSchema, RejectLeaveRequestSchema } from "@arm/shared";
 
 /**
  * ========================================
@@ -61,7 +56,7 @@ export class LeaveController extends Controller {
   public async applyLeave(
     @Body() body: ApplyLeaveRequestDto,
   ): Promise<ApiResponse<LeaveDetailDto>> {
-    const validated = ApplyLeaveValidationSchema.parse(body);
+    const validated = ApplyLeaveRequestSchema.parse(body);
     const result = await this.service.applyLeave(validated);
 
     this.setStatus(201);
@@ -119,7 +114,7 @@ export class LeaveController extends Controller {
       throw new Error("Unauthorized");
     }
 
-    const validated = RejectLeaveValidationSchema.parse(body);
+    const validated = RejectLeaveRequestSchema.parse(body);
     const result = await this.service.rejectLeave(
       leaveId,
       approverId,
@@ -227,7 +222,7 @@ export class LeaveController extends Controller {
       throw new Error("Tenant ID required");
     }
 
-    const validated = CreateLeaveTypeValidationSchema.parse(body);
+    const validated = CreateLeaveTypeRequestSchema.parse(body);
     const result = await this.service.createLeaveType(tenantId, validated);
 
     this.setStatus(201);

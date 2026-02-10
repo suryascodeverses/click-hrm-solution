@@ -144,7 +144,8 @@ export interface AuthTokensDto {
 
 export interface LoginResponseDto {
   user: UserDto;
-  tokens: AuthTokensDto;
+  accessToken: string;
+  refreshToken: string;
   message?: string;
 }
 
@@ -208,4 +209,30 @@ export interface AuthContextDto {
   user: UserDto | null;
   tenant: TenantDto | null;
   loading: boolean;
+}
+
+export interface GetMeResponseDto {
+  tenantId: string | null;
+  id: string;
+  createdAt: Date;
+  email: string;
+  isActive: boolean;
+  tenant: {
+    id: string;
+    name: string;
+    subdomain: string;
+  } | null;
+  employee: {
+    status: string;
+    id: string;
+    email: string;
+    firstName: string;
+    lastName: string;
+    employeeCode: string;
+    department?: any;
+    organisation?: any;
+    designation?: any;
+  } | null;
+  role: string;
+  lastLogin: Date | null;
 }

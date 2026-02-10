@@ -1,14 +1,7 @@
 import { prisma } from "../../config/database";
 import { NotFoundError } from "../../shared/errors";
-import type {
-  CreateEmailTemplateRequestDto,
-  UpdateEmailTemplateRequestDto,
-  SendTestEmailRequestDto,
-  EmailTemplateDto,
-  EmailLogDto,
-  EmailLogsResponseDto,
-  EmailStatsDto,
-} from "@arm/shared";
+import { CreateEmailTemplateRequestDto, EmailLogsResponseDto, EmailStatsDto, EmailTemplateDto, SendTestEmailRequestDto, UpdateEmailTemplateRequestDto } from "../../shared/types/email-templates.types";
+
 
 export class EmailTemplatesService {
   async getEmailTemplates(category?: string): Promise<EmailTemplateDto[]> {

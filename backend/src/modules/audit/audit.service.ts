@@ -1,11 +1,7 @@
 
 import { prisma } from "../../config/database";
-import type {
-  GetAuditLogsQueryDto,
-  GetAuditLogsResponseDto,
-  AuditLogStatsDto,
-  AuditLogFiltersDto,
-} from "@arm/shared";
+import { AuditLogFiltersDto, AuditLogStatsDto, GetAuditLogsQueryDto, GetAuditLogsResponseDto } from "../../shared/types/audit-logs.types";
+
 
 export class AuditLogsService {
   async getAuditLogs(

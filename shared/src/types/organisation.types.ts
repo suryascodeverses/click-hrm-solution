@@ -11,6 +11,8 @@ import { z } from "zod";
 // BASE SCHEMAS (Building Blocks)
 // ============================================
 
+const OrgStatus = ["ACTIVE", "INACTIVE"] as const;
+
 /**
  * Base organisation fields - minimal common fields
  */
@@ -34,6 +36,7 @@ export const CreateOrganisationRequestSchema = OrganisationBaseSchema.extend({
   zipCode: z.string().optional(),
   phone: z.string().optional(),
   email: z.string().optional(),
+  tenantId: z.string(),
 });
 export type CreateOrganisationRequestDto = z.infer<
   typeof CreateOrganisationRequestSchema
@@ -52,7 +55,7 @@ export const UpdateOrganisationRequestSchema = z.object({
   zipCode: z.string().optional(),
   phone: z.string().optional(),
   email: z.string().optional(),
-  status: z.string().optional(),
+  status: z.enum(OrgStatus).optional(),
 });
 export type UpdateOrganisationRequestDto = z.infer<
   typeof UpdateOrganisationRequestSchema

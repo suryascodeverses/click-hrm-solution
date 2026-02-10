@@ -5,20 +5,22 @@
  * Location: shared/src/types/email-templates.types.ts
  */
 
+import { EmailCategory } from "@prisma/client";
+
 export interface CreateEmailTemplateRequestDto {
   name: string;
   displayName: string;
-  category: string;
+  category: EmailCategory;
   subject: string;
   htmlContent: string;
   textContent?: string;
-  variables?: any;
+  variables: any;
 }
 
 export interface UpdateEmailTemplateRequestDto {
   name?: string;
   displayName?: string;
-  category?: string;
+  category?: EmailCategory;
   subject?: string;
   htmlContent?: string;
   textContent?: string;
@@ -36,7 +38,7 @@ export interface EmailTemplateDto {
   id: string;
   name: string;
   displayName: string;
-  category: string;
+  category: EmailCategory;
   subject: string;
   htmlContent: string;
   textContent: string | null;

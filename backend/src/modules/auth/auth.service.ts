@@ -15,6 +15,7 @@ import {
 
 // Import internal types and validation
 import type {
+  GetMeResponseDto,
   JWTPayload,
   LoginRequestDto,
   LoginResponseDto,
@@ -190,27 +191,12 @@ export class AuthService {
         email: user.email,
         role: user.role,
         tenantId: user.tenantId,
+        isActive: user.isActive,
+        createdAt: user.createdAt,
+        lastLogin: user.lastLogin,
+        updatedAt: user.updatedAt,
       },
-      tenant: user.tenant
-        ? {
-            id: user.tenant.id,
-            name: user.tenant.name,
-            subdomain: user.tenant.subdomain,
-          }
-        : null,
-      employee: user.employee
-        ? {
-            id: user.employee.id,
-            employeeCode: user.employee.employeeCode,
-            firstName: user.employee.firstName,
-            lastName: user.employee.lastName,
-            email: user.employee.email,
-            status: user.employee.status,
-            organisation: user.employee.organisation,
-            department: user.employee.department,
-            designation: user.employee.designation,
-          }
-        : null,
+
       accessToken,
       refreshToken,
     };

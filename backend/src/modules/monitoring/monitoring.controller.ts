@@ -12,16 +12,10 @@ import {
   Controller,
 } from "tsoa";
 import { MonitoringService } from "./monitoring.service";
-import type {
-  CreateSystemAlertRequestDto,
-  SystemHealthDto,
-  MetricsHistoryDto,
-  DatabaseStatsDto,
-  ApiUsageStatsDto,
-  SystemAlertsResponseDto,
-  ErrorRateDto,
-  ApiResponse,
-} from "@arm/shared";
+import { ApiResponse } from "../../shared/types/common.types";
+import { SystemHealthDto } from "../../shared/types/super-admin.types";
+import { ApiUsageStatsDto, CreateSystemAlertRequestDto, DatabaseStatsDto, ErrorRateDto, MetricsHistoryDto, SystemAlertsResponseDto } from "../../shared/types/monitoring.types";
+
 
 @Route("super-admin/monitoring")
 @Tags("Super Admin - Monitoring")

@@ -1,43 +1,61 @@
+import { PaymentMethod } from "@prisma/client";
 import { prisma } from "../../config/database";
 import { NotFoundError } from "../../shared/errors";
-import type {
-  CreateSubscriptionPlanRequestDto,
-  UpdateSubscriptionPlanRequestDto,
-  MarkInvoicePaidRequestDto,
+import {
   CancelSubscriptionRequestDto,
-  SubscriptionPlanDto,
-  SubscriptionWithDetailsDto,
-  SubscriptionStatsDto,
+  CreateSubscriptionPlanRequestDto,
   InvoiceDto,
+  MarkInvoicePaidRequestDto,
   PaymentDto,
-} from "@arm/shared";
+  SubscriptionPlanDto,
+  SubscriptionStatsDto,
+  SubscriptionWithDetailsDto,
+  UpdateSubscriptionPlanRequestDto,
+} from "../../shared/types/billing.types";
 
 export class BillingService {
   async getSubscriptionPlans(): Promise<SubscriptionPlanDto[]> {
-    return await prisma.subscriptionPlan.findMany({
+    const plans = await prisma.subscriptionPlan.findMany({
       where: { isActive: true },
       orderBy: { price: "asc" },
     });
+    return plans.map((p) => ({
+      ...p,
+      price: p.price.toNumber(),
+      yearlyPrice: p.yearlyPrice?.toNumber() ?? null,
+    }));
   }
 
   async createSubscriptionPlan(
     data: CreateSubscriptionPlanRequestDto,
   ): Promise<SubscriptionPlanDto> {
-    return await prisma.subscriptionPlan.create({ data });
+    const plan = await prisma.subscriptionPlan.create({
+      data: { ...data, features: data.features ?? {} },
+    });
+    return {
+      ...plan,
+      price: plan.price.toNumber(),
+      yearlyPrice: plan.yearlyPrice?.toNumber() ?? null,
+    } as SubscriptionPlanDto;
   }
 
   async updateSubscriptionPlan(
     planId: string,
     data: UpdateSubscriptionPlanRequestDto,
   ): Promise<SubscriptionPlanDto> {
-    return await prisma.subscriptionPlan.update({
+    const plan = await prisma.subscriptionPlan.update({
       where: { id: planId },
       data,
     });
+    return {
+      ...plan,
+      price: plan.price.toNumber(),
+      yearlyPrice: plan.yearlyPrice?.toNumber() ?? null,
+    } as SubscriptionPlanDto;
   }
 
   async getAllSubscriptions(): Promise<SubscriptionWithDetailsDto[]> {
-    return (await prisma.subscription.findMany({
+    const subscriptions = await prisma.subscription.findMany({
       include: {
         tenant: {
           select: { id: true, name: true, subdomain: true, email: true },
@@ -45,6 +63,14 @@ export class BillingService {
         plan: true,
       },
       orderBy: { createdAt: "desc" },
+    });
+    return subscriptions.map((s) => ({
+      ...s,
+      plan: {
+        ...s.plan,
+        price: s.plan.price.toNumber(),
+        yearlyPrice: s.plan.yearlyPrice?.toNumber() ?? null,
+      },
     })) as SubscriptionWithDetailsDto[];
   }
 
@@ -72,7 +98,7 @@ export class BillingService {
         active,
         trial,
         cancelled,
-        totalRevenue: revenue._sum.amount || 0,
+        totalRevenue: revenue._sum.amount?.toNumber() || 0,
       },
       revenueByPlan,
     };
@@ -142,14 +168,19 @@ export class BillingService {
         invoiceId: invoice.id,
         tenantId: invoice.tenantId,
         amount: invoice.total,
-        paymentMethod: paymentMethod || "MANUAL",
+        paymentMethod: (paymentMethod as PaymentMethod) || PaymentMethod.MANUAL,
         status: "SUCCEEDED",
         transactionId,
         paidAt: new Date(),
       },
     });
 
-    return updatedInvoice;
+    return {
+      ...updatedInvoice,
+      amount: updatedInvoice.amount.toNumber(),
+      tax: updatedInvoice.tax.toNumber(),
+      total: updatedInvoice.total.toNumber(),
+    } as InvoiceDto;
   }
 
   async cancelSubscription(

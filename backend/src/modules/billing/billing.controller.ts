@@ -13,19 +13,9 @@ import {
   Controller,
 } from "tsoa";
 import { BillingService } from "./billing.service";
-import type {
-  CreateSubscriptionPlanRequestDto,
-  UpdateSubscriptionPlanRequestDto,
-  MarkInvoicePaidRequestDto,
-  CancelSubscriptionRequestDto,
-  SubscriptionPlanDto,
-  SubscriptionWithDetailsDto,
-  SubscriptionStatsDto,
-  InvoiceDto,
-  PaymentDto,
-  ApiResponse,
-  ApiErrorResponse,
-} from "@arm/shared";
+import { CancelSubscriptionRequestDto, CreateSubscriptionPlanRequestDto, InvoiceDto, MarkInvoicePaidRequestDto, PaymentDto, SubscriptionPlanDto, SubscriptionStatsDto, SubscriptionWithDetailsDto, UpdateSubscriptionPlanRequestDto } from "../../shared/types/billing.types";
+import { ApiErrorResponse, ApiResponse } from "../../shared/types/common.types";
+
 
 @Route("super-admin/billing")
 @Tags("Super Admin - Billing")

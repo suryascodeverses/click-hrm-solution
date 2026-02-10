@@ -1,14 +1,13 @@
 import { prisma } from "../../config/database";
 import { hashPassword } from "../../utils/password.utils";
 import { NotFoundError, ConflictError } from "../../shared/errors";
-
-import type {
+import {
   CreateEmployeeRequestDto,
-  UpdateEmployeeRequestDto,
-  EmployeeListItemDto,
-  EmployeeDetailDto,
   CreateEmployeeResponseDto,
-} from "@arm/shared";
+  EmployeeDetailDto,
+  EmployeeListItemDto,
+  UpdateEmployeeRequestDto,
+} from "../../shared/types/employee.types";
 
 /**
  * ========================================
@@ -168,7 +167,10 @@ export class EmployeeService {
       throw new NotFoundError("Employee not found");
     }
 
-    return employee as EmployeeDetailDto;
+    return {
+      ...employee,
+      address: employee.currentAddress,
+    } as EmployeeDetailDto;
   }
 
   /**
@@ -212,7 +214,10 @@ export class EmployeeService {
       },
     });
 
-    return employee as EmployeeDetailDto;
+    return {
+      ...employee,
+      address: employee.currentAddress,
+    } as EmployeeDetailDto;
   }
 
   /**

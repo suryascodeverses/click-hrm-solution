@@ -44,7 +44,7 @@ export interface TenantProfileDto {
   status: TenantStatus;
   subscriptionTier: string;
   maxEmployees: number;
-  settings: any; // Json field from Prisma
+  settings?: any; // Json field from Prisma
   createdAt: Date;
   updatedAt: Date;
 }
@@ -245,4 +245,24 @@ export interface TenantActivityDto {
     description: string;
     timestamp: Date;
   }>;
+}
+
+export interface GetTenantResponseDto {
+  name: string;
+  subdomain: string;
+  email: string;
+  status: string;
+  id: string;
+  phone: string | null;
+  subscriptionTier: string | null;
+  maxEmployees: number | null;
+  createdAt: Date;
+  _count: {
+    users: number;
+    organisations: number;
+  };
+  organisations: any[];
+  logo: string | null;
+  updatedAt: Date;
+  settings?: any;
 }

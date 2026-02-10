@@ -1,14 +1,13 @@
 import { TenantStatus } from "@prisma/client";
 import { prisma } from "../../config/database";
-
-import type {
+import {
   GetDashboardStatsResponseDto,
   TenantDetailDto,
-  UpdateTenantStatusRequestDto,
   UpdateTenantRequestDto,
-  UserDetailDto,
+  UpdateTenantStatusRequestDto,
   UpdateUserRequestDto,
-} from "@arm/shared";
+  UserDetailDto,
+} from "../../shared/types/super-admin.types";
 
 /**
  * ========================================
@@ -182,7 +181,7 @@ export class SuperAdminService {
       },
     });
 
-    return user;
+    return user as unknown as UserDetailDto;
   }
 
   /**

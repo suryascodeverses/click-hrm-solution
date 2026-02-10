@@ -8,14 +8,10 @@ import {
   Controller,
 } from "tsoa";
 
-import type {
-  GetAuditLogsQueryDto,
-  GetAuditLogsResponseDto,
-  AuditLogStatsDto,
-  AuditLogFiltersDto,
-  ApiResponse,
-} from "@arm/shared";
+
 import { AuditLogsService } from "./audit.service";
+import { AuditLogFiltersDto, AuditLogStatsDto, GetAuditLogsResponseDto } from "../../shared/types/audit-logs.types";
+import { ApiResponse } from "../../shared/types/common.types";
 
 @Route("super-admin/audit-logs")
 @Tags("Super Admin - Audit Logs")

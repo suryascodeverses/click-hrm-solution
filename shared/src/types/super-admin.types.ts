@@ -11,7 +11,9 @@ import { z } from "zod";
 // BASE SCHEMAS (Building Blocks)
 // ============================================
 
-/**
+const TenantStatus = ["ACTIVE", "SUSPENDED", "INACTIVE"] as const;
+const UserRole = ["SUPER_ADMIN", "TENANT_ADMIN", "USER"] as const;
+/*
  * Base tenant fields for super admin views
  */
 const TenantBaseSchema = z.object({
@@ -46,7 +48,7 @@ const EmployeeReferenceSchema = z.object({
  * Update tenant status request schema
  */
 export const UpdateTenantStatusRequestSchema = z.object({
-  status: z.string(),
+  status: z.enum(TenantStatus),
 });
 export type UpdateTenantStatusRequestDto = z.infer<
   typeof UpdateTenantStatusRequestSchema
@@ -61,7 +63,7 @@ export const UpdateTenantRequestSchema = z.object({
   phone: z.string().optional(),
   subscriptionTier: z.string().optional(),
   maxEmployees: z.number().optional(),
-  status: z.string().optional(),
+  status: z.enum(TenantStatus).optional(),
 });
 export type UpdateTenantRequestDto = z.infer<typeof UpdateTenantRequestSchema>;
 
@@ -69,7 +71,7 @@ export type UpdateTenantRequestDto = z.infer<typeof UpdateTenantRequestSchema>;
  * Update user request schema - all fields optional
  */
 export const UpdateUserRequestSchema = z.object({
-  role: z.string().optional(),
+  role: z.enum(UserRole).optional(),
   isActive: z.boolean().optional(),
 });
 export type UpdateUserRequestDto = z.infer<typeof UpdateUserRequestSchema>;

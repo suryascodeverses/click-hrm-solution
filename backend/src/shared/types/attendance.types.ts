@@ -54,6 +54,17 @@ export interface AttendanceDto {
   updatedAt: Date;
 }
 
+export interface MyAttendanceDto {
+  attendances: AttendanceDto[];
+  stats: {
+    present: number;
+    absent: number;
+    late: number;
+    halfDay: number;
+    totalWorkHours: number;
+  };
+}
+
 // ============================================
 // POPULATED DTOs (with relations)
 // ============================================

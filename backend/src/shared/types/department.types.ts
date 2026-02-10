@@ -5,14 +5,7 @@
  * Location: shared/types/department.types.ts
  */
 
-// ============================================
-// ENUMS
-// ============================================
-
-export enum DeptStatus {
-  ACTIVE = "ACTIVE",
-  INACTIVE = "INACTIVE",
-}
+import { DeptStatus } from "@prisma/client";
 
 // ============================================
 // INPUT DTOs

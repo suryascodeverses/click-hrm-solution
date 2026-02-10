@@ -12,15 +12,14 @@ import {
 } from "tsoa";
 import { Request as ExpressRequest } from "express";
 import { TenantService } from "./tenant.service";
-import { UpdateTenantProfileValidationSchema } from "../../shared/types/tenant.types";
-
-import type {
+import { ApiErrorResponse, ApiResponse } from "../../shared/types/common.types";
+import {
   GetTenantResponseDto,
+  TenantProfileDto,
   UpdateTenantProfileRequestDto,
   UpdateTenantProfileResponseDto,
-  ApiResponse,
-  ApiErrorResponse,
-} from "@arm/shared";
+} from "../../shared/types/tenant.types";
+import { UpdateTenantProfileRequestSchema } from "@arm/shared";
 
 /**
  * ========================================
@@ -72,7 +71,7 @@ export class TenantController extends Controller {
   public async updateTenant(
     @Request() request: ExpressRequest & { user?: any },
     @Body() body: UpdateTenantProfileRequestDto,
-  ): Promise<ApiResponse<UpdateTenantProfileResponseDto>> {
+  ): Promise<ApiResponse<TenantProfileDto>> {
     const tenantId = request.user?.tenantId;
 
     if (!tenantId) {
@@ -80,7 +79,7 @@ export class TenantController extends Controller {
       throw new Error("Tenant not found");
     }
 
-    const validated = UpdateTenantProfileValidationSchema.parse(body);
+    const validated = UpdateTenantProfileRequestSchema.parse(body);
     const result = await this.service.updateTenant(tenantId, validated);
 
     return {

@@ -83,6 +83,7 @@ export type ApplyLeaveRequestDto = z.infer<typeof ApplyLeaveRequestSchema>;
  * Reject leave request schema
  */
 export const RejectLeaveRequestSchema = z.object({
+  approvedBy: z.string(),
   rejectedReason: z.string(),
 });
 export type RejectLeaveRequestDto = z.infer<typeof RejectLeaveRequestSchema>;

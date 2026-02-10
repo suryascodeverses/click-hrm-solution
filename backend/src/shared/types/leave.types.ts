@@ -5,7 +5,6 @@
  * Location: shared/types/leave.types.ts
  */
 
-
 // ============================================
 // ENUMS
 // ============================================
@@ -28,6 +27,37 @@ export interface ApplyLeaveRequestDto {
   endDate: Date | string;
   days: number;
   reason: string;
+}
+
+export interface LeaveDetailDto {
+  status: string;
+  id: string;
+  employeeId: string;
+  leaveTypeId: string;
+  startDate: Date;
+  endDate: Date;
+  days: number;
+  reason: string;
+  rejectedReason: string | null;
+  approvedBy: string | null;
+  approvedAt: Date | null;
+  appliedAt: Date;
+  leaveType: {
+    code: string;
+    id: string;
+    name: string;
+    color: string | null;
+  };
+  employee: {
+    employeeCode: string;
+    firstName: string;
+    lastName: string;
+    department?: any;
+  };
+  approver: {
+    firstName: string;
+    lastName: string;
+  } | null;
 }
 
 export interface ApproveLeaveRequestDto {

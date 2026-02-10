@@ -15,20 +15,14 @@ import {
 import { Request as ExpressRequest } from "express";
 import { AttendanceService } from "./attendance.service";
 import {
-  CheckInRequestDto,
-  CheckInValidationSchema,
-  CheckOutValidationSchema,
-} from "../../shared/types/attendance.types";
-
-import type {
+  AttendanceDto,
+  AttendanceWithFullEmployeeDto,
   CheckInRequestDto,
   CheckOutRequestDto,
-  AttendanceDto,
-  AttendanceWithEmployeeDto,
-  MyAttendanceResponseDto,
-  ApiResponse,
-  ApiErrorResponse,
-} from "@arm/shared";
+  MyAttendanceDto,
+} from "../../shared/types/attendance.types";
+import { ApiErrorResponse, ApiResponse } from "../../shared/types/common.types";
+import { CheckInRequestSchema, CheckOutRequestSchema } from "@arm/shared";
 
 /**
  * ========================================
@@ -57,7 +51,7 @@ export class AttendanceController extends Controller {
   public async checkIn(
     @Body() body: CheckInRequestDto,
   ): Promise<ApiResponse<AttendanceDto>> {
-    const validated: CheckInRequestDto = CheckInValidationSchema.parse(body);
+    const validated: CheckInRequestDto = CheckInRequestSchema.parse(body);
     const result = await this.service.checkIn(validated);
 
     return {
@@ -79,7 +73,7 @@ export class AttendanceController extends Controller {
   public async checkOut(
     @Body() body: CheckOutRequestDto,
   ): Promise<ApiResponse<AttendanceDto>> {
-    const validated = CheckOutValidationSchema.parse(body);
+    const validated = CheckOutRequestSchema.parse(body);
     const result = await this.service.checkOut(validated);
 
     return {
@@ -98,7 +92,7 @@ export class AttendanceController extends Controller {
     @Path() employeeId: string,
     @Query() month?: number,
     @Query() year?: number,
-  ): Promise<ApiResponse<MyAttendanceResponseDto>> {
+  ): Promise<ApiResponse<MyAttendanceDto>> {
     const result = await this.service.getMyAttendance(employeeId, month, year);
 
     return {
@@ -130,7 +124,7 @@ export class AttendanceController extends Controller {
   @SuccessResponse(200, "Team attendance retrieved")
   public async getTeamAttendance(
     @Request() request: ExpressRequest & { user?: any },
-  ): Promise<ApiResponse<AttendanceWithEmployeeDto[]>> {
+  ): Promise<ApiResponse<AttendanceWithFullEmployeeDto[]>> {
     const tenantId = request.user?.tenantId;
 
     if (!tenantId) {

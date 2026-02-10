@@ -9,15 +9,14 @@ import {
   ForbiddenError,
   ConflictError,
 } from "../../shared/errors";
-
-import type {
+import {
+  CreateSuperAdminRequestDto,
+  SuperAdminDto,
+  SuperAdminGetMeResponseDto,
   SuperAdminLoginRequestDto,
   SuperAdminLoginResponseDto,
-  SuperAdminGetMeResponseDto,
   SuperAdminRefreshTokenResponseDto,
-  CreateSuperAdminRequestDto,
-  CreateSuperAdminResponseDto,
-} from "@arm/shared";
+} from "../../shared/types/super-admin-auth.types";
 
 /**
  * ========================================
@@ -58,14 +57,14 @@ export class SuperAdminAuthService {
       userId: superAdmin.id,
       email: superAdmin.email,
       role: "SUPER_ADMIN",
-      tenantId: undefined,
+      tenantId: null,
     });
 
     const refreshToken = generateRefreshToken({
       userId: superAdmin.id,
       email: superAdmin.email,
       role: "SUPER_ADMIN",
-      tenantId: undefined,
+      tenantId: null,
     });
 
     await prisma.superAdminRefreshToken.create({
@@ -81,9 +80,11 @@ export class SuperAdminAuthService {
         id: superAdmin.id,
         email: superAdmin.email,
         name: superAdmin.name,
-        role: "SUPER_ADMIN",
+        lastLogin: superAdmin.lastLogin,
       },
       accessToken,
+      refreshToken,
+      message: "Login successful",
     };
   }
 
@@ -155,7 +156,7 @@ export class SuperAdminAuthService {
       userId: tokenRecord.superAdmin.id,
       email: tokenRecord.superAdmin.email,
       role: "SUPER_ADMIN",
-      tenantId: undefined,
+      tenantId: null,
     });
 
     await prisma.superAdminRefreshToken.create({
@@ -170,11 +171,13 @@ export class SuperAdminAuthService {
       userId: tokenRecord.superAdmin.id,
       email: tokenRecord.superAdmin.email,
       role: "SUPER_ADMIN",
-      tenantId: undefined,
+      tenantId: null,
     });
 
     return {
       accessToken: newAccessToken,
+
+      message: "Token refreshed",
     };
   }
 
@@ -183,7 +186,7 @@ export class SuperAdminAuthService {
    */
   async createSuperAdmin(
     data: CreateSuperAdminRequestDto,
-  ): Promise<CreateSuperAdminResponseDto> {
+  ): Promise<SuperAdminDto> {
     const { email, password, name, masterKey } = data;
 
     // Verify master key
@@ -212,6 +215,7 @@ export class SuperAdminAuthService {
         email: true,
         name: true,
         createdAt: true,
+        lastLogin: true,
       },
     });
 

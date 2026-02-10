@@ -5,14 +5,11 @@
  * Location: shared/types/designation.types.ts
  */
 
+import { DesignationStatus } from "@prisma/client";
+
 // ============================================
 // ENUMS
 // ============================================
-
-export enum DesignationStatus {
-  ACTIVE = "ACTIVE",
-  INACTIVE = "INACTIVE",
-}
 
 // ============================================
 // INPUT DTOs
@@ -50,6 +47,25 @@ export interface DesignationDto {
   updatedAt: Date;
 }
 
+export interface DesignationListItemDto {
+  name: string;
+  code: string;
+  status: string;
+  id: string;
+  description: string | null;
+  createdAt: Date;
+  updatedAt: Date;
+  _count: {
+    employees: number;
+  };
+  level: number;
+  departmentId: string;
+  department: {
+    name: string;
+    code: string;
+    id: string;
+  };
+}
 // ============================================
 // POPULATED DTOs
 // ============================================

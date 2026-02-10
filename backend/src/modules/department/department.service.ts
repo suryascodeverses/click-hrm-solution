@@ -1,13 +1,13 @@
+import { DeptStatus } from "@prisma/client";
 import { prisma } from "../../config/database";
 import { NotFoundError } from "../../shared/errors";
-
-import type {
+import {
   CreateDepartmentRequestDto,
-  UpdateDepartmentRequestDto,
+  DepartmentDetailDto,
   DepartmentDto,
   DepartmentListItemDto,
-  DepartmentDetailDto,
-} from "@arm/shared";
+  UpdateDepartmentRequestDto,
+} from "../../shared/types/department.types";
 
 /**
  * ========================================
@@ -95,7 +95,7 @@ export class DepartmentService {
   ): Promise<DepartmentDto> {
     const department = await prisma.department.update({
       where: { id },
-      data,
+      data: { ...data, status: data.status as DeptStatus },
     });
 
     return department;

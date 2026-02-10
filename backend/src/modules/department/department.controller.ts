@@ -14,19 +14,17 @@ import {
   Controller,
 } from "tsoa";
 import { DepartmentService } from "./department.service";
+import { ApiErrorResponse, ApiResponse } from "../../shared/types/common.types";
 import {
-  CreateDepartmentValidationSchema,
-  UpdateDepartmentValidationSchema,
-} from "../../shared/types/department.types";
-
-import type {
   CreateDepartmentRequestDto,
-  UpdateDepartmentRequestDto,
+  DepartmentDetailDto,
   DepartmentDto,
   DepartmentListItemDto,
-  DepartmentDetailDto,
-  ApiResponse,
-  ApiErrorResponse,
+  UpdateDepartmentRequestDto,
+} from "../../shared/types/department.types";
+import {
+  CreateDepartmentRequestSchema,
+  UpdateDepartmentRequestSchema,
 } from "@arm/shared";
 
 /**
@@ -55,7 +53,7 @@ export class DepartmentController extends Controller {
   public async createDepartment(
     @Body() body: CreateDepartmentRequestDto,
   ): Promise<ApiResponse<DepartmentDto>> {
-    const validated = CreateDepartmentValidationSchema.parse(body);
+    const validated = CreateDepartmentRequestSchema.parse(body);
     const result = await this.service.createDepartment(validated);
 
     this.setStatus(201);
@@ -110,7 +108,7 @@ export class DepartmentController extends Controller {
     @Path() id: string,
     @Body() body: UpdateDepartmentRequestDto,
   ): Promise<ApiResponse<DepartmentDto>> {
-    const validated = UpdateDepartmentValidationSchema.parse(body);
+    const validated = UpdateDepartmentRequestSchema.parse(body);
     const result = await this.service.updateDepartment(id, validated);
 
     return {

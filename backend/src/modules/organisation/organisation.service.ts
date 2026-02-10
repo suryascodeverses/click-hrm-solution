@@ -1,13 +1,12 @@
 import { prisma } from "../../config/database";
 import { NotFoundError } from "../../shared/errors";
-
-import type {
+import {
   CreateOrganisationRequestDto,
-  UpdateOrganisationRequestDto,
+  OrganisationDetailDto,
   OrganisationDto,
   OrganisationListItemDto,
-  OrganisationDetailDto,
-} from "@arm/shared";
+  UpdateOrganisationRequestDto,
+} from "../../shared/types/organisation.types";
 
 /**
  * ========================================
@@ -25,8 +24,8 @@ export class OrganisationService {
   ): Promise<OrganisationDto> {
     const organisation = await prisma.organisation.create({
       data: {
-        tenantId,
         ...data,
+        tenantId,
       },
     });
 

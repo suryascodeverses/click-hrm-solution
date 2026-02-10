@@ -5,15 +5,13 @@
  * Location: shared/types/organisation.types.ts
  */
 
+import { OrgStatus } from "@prisma/client";
 
 // ============================================
 // ENUMS
 // ============================================
 
-export enum OrgStatus {
-  ACTIVE = "ACTIVE",
-  INACTIVE = "INACTIVE",
-}
+
 
 // ============================================
 // INPUT DTOs
@@ -63,10 +61,31 @@ export interface OrganisationDto {
   zipCode: string | null;
   phone: string | null;
   email: string | null;
-  logo: string | null;
+  logo?: string | null;
   status: OrgStatus;
   createdAt: Date;
   updatedAt: Date;
+}
+
+export interface OrganisationListItemDto {
+  status: string;
+  code: string;
+  name: string;
+  id: string;
+  createdAt: Date;
+  address: string | null;
+  city: string | null;
+  state: string | null;
+  country: string | null;
+  zipCode: string | null;
+  phone: string | null;
+  email: string | null;
+  tenantId: string;
+  updatedAt: Date;
+  _count: {
+    employees: number;
+    departments: number;
+  };
 }
 
 // ============================================
@@ -136,6 +155,29 @@ export interface OrganisationWithFullDetailsDto extends OrganisationDto {
     totalDepartments: number;
     totalDesignations: number;
   };
+}
+
+export interface OrganisationDetailDto {
+  status: string;
+  code: string;
+  name: string;
+  id: string;
+  createdAt: Date;
+  employees: any[];
+  address: string | null;
+  city: string | null;
+  state: string | null;
+  country: string | null;
+  zipCode: string | null;
+  phone: string | null;
+  email: string | null;
+  tenantId: string;
+  updatedAt: Date;
+  _count: {
+    employees: number;
+    departments: number;
+  };
+  departments: any[];
 }
 
 // ============================================

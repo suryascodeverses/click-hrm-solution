@@ -15,20 +15,18 @@ import {
   Response as ExpressResponse,
 } from "express";
 import { SuperAdminAuthService } from "./super-admin-auth.service";
+import { ApiErrorResponse, ApiResponse } from "../../shared/types/common.types";
 import {
-  SuperAdminLoginValidationSchema,
-  CreateSuperAdminValidationSchema,
-} from "../../shared/types/super-admin-auth.types";
-
-import type {
+  CreateSuperAdminRequestDto,
+  SuperAdminDto,
+  SuperAdminGetMeResponseDto,
   SuperAdminLoginRequestDto,
   SuperAdminLoginResponseDto,
-  SuperAdminGetMeResponseDto,
   SuperAdminRefreshTokenResponseDto,
-  CreateSuperAdminRequestDto,
-  CreateSuperAdminResponseDto,
-  ApiResponse,
-  ApiErrorResponse,
+} from "../../shared/types/super-admin-auth.types";
+import {
+  CreateSuperAdminRequestSchema,
+  SuperAdminLoginRequestSchema,
 } from "@arm/shared";
 
 /**
@@ -58,7 +56,7 @@ export class SuperAdminAuthController extends Controller {
     @Body() body: SuperAdminLoginRequestDto,
     @Request() request: ExpressRequest & { res?: ExpressResponse },
   ): Promise<ApiResponse<SuperAdminLoginResponseDto>> {
-    const validated = SuperAdminLoginValidationSchema.parse(body);
+    const validated = SuperAdminLoginRequestSchema.parse(body);
     const result = await this.service.login(validated);
 
     // Set refresh token in cookie
@@ -179,8 +177,8 @@ export class SuperAdminAuthController extends Controller {
   @TsoaResponse<ApiErrorResponse>(409, "Super admin already exists")
   public async createSuperAdmin(
     @Body() body: CreateSuperAdminRequestDto,
-  ): Promise<ApiResponse<CreateSuperAdminResponseDto>> {
-    const validated = CreateSuperAdminValidationSchema.parse(body);
+  ): Promise<ApiResponse<SuperAdminDto>> {
+    const validated = CreateSuperAdminRequestSchema.parse(body);
     const result = await this.service.createSuperAdmin(validated);
 
     this.setStatus(201);

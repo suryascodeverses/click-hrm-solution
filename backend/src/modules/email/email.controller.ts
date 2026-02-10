@@ -13,17 +13,16 @@ import {
   Response as TsoaResponse,
   Controller,
 } from "tsoa";
-import { EmailTemplatesService } from "./email-templates.service";
-import type {
+import { EmailTemplatesService } from "./email.service";
+import {
   CreateEmailTemplateRequestDto,
-  UpdateEmailTemplateRequestDto,
-  SendTestEmailRequestDto,
-  EmailTemplateDto,
   EmailLogsResponseDto,
   EmailStatsDto,
-  ApiResponse,
-  ApiErrorResponse,
-} from "@arm/shared";
+  EmailTemplateDto,
+  SendTestEmailRequestDto,
+  UpdateEmailTemplateRequestDto,
+} from "../../shared/types/email-templates.types";
+import { ApiErrorResponse, ApiResponse } from "../../shared/types/common.types";
 
 @Route("super-admin/email-templates")
 @Tags("Super Admin - Email Templates")

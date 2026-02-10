@@ -16,19 +16,17 @@ import {
 } from "tsoa";
 import { Request as ExpressRequest } from "express";
 import { EmployeeService } from "./employee.service";
+import { ApiErrorResponse, ApiResponse } from "../../shared/types/common.types";
 import {
-  CreateEmployeeValidationSchema,
-  UpdateEmployeeValidationSchema,
-} from "../../shared/types/employee.types";
-
-import type {
   CreateEmployeeRequestDto,
-  UpdateEmployeeRequestDto,
-  EmployeeListItemDto,
-  EmployeeDetailDto,
   CreateEmployeeResponseDto,
-  ApiResponse,
-  ApiErrorResponse,
+  EmployeeDetailDto,
+  EmployeeListItemDto,
+  UpdateEmployeeRequestDto,
+} from "../../shared/types/employee.types";
+import {
+  CreateEmployeeRequestSchema,
+  UpdateEmployeeRequestSchema,
 } from "@arm/shared";
 
 /**
@@ -66,7 +64,7 @@ export class EmployeeController extends Controller {
       throw new Error("Tenant ID required");
     }
 
-    const validated = CreateEmployeeValidationSchema.parse(body);
+    const validated = CreateEmployeeRequestSchema.parse(body);
     const result = await this.service.createEmployee(tenantId, validated);
 
     this.setStatus(201);
@@ -135,8 +133,11 @@ export class EmployeeController extends Controller {
     @Path() id: string,
     @Body() body: UpdateEmployeeRequestDto,
   ): Promise<ApiResponse<EmployeeDetailDto>> {
-    const validated = UpdateEmployeeValidationSchema.parse(body);
-    const result = await this.service.updateEmployee(id, validated);
+    const validated = UpdateEmployeeRequestSchema.parse(body);
+    const result = await this.service.updateEmployee(
+      id,
+      validated as unknown as UpdateEmployeeRequestDto,
+    );
 
     return {
       success: true,

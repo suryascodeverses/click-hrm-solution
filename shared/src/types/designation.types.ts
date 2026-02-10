@@ -7,6 +7,7 @@
 
 import { z } from "zod";
 
+const DESIGN_STATUS_VALUES = ["ACTIVE", "INACTIVE"] as const;
 // ============================================
 // BASE SCHEMAS (Building Blocks)
 // ============================================
@@ -52,7 +53,7 @@ export const UpdateDesignationRequestSchema = z.object({
   code: z.string().optional(),
   level: z.number().optional(),
   description: z.string().optional(),
-  status: z.string().optional(),
+  status: z.enum(DESIGN_STATUS_VALUES).optional(),
 });
 export type UpdateDesignationRequestDto = z.infer<
   typeof UpdateDesignationRequestSchema

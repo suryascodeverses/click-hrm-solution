@@ -34,7 +34,7 @@ export interface AuditLogDto {
   action: string;
   entity: string | null;
   entityId: string | null;
-  description?: string;
+  description: string | null;
   ipAddress: string | null;
   userAgent: string | null;
   metadata?: any;

@@ -1,14 +1,13 @@
 import { prisma } from "../../config/database";
 import { NotFoundError, BadRequestError } from "../../shared/errors";
-
-import type {
+import {
   ApplyLeaveRequestDto,
-  RejectLeaveRequestDto,
   CreateLeaveTypeRequestDto,
-  LeaveDetailDto,
   LeaveBalanceDto,
+  LeaveDetailDto,
   LeaveTypeDto,
-} from "@arm/shared";
+  RejectLeaveRequestDto,
+} from "../../shared/types/leave.types";
 
 /**
  * ========================================
@@ -80,7 +79,7 @@ export class LeaveService {
       },
     });
 
-    return leave as LeaveDetailDto;
+    return { ...leave, approver: null } as LeaveDetailDto;
   }
 
   /**
@@ -346,7 +345,10 @@ export class LeaveService {
       orderBy: { appliedAt: "desc" },
     });
 
-    return leaves as LeaveDetailDto[];
+    return leaves.map((leave) => ({
+      ...leave,
+      approver: null,
+    })) as LeaveDetailDto[];
   }
 
   /**

@@ -10,15 +10,14 @@ import {
 } from "tsoa";
 import { Request as ExpressRequest } from "express";
 import { ReportsService } from "./reports.service";
-
-import type {
-  AttendanceReportDto,
-  LeaveReportEmployeeDto,
-  HeadcountReportDto,
-  PayrollReportDto,
+import { AttendanceReportDto } from "../../shared/types/attendance.types";
+import { ApiResponse } from "../../shared/types/common.types";
+import {
   DashboardAnalyticsDto,
-  ApiResponse,
-} from "@arm/shared";
+  HeadcountReportDto,
+  LeaveReportEmployeeDto,
+  PayrollReportDto,
+} from "../../shared/types/reports.types";
 
 /**
  * ========================================

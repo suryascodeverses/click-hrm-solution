@@ -5,9 +5,11 @@
  * Location: shared/src/types/monitoring.types.ts
  */
 
+import { AlertSeverity, AlertType } from "@prisma/client";
+
 export interface CreateSystemAlertRequestDto {
-  alertType: string;
-  severity: string;
+  alertType: AlertType;
+  severity: AlertSeverity;
   title: string;
   message: string;
   metadata?: any;

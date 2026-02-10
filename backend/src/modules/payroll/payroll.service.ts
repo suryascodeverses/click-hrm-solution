@@ -1,16 +1,16 @@
 import { prisma } from "../../config/database";
 import { NotFoundError } from "../../shared/errors";
 import { Decimal } from "@prisma/client/runtime/library";
-
-import type {
+import {
   CreateSalaryStructureRequestDto,
-  UpdatePayslipStatusRequestDto,
-  SalaryStructureDto,
-  PayslipDto,
-  PayslipDetailDto,
-  PayslipListItemDto,
   GeneratePayslipsResponseDto,
-} from "@arm/shared";
+  PayslipDetailDto,
+  PayslipDto,
+  PayslipListItemDto,
+  PayslipWithFullDetailsDto,
+  SalaryStructureDto,
+  UpdatePayslipStatusRequestDto,
+} from "../../shared/types/payroll.types";
 
 /**
  * ========================================
@@ -60,7 +60,15 @@ export class PayrollService {
       },
     });
 
-    return salaryStructure as SalaryStructureDto;
+    return {
+      ...salaryStructure,
+      hra: salaryStructure.hra.toNumber(),
+      basicSalary: salaryStructure.basicSalary.toNumber(),
+      specialAllowance: salaryStructure.specialAllowance.toNumber(),
+      conveyance: salaryStructure.conveyance.toNumber(),
+      medical: salaryStructure.medical.toNumber(),
+      ctc: salaryStructure.ctc.toNumber(),
+    } as SalaryStructureDto;
   }
 
   /**
@@ -229,7 +237,22 @@ export class PayrollService {
       orderBy: [{ year: "desc" }, { month: "desc" }],
     });
 
-    return payslips as PayslipDto[];
+    return payslips.map((p) => ({
+      ...p,
+      hra: p.hra.toNumber(),
+      basicPay: p.basicPay.toNumber(),
+      conveyance: p.conveyance.toNumber(),
+      medical: p.medical.toNumber(),
+      specialAllowance: p.specialAllowance.toNumber(),
+      totalEarnings: p.totalEarnings.toNumber(),
+      providentFund: p.providentFund.toNumber(),
+      professionalTax: p.professionalTax.toNumber(),
+      otherDeductions: p.otherDeductions.toNumber(),
+      totalDeductions: p.totalDeductions.toNumber(),
+      netPay: p.netPay.toNumber(),
+      bonus: p.bonus.toNumber(),
+      incomeTax: p.incomeTax.toNumber(),
+    })) as PayslipDto[];
   }
 
   /**
@@ -257,7 +280,31 @@ export class PayrollService {
       throw new NotFoundError("Payslip not found");
     }
 
-    return payslip as PayslipDetailDto;
+    return {
+      ...payslip,
+      hra: payslip.hra.toNumber(),
+      basicPay: payslip.basicPay.toNumber(),
+      conveyance: payslip.conveyance.toNumber(),
+      medical: payslip.medical.toNumber(),
+      specialAllowance: payslip.specialAllowance.toNumber(),
+      totalEarnings: payslip.totalEarnings.toNumber(),
+      providentFund: payslip.providentFund.toNumber(),
+      professionalTax: payslip.professionalTax.toNumber(),
+      otherDeductions: payslip.otherDeductions.toNumber(),
+      totalDeductions: payslip.totalDeductions.toNumber(),
+      netPay: payslip.netPay.toNumber(),
+      bonus: payslip.bonus.toNumber(),
+      incomeTax: payslip.incomeTax.toNumber(),
+      salaryStructure: {
+        ...payslip.salaryStructure,
+        hra: payslip.salaryStructure.hra.toNumber(),
+        basicSalary: payslip.salaryStructure.basicSalary.toNumber(),
+        specialAllowance: payslip.salaryStructure.specialAllowance.toNumber(),
+        conveyance: payslip.salaryStructure.conveyance.toNumber(),
+        medical: payslip.salaryStructure.medical.toNumber(),
+        ctc: payslip.salaryStructure.ctc.toNumber(),
+      },
+    } as PayslipDetailDto;
   }
 
   /**
@@ -291,8 +338,20 @@ export class PayrollService {
       },
       orderBy: [{ year: "desc" }, { month: "desc" }],
     });
-
-    return payslips as PayslipListItemDto[];
+    return payslips.map((p) => ({
+      ...p,
+      hra: p.hra.toNumber(),
+      basicPay: p.basicPay.toNumber(),
+      conveyance: p.conveyance.toNumber(),
+      medical: p.medical.toNumber(),
+      specialAllowance: p.specialAllowance.toNumber(),
+      totalEarnings: p.totalEarnings.toNumber(),
+      providentFund: p.providentFund.toNumber(),
+      professionalTax: p.professionalTax.toNumber(),
+      otherDeductions: p.otherDeductions.toNumber(),
+      totalDeductions: p.totalDeductions.toNumber(),
+      netPay: p.netPay.toNumber(),
+    })) as PayslipListItemDto[];
   }
 
   /**
@@ -314,6 +373,24 @@ export class PayrollService {
       data: updateData,
     });
 
-    return payslip as PayslipDto;
+    return {
+      ...payslip,
+      hra: payslip.hra.toNumber(),
+      basicSalary: payslip.basicPay.toNumber(),
+      specialAllowance: payslip.specialAllowance.toNumber(),
+      conveyance: payslip.conveyance.toNumber(),
+      medical: payslip.medical.toNumber(),
+      ctc: payslip.netPay.toNumber(),
+      basicPay: payslip.basicPay.toNumber(),
+
+      totalEarnings: payslip.totalEarnings.toNumber(),
+      providentFund: payslip.providentFund.toNumber(),
+      professionalTax: payslip.professionalTax.toNumber(),
+      otherDeductions: payslip.otherDeductions.toNumber(),
+      totalDeductions: payslip.totalDeductions.toNumber(),
+      netPay: payslip.netPay.toNumber(),
+      bonus: payslip.bonus.toNumber(),
+      incomeTax: payslip.incomeTax.toNumber(),
+    } as PayslipDto;
   }
 }

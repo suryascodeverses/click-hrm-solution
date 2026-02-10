@@ -15,19 +15,17 @@ import {
 } from "tsoa";
 import { Request as ExpressRequest } from "express";
 import { OrganisationService } from "./organisation.service";
+import { ApiErrorResponse, ApiResponse } from "../../shared/types/common.types";
 import {
-  CreateOrganisationValidationSchema,
-  UpdateOrganisationValidationSchema,
-} from "../../shared/types/organisation.types";
-
-import type {
   CreateOrganisationRequestDto,
-  UpdateOrganisationRequestDto,
+  OrganisationDetailDto,
   OrganisationDto,
   OrganisationListItemDto,
-  OrganisationDetailDto,
-  ApiResponse,
-  ApiErrorResponse,
+  UpdateOrganisationRequestDto,
+} from "../../shared/types/organisation.types";
+import {
+  CreateOrganisationRequestSchema,
+  UpdateOrganisationRequestSchema,
 } from "@arm/shared";
 
 /**
@@ -64,7 +62,7 @@ export class OrganisationController extends Controller {
       throw new Error("Tenant ID required");
     }
 
-    const validated = CreateOrganisationValidationSchema.parse(body);
+    const validated = CreateOrganisationRequestSchema.parse(body);
     const result = await this.service.createOrganisation(tenantId, validated);
 
     this.setStatus(201);
@@ -126,7 +124,7 @@ export class OrganisationController extends Controller {
     @Path() id: string,
     @Body() body: UpdateOrganisationRequestDto,
   ): Promise<ApiResponse<OrganisationDto>> {
-    const validated = UpdateOrganisationValidationSchema.parse(body);
+    const validated = UpdateOrganisationRequestSchema.parse(body);
     const result = await this.service.updateOrganisation(id, validated);
 
     return {

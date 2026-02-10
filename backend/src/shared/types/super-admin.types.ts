@@ -5,7 +5,7 @@
  * Location: shared/types/super-admin.types.ts
  */
 
-import { TenantStatus } from "@prisma/client";
+import { TenantStatus, UserRole } from "@prisma/client";
 
 // ============================================
 // INPUT DTOs
@@ -25,9 +25,47 @@ export interface UpdateTenantRequestDto {
   status?: TenantStatus;
 }
 
+export interface TenantDetailDto {
+  status: string;
+  id: string;
+  createdAt: Date;
+  updatedAt: Date;
+  name: string;
+  subdomain: string;
+  email: string;
+  phone: string | null;
+  subscriptionTier: string | null;
+  maxEmployees: number | null;
+  _count: {
+    users: number;
+    organisations: number;
+  };
+  logo: string | null;
+}
+
 export interface UpdateUserRequestDto {
-  role?: string;
+  role?: UserRole;
   isActive?: boolean;
+}
+
+export interface UserDetailDto {
+  id: string;
+  createdAt: Date;
+  employee: {
+    firstName: string;
+    lastName: string;
+    employeeCode: string;
+  } | null;
+  email: string;
+  role: string;
+  isActive: boolean;
+  tenantId: string | null;
+  lastLogin: Date | null;
+  tenant: {
+    id: string;
+    name: string;
+    subdomain: string;
+  } | null;
 }
 
 // ============================================
@@ -58,6 +96,27 @@ export interface UserManagementDto {
   lastLogin: Date | null;
   createdAt: Date;
   updatedAt: Date;
+}
+
+export interface GetDashboardStatsResponseDto {
+  stats: {
+    totalTenants: number;
+    activeTenants: number;
+    totalUsers: number;
+    totalEmployees: number;
+  };
+  recentTenants: {
+    status: string;
+    id: string;
+    createdAt: Date;
+    name: string;
+    subdomain: string;
+    email: string;
+    _count: {
+      users: number;
+      organisations: number;
+    };
+  }[];
 }
 
 // ============================================

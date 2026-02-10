@@ -1,11 +1,6 @@
 import { prisma } from "../../config/database";
 import { NotFoundError } from "../../shared/errors";
-
-import type {
-  GetTenantResponseDto,
-  UpdateTenantProfileRequestDto,
-  UpdateTenantProfileResponseDto,
-} from "@arm/shared";
+import { GetTenantResponseDto, TenantProfileDto, UpdateTenantProfileRequestDto, UpdateTenantProfileResponseDto } from "../../shared/types/tenant.types";
 
 /**
  * ========================================
@@ -44,7 +39,7 @@ export class TenantService {
   async updateTenant(
     tenantId: string,
     data: UpdateTenantProfileRequestDto,
-  ): Promise<UpdateTenantProfileResponseDto> {
+  ): Promise<TenantProfileDto> {
     const tenant = await prisma.tenant.update({
       where: { id: tenantId },
       data,

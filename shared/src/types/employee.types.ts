@@ -7,6 +7,21 @@
 
 import { z } from "zod";
 
+const EmploymentType = [
+  "FULL_TIME",
+  "PART_TIME",
+  "CONTRACT",
+  "INTERN",
+  "CONSULTANT",
+] as const;
+
+const EmployeeStatus = [
+  "ACTIVE",
+  "INACTIVE",
+  "ON_LEAVE",
+  "TERMINATED",
+  "RESIGNED",
+] as const;
 // ============================================
 // BASE SCHEMAS (Building Blocks)
 // ============================================
@@ -69,8 +84,8 @@ export const UpdateEmployeeRequestSchema = z.object({
   departmentId: z.string().optional(),
   designationId: z.string().optional(),
   managerId: z.string().optional(),
-  status: z.string().optional(),
-  employmentType: z.string().optional(),
+  status: z.enum(EmployeeStatus),
+  employmentType: z.enum(EmploymentType),
   dateOfBirth: z.string().optional(),
   address: z.string().optional(),
   city: z.string().optional(),
@@ -120,7 +135,7 @@ export const EmployeeDetailDtoSchema = EmployeeListItemDtoSchema.extend({
   city: z.string().nullable(),
   state: z.string().nullable(),
   country: z.string().nullable(),
-  employmentType: z.string().nullable(),
+  employmentType: z.enum(EmploymentType).nullable(),
   user: UserNestedBaseSchema.extend({
     lastLogin: z.date().nullable(),
   }),

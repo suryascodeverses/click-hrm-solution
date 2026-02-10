@@ -1,12 +1,11 @@
 import { prisma } from "../../config/database";
 import { NotFoundError } from "../../shared/errors";
-
-import type {
+import {
   CreateDesignationRequestDto,
-  UpdateDesignationRequestDto,
   DesignationDto,
   DesignationListItemDto,
-} from "@arm/shared";
+  UpdateDesignationRequestDto,
+} from "../../shared/types/designation.types";
 
 /**
  * ========================================

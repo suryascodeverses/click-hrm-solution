@@ -1,12 +1,11 @@
 import { prisma } from "../../config/database";
-
-import type {
-  AttendanceReportDto,
-  LeaveReportEmployeeDto,
-  HeadcountReportDto,
-  PayrollReportDto,
+import { AttendanceReportDto } from "../../shared/types/attendance.types";
+import {
   DashboardAnalyticsDto,
-} from "@arm/shared";
+  HeadcountReportDto,
+  LeaveReportEmployeeDto,
+  PayrollReportDto,
+} from "../../shared/types/reports.types";
 
 /**
  * ========================================

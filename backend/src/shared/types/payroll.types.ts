@@ -5,15 +5,17 @@
  * Location: shared/types/payroll.types.ts
  */
 
+import { PayslipStatus } from "@prisma/client";
+
 // ============================================
 // ENUMS
 // ============================================
 
-export enum PayslipStatus {
-  DRAFT = "DRAFT",
-  PROCESSED = "PROCESSED",
-  PAID = "PAID",
-}
+// export enum PayslipStatus {
+//   DRAFT = "DRAFT",
+//   PROCESSED = "PROCESSED",
+//   PAID = "PAID",
+// }
 
 // ============================================
 // INPUT DTOs
@@ -120,8 +122,64 @@ export interface PayslipDto {
   netPay: number;
   status: PayslipStatus;
   paidOn: Date | null;
+  createdAt?: Date;
+  updatedAt?: Date;
+}
+
+export interface PayslipDetailDto {
+  status: string;
+  id: string;
   createdAt: Date;
-  updatedAt: Date;
+  hra: number;
+  conveyance: number;
+  medical: number;
+  specialAllowance: number;
+  employeeId: string;
+  employee: {
+    firstName: string;
+    lastName: string;
+    employeeCode: string;
+    department?: any;
+    designation?: any;
+    organisation?: any;
+  };
+  salaryStructureId: string;
+  month: number;
+  year: number;
+  workingDays: number;
+  presentDays: number;
+  absentDays: number;
+  leaveDays: number;
+  basicPay: number;
+  bonus: number;
+  totalEarnings: number;
+  providentFund: number;
+  professionalTax: number;
+  incomeTax: number;
+  otherDeductions: number;
+  totalDeductions: number;
+  netPay: number;
+  paidOn: Date | null;
+  salaryStructure: SalaryStructureDto;
+}
+
+export interface GeneratePayslipsResponseDto {
+  message: string;
+  count: number;
+  payslips: {
+    status: string;
+    id: string;
+    employee: {
+      firstName: string;
+      lastName: string;
+      employeeCode: string;
+      department?: any;
+    };
+    month: number;
+    year: number;
+    netPay: number;
+    paidOn: Date | null;
+  }[];
 }
 
 // ============================================
@@ -189,6 +247,21 @@ export interface PayslipWithSalaryStructureDto extends PayslipDto {
   };
 }
 
+export interface PayslipListItemDto {
+  status: string;
+  id: string;
+  employee: {
+    firstName: string;
+    lastName: string;
+    employeeCode: string;
+    department?: any;
+  };
+  month: number;
+  year: number;
+  netPay: number;
+  paidOn: Date | null;
+}
+
 export interface PayslipWithFullDetailsDto extends PayslipDto {
   employee: {
     id: string;
@@ -232,6 +305,21 @@ export interface PayslipWithFullDetailsDto extends PayslipDto {
     };
     netPay: number;
   };
+}
+
+export interface PayslipListItemDto {
+  status: string;
+  id: string;
+  employee: {
+    firstName: string;
+    lastName: string;
+    employeeCode: string;
+    department?: any;
+  };
+  month: number;
+  year: number;
+  netPay: number;
+  paidOn: Date | null;
 }
 
 // ============================================

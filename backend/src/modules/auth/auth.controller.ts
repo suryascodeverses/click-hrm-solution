@@ -15,22 +15,21 @@ import { AuthService } from "./auth.service";
 
 // Import validation schemas (backend-only)
 import {
-  RegisterValidationSchema,
-  LoginValidationSchema,
-  LogoutValidationSchema,
-} from "../../shared/types/auth.types";
-
-// Import DTOs from shared package (API contracts)
-import type {
   RegisterRequestDto,
   RegisterResponseDto,
   LoginRequestDto,
   LoginResponseDto,
   GetMeResponseDto,
   LogoutRequestDto,
-  ApiResponse,
-  ApiErrorResponse,
+} from "../../shared/types/auth.types";
+import { ApiErrorResponse, ApiResponse } from "../../shared/types/common.types";
+import {
+  LoginRequestSchema,
+  LogoutRequestSchema,
+  RegisterRequestSchema,
 } from "@arm/shared";
+
+// Import DTOs from shared package (API contracts)
 
 /**
  * ========================================
@@ -63,7 +62,7 @@ export class AuthController extends Controller {
     @Body() body: RegisterRequestDto,
   ): Promise<ApiResponse<RegisterResponseDto>> {
     // Validate with backend schema (strict validation)
-    const validated = RegisterValidationSchema.parse(body);
+    const validated = RegisterRequestSchema.parse(body);
 
     // Call service
     const result = await this.authService.register(validated);
@@ -90,7 +89,7 @@ export class AuthController extends Controller {
     @Body() body: LoginRequestDto,
   ): Promise<ApiResponse<LoginResponseDto>> {
     // Validate with backend schema
-    const validated = LoginValidationSchema.parse(body);
+    const validated = LoginRequestSchema.parse(body);
 
     // Call service
     const result = await this.authService.login(validated);
@@ -148,7 +147,7 @@ export class AuthController extends Controller {
     }
 
     // Validate with backend schema
-    const validated = LogoutValidationSchema.parse(body);
+    const validated = LogoutRequestSchema.parse(body);
 
     // Call service
     await this.authService.logout(userId, validated.refreshToken);

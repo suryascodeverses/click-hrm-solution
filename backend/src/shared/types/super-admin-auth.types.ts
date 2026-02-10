@@ -48,10 +48,10 @@ export interface SuperAdminDto {
   id: string;
   email: string;
   name: string;
-  isActive: boolean;
+  isActive?: boolean;
   lastLogin: Date | null;
-  createdAt: Date;
-  updatedAt: Date;
+  createdAt?: Date;
+  updatedAt?: Date;
 }
 
 export interface SuperAdminRefreshTokenDto {
@@ -92,7 +92,8 @@ export interface SuperAdminAuthTokensDto {
 
 export interface SuperAdminLoginResponseDto {
   superAdmin: SuperAdminDto;
-  tokens: SuperAdminAuthTokensDto;
+  accessToken: string;
+  refreshToken: string;
   message: string;
 }
 
@@ -169,4 +170,13 @@ export interface SuperAdminListResponseDto {
     limit: number;
     totalPages: number;
   };
+}
+
+export interface SuperAdminGetMeResponseDto {
+  name: string;
+  email: string;
+  id: string;
+  isActive: boolean;
+  createdAt: Date;
+  lastLogin: Date | null;
 }

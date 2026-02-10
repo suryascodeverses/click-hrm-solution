@@ -1,14 +1,15 @@
 import { prisma } from "../../config/database";
 import os from "os";
-import type {
-  CreateSystemAlertRequestDto,
-  SystemHealthDto,
-  MetricsHistoryDto,
-  DatabaseStatsDto,
+
+import {
   ApiUsageStatsDto,
-  SystemAlertsResponseDto,
+  CreateSystemAlertRequestDto,
+  DatabaseStatsDto,
   ErrorRateDto,
-} from "@arm/shared";
+  MetricsHistoryDto,
+  SystemAlertsResponseDto,
+  SystemHealthDto,
+} from "../../shared/types/monitoring.types";
 
 export class MonitoringService {
   async getSystemHealth(): Promise<SystemHealthDto> {

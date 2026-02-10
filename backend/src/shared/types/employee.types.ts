@@ -5,6 +5,7 @@
  * Location: shared/types/employee.types.ts
  */
 
+import { EmploymentType } from "@prisma/client";
 
 // ============================================
 // ENUMS
@@ -23,13 +24,13 @@ export enum MaritalStatus {
   WIDOWED = "WIDOWED",
 }
 
-export enum EmploymentType {
-  FULL_TIME = "FULL_TIME",
-  PART_TIME = "PART_TIME",
-  CONTRACT = "CONTRACT",
-  INTERN = "INTERN",
-  CONSULTANT = "CONSULTANT",
-}
+// export enum EmploymentType {
+//   FULL_TIME = "FULL_TIME",
+//   PART_TIME = "PART_TIME",
+//   CONTRACT = "CONTRACT",
+//   INTERN = "INTERN",
+//   CONSULTANT = "CONSULTANT",
+// }
 
 export enum EmployeeStatus {
   ACTIVE = "ACTIVE",
@@ -82,7 +83,7 @@ export interface UpdateEmployeeRequestDto {
   departmentId?: string;
   designationId?: string;
   reportingTo?: string;
-  employmentType?: EmploymentType;
+  employmentType: EmploymentType;
   status?: EmployeeStatus;
   currentAddress?: string;
   permanentAddress?: string;
@@ -342,4 +343,63 @@ export interface CreateEmployeeResponseDto {
   };
   department: any;
   designation: any;
+}
+
+export interface EmployeeListItemDto {
+  status: string;
+  id: string;
+  createdAt: Date;
+  email: string;
+  firstName: string;
+  lastName: string;
+  employeeCode: string;
+  phone: string | null;
+  dateOfJoining: Date;
+  user: {
+    email: string;
+    role: string;
+    isActive: boolean;
+  };
+  department?: any;
+  organisation?: any;
+  designation?: any;
+}
+
+export interface EmployeeDetailDto {
+  status: EmployeeStatus;
+  id: string;
+  createdAt: Date;
+  email: string;
+  firstName: string;
+  lastName: string;
+  employeeCode: string;
+  phone: string | null;
+  dateOfJoining: Date;
+  employmentType: EmploymentType | null;
+  dateOfBirth: Date | null;
+  address: string | null;
+  city: string | null;
+  state: string | null;
+  country: string | null;
+  user: {
+    email: string;
+    role: string;
+    isActive: boolean;
+    lastLogin: Date | null;
+  };
+  manager: {
+    id: string;
+    firstName: string;
+    lastName: string;
+    employeeCode: string;
+  } | null;
+  subordinates: {
+    id: string;
+    firstName: string;
+    lastName: string;
+    employeeCode: string;
+  }[];
+  department?: any;
+  organisation?: any;
+  designation?: any;
 }

@@ -15,22 +15,9 @@ import {
 } from "tsoa";
 import { Request as ExpressRequest } from "express";
 import { PayrollService } from "./payroll.service";
-import {
-  CreateSalaryStructureValidationSchema,
-  UpdatePayslipStatusValidationSchema,
-} from "../../shared/types/payroll.types";
-
-import type {
-  CreateSalaryStructureRequestDto,
-  UpdatePayslipStatusRequestDto,
-  SalaryStructureDto,
-  PayslipDto,
-  PayslipDetailDto,
-  PayslipListItemDto,
-  GeneratePayslipsResponseDto,
-  ApiResponse,
-  ApiErrorResponse,
-} from "@arm/shared";
+import { CreateSalaryStructureRequestDto, GeneratePayslipsResponseDto, PayslipDetailDto, PayslipDto, PayslipListItemDto, PayslipWithFullDetailsDto, SalaryStructureDto, UpdatePayslipStatusRequestDto } from "../../shared/types/payroll.types";
+import { ApiErrorResponse, ApiResponse } from "../../shared/types/common.types";
+import { CreateSalaryStructureRequestSchema, UpdatePayslipStatusRequestSchema } from "@arm/shared";
 
 /**
  * ========================================
@@ -58,7 +45,7 @@ export class PayrollController extends Controller {
   public async createSalaryStructure(
     @Body() body: CreateSalaryStructureRequestDto,
   ): Promise<ApiResponse<SalaryStructureDto>> {
-    const validated = CreateSalaryStructureValidationSchema.parse(body);
+    const validated = CreateSalaryStructureRequestSchema.parse(body);
     const result = await this.service.createSalaryStructure(validated);
 
     this.setStatus(201);
@@ -186,7 +173,7 @@ export class PayrollController extends Controller {
     @Path() payslipId: string,
     @Body() body: UpdatePayslipStatusRequestDto,
   ): Promise<ApiResponse<PayslipDto>> {
-    const validated = UpdatePayslipStatusValidationSchema.parse(body);
+    const validated = UpdatePayslipStatusRequestSchema.parse(body);
     const result = await this.service.updatePayslipStatus(payslipId, validated);
 
     return {

@@ -11,6 +11,8 @@ import { z } from "zod";
 // BASE SCHEMAS (Building Blocks)
 // ============================================
 
+export const PayslipStatus = ["DRAFT", "PROCESSED", "PAID"] as const;
+
 /**
  * Base salary structure fields - minimal common fields
  */
@@ -30,7 +32,7 @@ const PayslipBaseSchema = z.object({
   salaryStructureId: z.string(),
   month: z.number(),
   year: z.number(),
-  status: z.string(),
+  status: z.enum(PayslipStatus),
 });
 
 /**
@@ -73,7 +75,7 @@ export type CreateSalaryStructureRequestDto = z.infer<
  * Update payslip status request schema
  */
 export const UpdatePayslipStatusRequestSchema = z.object({
-  status: z.string(),
+  status: z.enum(PayslipStatus),
 });
 export type UpdatePayslipStatusRequestDto = z.infer<
   typeof UpdatePayslipStatusRequestSchema
