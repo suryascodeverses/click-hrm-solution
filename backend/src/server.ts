@@ -101,7 +101,8 @@ app.use(
 
 // Serve swagger.json
 app.get("/api/swagger.json", (_req: Request, res: Response) => {
-  res.sendFile(__dirname + "/swagger.json");
+  console.log("Serving swagger.json", __dirname + "/generated/swagger.json");
+  res.sendFile(__dirname + "/generated/swagger.json");
 });
 
 // ============================================
